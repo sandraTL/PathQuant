@@ -1,10 +1,24 @@
 Package: PathQuant
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1
-Date: 2016-02-29
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Title: Pathway Analysis with distance between genes and metablites
+Version: 0.1.1
+Date: 2015-07-22
+Author: Sarah Cherkaoui <cherkaos@gmail.com>
+    Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
+Maintainer: Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
+Description: Complete the information from the KGML files obtained with
+    KEGGREST and calculate de distance between genes (enzymes,
+    reactions) and metabolites in metabolic pathways.
+License: Artistic-2.0
+Imports:
+    igraph,
+    XML,
+    RUnit,
+    ggplot2,
+    data.table,
+    KEGGREST,xlsx,knitr,rmarkdown,scales
+VignetteBuilder: knitr
+Suggests:
+    testthat
 LazyData: TRUE
+RoxygenNote: 5.0.1
