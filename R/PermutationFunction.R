@@ -307,8 +307,8 @@ permutationFunction <-
 
         # output functions
         if (output == "medians") {
-            return <- distPermutated
-            #return <- permutatedMedians
+            #return <- distPermutated
+            return <- permutatedMedians
         }
         else if (output == "pvalue") {
             pvalue <-
