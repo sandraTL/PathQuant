@@ -116,3 +116,14 @@ removeRowsDistanceAll <- function(df){
     return <- finalDF;
 
 }
+
+getMaxValIgnoreInfVal <- function(df){
+
+    infVal <- which(df[,1] == Inf)
+    temp <- df
+    temp[infVal,] <- -1
+    maxVal <- max(temp[,1])
+
+    return <- maxVal;
+
+}

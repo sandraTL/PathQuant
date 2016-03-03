@@ -10,9 +10,9 @@ metabolitesInKEGGandInMap <- function(completeMetaboliteDF, mapId){
         p1 <- paste("^",completeMetaboDF[x,1],sep="")
         p1 <- paste(p1,"$",sep="")
 
-        print(any(grepl(p1, allMetaboliteInMap)));
 
-    print(p1)
+
+
 
 
 
@@ -31,9 +31,6 @@ genesInKEGGandInMap <- function(completeGeneDF, hsaId){
         p1 <- paste("^",completeGeneDF[x,1],sep="")
         p1 <- paste(p1,"$",sep="")
 
-        print(any(grepl(p1, allgeneInMap)));
-
-        print(p1)
     }
 
 }

@@ -23,7 +23,7 @@ getPathwayKGML <- function(pathwayId) {
 
         if(file[1]$message == "download had nonzero exit status"){
 
-            stop("pathway doesn't exist in KEGG database",call. = FALSE )
+            stop("pathway do not exist in KEGG database",call. = FALSE )
         }
     }
 
@@ -56,6 +56,7 @@ toStringAdressfile <- function(pathwayId){
 
 isFileInDirectory <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
+
     bool = FALSE;
     files <- list.files("~/")
     s2 <-  toString(pathwayId);

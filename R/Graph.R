@@ -104,12 +104,14 @@ setMethod("allShortestPaths","Graph", function(object, associatedGeneMetaDF,
             return <- tt;
     })
     pl <- data.frame(pl);
+
     # combine all vectors of distances
     output <- do.call(cbind.data.frame, pl);
 
     ##### choose smallest values for each metabolites ######
     # adding column with metaboliteKEGGId
     output <- cbind(output, KEGGId = c(metaboliteVector));
+
     output <- mergeRowsWithSmallestValueByKEGGId(output)
 
     finalColNames <- output$KEGGId;
@@ -367,6 +369,13 @@ changeDFassoToRigthDistances <- function(associatedShortestPathsDF){
 
 createGraphFromPathway <- function(pathwayId){
     #print("CreateGraphFromPathway")
+
+
+    #test if KGML file was downloaded already
+    if(isFileInDirectory(pathwayId) == FALSE){
+
+        getPathwayKGML(pathwayId);
+    }
     #' create df for vertices
     nodeDF <- getListNodeFromKGML(pathwayId);
 
@@ -695,14 +704,16 @@ getDistanceAll <- function(pathwayId, associatedGeneMetaDF,
     #if the xml file was already dowmloaded
     # look when it was downloaded if it has been to long redownload
     if(isFileInDirectory(pathwayId) == FALSE){
+
         getPathwayKGML(pathwayId);
     }
 
     if(!is.data.frame(associatedGeneMetaDF) || length(associatedGeneMetaDF[1,])< 2 ||
        length(associatedGeneMetaDF[1,])> 3){
         e <- simpleError("dataframe dimension is wrong, please enter you data
-                         frame with KEGG id of genes (ex : hsa:00001) in first
-                         column and associated KEGG id metabolites (ex: C00001)
+                         where colnames(df) <- c(gene,metabolite)frame with
+                         KEGG id of gene (ex : hsa:00001) in first
+                         column and associated KEGG id metabolite (ex: C00001)
                          in second column")
         tryCatch(stop(e), finally = print("please try again"))
 
@@ -754,7 +765,7 @@ setGeneric("getFinalDFSHortestDistance", function(object,  associatedGeneMetaDF,
 #' @examples getCompoundNodeKgmlId(g, data, indexMetabolite)
 
 setMethod("getFinalDFSHortestDistance", "Graph", function(object,
-                                                          associatedGeneMetaDF, completeMetaboliteDF){
+                                associatedGeneMetaDF, completeMetaboliteDF){
     # print("getFinalDFShortestDistance")
     finalDF <- data.frame();
 

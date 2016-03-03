@@ -8,7 +8,7 @@
 #'      metabolites : KEGGid of metabolites C....
 #' for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
 #' for param gene : is a gene in data ex: hsa:8801
-#' @param pathwayId, data(gene, metabolites), gene
+#' @param KEGGPathwayId, data(gene, metabolites),allMeasuredMetaboliteesDF, gene
 #' @keywords  Graph, barplot, shortestDistance
 #' @export
 #' @examples barplotFunction(hsa01100, associatedGeneMetaDF,
@@ -16,12 +16,14 @@
 
 distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
                             completeMetaboliteDF, gene){
-    ############################################################
-    #' Serious need to refactor this function in multiple ones
-    #' It is way to long
-    ############################################################
 
-    geneCommonName <- getCommonNames(c(gene), "gene")
+    # argument test
+    if(is.data.frame(completeMetaboliteDF) && nrow(completeMetaboliteDF)==0){
+        e <- simpleError("completeMetaboliteDF dataframe is empty, please
+                         enter your data as one column data.frame")
+        tryCatch(stop(e), finally = print("please try again"))
+
+    }
 
     #' get all shortest paths from data entry
     shortestsPathsDF <- data.frame(t(getDistanceAll(pathwayId,
@@ -39,86 +41,46 @@ distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
 
     #' get a subset of shortestsPathsDF contaning only geneOf interest, gene
     #' and metaboltie column
-    numberUniqueMetabolites <- length( shortestsPathsDF[,1])
 
-    infVal <- which(shortestsPathsDF[,1] == Inf)
-    temp <- shortestsPathsDF
-    temp[infVal,] <- -1
-    maxVal <- max(temp[,1])
+    maxVal <- getMaxValIgnoreInfVal(shortestsPathsDF)
 
     #' get frequency of every value until the maxVal found + Inf val
-    frequenceDistDF <- data.frame(table(factor(shortestsPathsDF[,1],
+    frequenceDF <- data.frame(table(factor(shortestsPathsDF[,1],
                                             levels=c(0:maxVal,Inf))))
-    colnames(frequenceDistDF) <- c("Var1", "Freq")
 
-    #' initiation of values
-    test = FALSE;
-    results <- data.frame();
+    colnames(frequenceDF) <- c("Distance", "Freq")
 
-    #' creation of vector to fill bar colors automatically
-    for(row1 in 1:nrow(shortestsPathsDF)){
-        test = FALSE;
-        for(row2 in 1:nrow(associatedMetabo)){
+    associationsMetaboDF <- getAssociationsDF(shortestsPathsDF,associatedMetabo)
 
-            if(shortestsPathsDF[row1,"metabolites"] == associatedMetabo[row2,]){
-                test<- TRUE;
+    shortestsPathsDF <- cbind(shortestsPathsDF,
+                              Associations = associationsMetaboDF);
 
-                break;
-            }else test<- FALSE;
-        }
-
-        results <- rbind(results,test);
-        colnames(results) <- c("Associations")
-        return <- results;
-    }
-
-    shortestsPathsDF.plot<-shortestsPathsDF;
-    shortestsPathsDF.plot<-cbind(shortestsPathsDF.plot, Associations = results);
-
-    #' initiation of values
-    test = FALSE;
-    results1 <- data.frame();
-
-    #' creation of vector to fill bar colors automatically
-    for(row1 in 1:nrow(frequenceDistDF)){
-        test = FALSE;
-        for(row2 in 1:nrow(shortestsPathsDF.plot)){
-
-            if(frequenceDistDF[row1,"Var1"] == shortestsPathsDF.plot[row2,gene1]){
-                if(shortestsPathsDF.plot[row2,"Associations"] == TRUE){
-                    test<- TRUE;
-
-                    break;
-                }
-            }else test<- FALSE;
-        }
-
-        results1 <- rbind(results1,test);
-        colnames(results1) <- c("Associations")
-        return <- results1;
-    }
+    associationsfrequencyDF <- getFrequenceAssociationsDF(frequenceDF,
+                                                          shortestsPathsDF,
+                                                          gene1);
 
     # Add a column for the coloring of the bar associated with gene to subgraph
-    frequencies<-frequenceDistDF;
-    frequencies<-cbind(frequencies, Associations = results1);
+    frequenceDF<-cbind(frequenceDF,
+                           Associations = associationsfrequencyDF);
 
     # create barplot
-    barplotFunctionGeneToAllMetabo(frequencies,geneCommonName)
+    barplotFunctionGeneToAllMetabo(frequenceDF,gene)
 
 }
 
-barplotFunctionGeneToAllMetabo <- function(frequencies,geneCommonName){
+barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
 
-    # create barplot
-    numInfValue <- frequencies[frequencies$Var1 == Inf,][,2]
-    frequencies <- frequencies[-length(frequencies[,1]),]
-    maxDistance <- as.numeric(as.character(frequencies[nrow(frequencies),][,1]))
-    maxFrequency <- max(frequencies$Freq, na.rm = TRUE)
+    # initiating variable for barplotGraph
+    geneCommonName <- getCommonNames(c(gene), "gene")
+    numInfValue <- frequenceDF[frequenceDF$Distance == Inf,][,2]
+    frequenceDF <- frequenceDF[-length(frequenceDF[,1]),]
+    maxDistance <- as.numeric(as.character(frequenceDF[nrow(frequenceDF),][,1]))
+    maxFrequency <- max(frequenceDF$Freq, na.rm = TRUE)
 
     legend_text <- paste("infinite distance count: ",numInfValue, sep = "")
 
-    plot <- ggplot2::ggplot(frequencies, ggplot2::aes(
-        x = factor(Var1),
+    plot <- ggplot2::ggplot(frequenceDF, ggplot2::aes(
+        x = factor(Distance),
         y = Freq,
         fill = Associations
     ),environment = environment())
@@ -135,25 +97,85 @@ barplotFunctionGeneToAllMetabo <- function(frequencies,geneCommonName){
              + ggplot2::ylab("Metabolite count")
              + ggplot2::ggtitle(geneCommonName)
              + ggplot2::coord_fixed(ratio = 1)
-             + ggplot2::geom_rect(data = frequencies,
+             + ggplot2::geom_rect(data = frequenceDF,
                                   ggplot2::aes(xmin = (maxDistance+1 -8),
                                                xmax = maxDistance+1,
                                                ymin = (maxFrequency -1),
                                                ymax = maxFrequency),
                                   fill = "grey80")
-             + ggplot2::annotate("text", x = (maxDistance-3), y = (maxFrequency -0.5),
-                                 label = legend_text,colour = "black",size=5,
+             + ggplot2::annotate("text", x = (maxDistance-3),
+                                 y = (maxFrequency -0.5),
+                                 label = legend_text,
+                                 colour = "black",
+                                 size=5,
                                  family="Arial" )
              + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
 
              + ggplot2::scale_fill_manual(values = c("FALSE" ="grey",
-                                                     "TRUE" = "red3"))
+                                                     "TRUE" = "red3"),
+                                          guide = FALSE)
+
     );
+
     filename = paste0(geneCommonName,".png")
+
     ggplot2::ggsave(filename,width =10, height =7, dpi=300)
     # print plot it could change to save the graph image somewhere
     print(plot);
 
+}
+
+getFrequenceAssociationsDF <- function(frequenceDistDF,shortestsPathsDF,gene){
+
+    test = FALSE;
+    results <- data.frame();
+
+    #' creation of vector to fill bar colors automatically
+    for(row1 in 1:nrow(frequenceDistDF)){
+        test = FALSE;
+        for(row2 in 1:nrow(shortestsPathsDF)){
+
+            if(frequenceDistDF[row1,"Distance"] == shortestsPathsDF[row2,gene]){
+                if(shortestsPathsDF[row2,"Associations"] == TRUE){
+                    test<- TRUE;
+
+                    break;
+                }
+            }else test<- FALSE;
+        }
+
+        results <- rbind(results,test);
+        colnames(results) <- c("Associations")
+
+    }
+
+    return <- results;
+}
+
+
+getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
+
+    #' initiation of values
+    test = FALSE;
+    results <- data.frame();
+
+    #' buiding boolean associations DF
+    for(row1 in 1:nrow(assoDistanceDF)){
+        test = FALSE;
+        for(row2 in 1:nrow(associatedMetaboDF)){
+
+            if(assoDistanceDF[row1,"metabolites"] == associatedMetaboDF[row2,]){
+                test<- TRUE;
+
+                break;
+            }else test<- FALSE;
+        }
+
+        results <- rbind(results,test);
+        colnames(results) <- c("Associations")
+
+    }
+    return <- results;
 }
 
 getAssociatedMetaboByGene <- function(data, gene){
@@ -170,11 +192,12 @@ getAssociatedMetaboByGene <- function(data, gene){
 
 barplot_adjustMaximalDistance <- function(maximumDistance, frequenciesDF,
                                           maxDistFrequenciesDF){
-        levels(frequenciesDF$Var1) <- c(levels(frequenciesDF$Var1), c(1:25))
+        levels(frequenciesDF$Distance) <- c(levels(frequenciesDF$Distance),
+                                            c(1:25))
         if(maxDistFrequenciesDF < maximumDistance){
             for(i in (maxDistFrequenciesDF+1):25){
 
-                newRow <- (data.frame("Var1" = i,
+                newRow <- (data.frame("Distance" = i,
                                        "Freq" = 0,
                                        "Associations" = FALSE))
                 frequenciesDF <- rbind(frequenciesDF, newRow)
