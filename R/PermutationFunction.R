@@ -292,14 +292,14 @@ permutationFunction <-
                     permutatedMedians[k] <-
                         ceiling(median(knownDistances$distance))
                 }
-                print(length(distPermutated$count))
+
             }
 
          # print(distPermutated)
         }
         # get median distance associated
         #print(distPermutated)
-        print(distPermutated$count)
+
         distAssociated <-
             getDistanceAsso(pathwayId,data,F, "data.frame")
 
