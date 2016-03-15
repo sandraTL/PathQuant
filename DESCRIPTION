@@ -16,7 +16,7 @@ Imports:
     RUnit,
     ggplot2,
     data.table,
-    KEGGREST,xlsx,knitr,rmarkdown,scales
+    KEGGREST,knitr,rmarkdown,scales
 VignetteBuilder: knitr
 Suggests:
     testthat

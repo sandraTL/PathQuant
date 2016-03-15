@@ -17,7 +17,7 @@ getListNodeFromKGML <- function(pathwayId) {
     nodeListCpd <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
                                    function(x) (XML::xmlAttrs(x))['name']);
     nodeDF <- data.frame("kgmlId" = as.vector(nodeListId),
-                                "keggId" = as.vector(nodeListCpd));
+                         "keggId" = as.vector(nodeListCpd));
 
     nodeDF <- correctKeggIdString(nodeDF);
 
@@ -46,22 +46,22 @@ getListReactionFromKGML <- function(pathwayId) {
     reactionIdNodes <- XML::getNodeSet(xmltop, "//reaction");
 
     reactionId <- lapply(reactionIdNodes,
-                           function(x) XML::xmlAttrs(x)['id']);
+                         function(x) XML::xmlAttrs(x)['id']);
     reactionName <- lapply(reactionIdNodes,
                            function(x) XML::xmlAttrs(x)['name']);
     reactionType <- lapply(reactionIdNodes,
                            function(x) XML::xmlAttrs(x)['type']);
     substrateId <- lapply(reactionIdNodes, XML::xpathApply,path = './substrate',
-                           function(x) XML::xmlAttrs(x)['id']);
+                          function(x) XML::xmlAttrs(x)['id']);
     substrateName <- lapply(reactionIdNodes, XML::xpathApply,
                             path = './substrate',
-                           function(x) XML::xmlAttrs(x)['name']);
+                            function(x) XML::xmlAttrs(x)['name']);
     productId <- lapply(reactionIdNodes, XML::xpathApply,
-                            path = './product',
-                           function(x) XML::xmlAttrs(x)['id']);
+                        path = './product',
+                        function(x) XML::xmlAttrs(x)['id']);
     productName <- lapply(reactionIdNodes, XML::xpathApply,
-                            path = './product',
-                           function(x) XML::xmlAttrs(x)['name']);
+                          path = './product',
+                          function(x) XML::xmlAttrs(x)['name']);
     reactionList <- do.call(rbind.data.frame,
                             mapply(cbind,
                                    "substrateId" = substrateId,
@@ -72,7 +72,7 @@ getListReactionFromKGML <- function(pathwayId) {
                                    "reactionType" = reactionType,
                                    "reactionName" = reactionName));
 
-        return <- reactionList;
+    return <- reactionList;
 
 }
 
@@ -99,13 +99,13 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
     edgeListKo <- XML::xpathSApply(xmltop, "//entry[@type = 'gene']",
                                    function(x) (XML::xmlAttrs(x))['name']);
     edgeListReaction <- XML::xpathSApply(xmltop, "//entry[@type = 'gene']",
-                                   function(x) (XML::xmlAttrs(x))['reaction']);
+                                         function(x) (XML::xmlAttrs(x))['reaction']);
 
 
     edgeDF <- data.frame("reactionId" = as.vector(as.character(edgeListId)),
-                     "reactions" = as.vector(as.character(edgeListReaction)),
-                     "type" = as.vector("gene"),
-                     "ko" = as.vector(as.character(edgeListKo)));
+                         "reactions" = as.vector(as.character(edgeListReaction)),
+                         "type" = as.vector("gene"),
+                         "ko" = as.vector(as.character(edgeListKo)));
     return <- edgeDF;
 
 }
@@ -117,14 +117,14 @@ getKGMLRootNode <- function(pathwayId){
     #get the root of the KGML document
     pathFile <- toStringPathFile(pathwayId);
 
-     if(is.na(file.info(pathFile)$size)== FALSE){
-     xmlfile <- XML::xmlParse(pathFile);
-     xmltop <- XML::xmlRoot(xmlfile); #gives content of root
-          }else
-         xmltop = NULL;
+    if(is.na(file.info(pathFile)$size)== FALSE){
+        xmlfile <- XML::xmlParse(pathFile);
+        xmltop <- XML::xmlRoot(xmlfile); #gives content of root
+    }else
+        xmltop = NULL;
 
-#
-     return <- xmltop;
+    #
+    return <- xmltop;
 
 }
 
@@ -159,47 +159,40 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
                 if(type == "gene"){
                     tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
                     #print(tempName)
-                   # print(vectorOfKEGGIds[oldcount:count])
+                    # print(vectorOfKEGGIds[oldcount:count])
                 }else if(type == "metabolite"){
                     tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
-                   # print(tempName)
+                    # print(tempName)
                     #print(vectorOfKEGGIds[oldcount:count])
 
                 }
 
-            return <- tempName;
-
-          } )
-          names <- append(names,names1)
-        }
-      names <- do.call(rbind, names);
-    }else{
-            query <- KEGGREST::keggGet(vectorOfKEGGIds)
-            lenghtOfQuery <- length(query[])
-            names <- lapply(query[], function(x){
-                 # return the first name of list of genes
-
-                if(type == "gene"){
-                    tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
-                   # print(tempName)
-                   # print(vectorOfKEGGIds[oldcount:count])
-
-                }else if(type == "metabolite"){
-                    tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
-                   # print(tempName)
-                   # print(vectorOfKEGGIds[oldcount:count])
-                }
                 return <- tempName;
+
             } )
-            names <- do.call(rbind, names);
+            names <- append(names,names1)
+        }
+        names <- do.call(rbind, names);
+    }else{
+        query <- KEGGREST::keggGet(vectorOfKEGGIds)
+        lenghtOfQuery <- length(query[])
+        names <- lapply(query[], function(x){
+            # return the first name of list of genes
+
+            if(type == "gene"){
+                tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
+                # print(tempName)
+                # print(vectorOfKEGGIds[oldcount:count])
+
+            }else if(type == "metabolite"){
+                tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
+                # print(tempName)
+                # print(vectorOfKEGGIds[oldcount:count])
+            }
+            return <- tempName;
+        } )
+        names <- do.call(rbind, names);
     }
 
     return <- names;
 }
-
-
-
-
-
-
-

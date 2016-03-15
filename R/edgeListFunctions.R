@@ -1,5 +1,4 @@
 
-
 #'Function fractioning reaction list from every gene from KGML file
 #'
 #'

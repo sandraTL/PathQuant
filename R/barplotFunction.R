@@ -47,14 +47,17 @@ distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
     #' get frequency of every value until the maxVal found + Inf val
     frequenceDF <- data.frame(table(factor(shortestsPathsDF[,1],
                                             levels=c(0:maxVal,Inf))))
-
+    #' set column names of frequenceDF
     colnames(frequenceDF) <- c("Distance", "Freq")
 
+    #' get associations values for all distance pair calculated
     associationsMetaboDF <- getAssociationsDF(shortestsPathsDF,associatedMetabo)
 
+    #' bind info into 1 DF
     shortestsPathsDF <- cbind(shortestsPathsDF,
                               Associations = associationsMetaboDF);
 
+    #' Association of the distance where there is an association
     associationsfrequencyDF <- getFrequenceAssociationsDF(frequenceDF,
                                                           shortestsPathsDF,
                                                           gene1);
@@ -120,7 +123,6 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
     filename = paste0(geneCommonName,".png")
 
     ggplot2::ggsave(filename,width =10, height =7, dpi=300)
-    # print plot it could change to save the graph image somewhere
     print(plot);
 
 }

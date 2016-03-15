@@ -73,12 +73,6 @@ getCompoundNodeKgmlId <- function(g, compoundKeggId, nodeDF){
 
     listId <-grep(compoundKeggId, nodeDF$keggId)
 
-    #########################################################################
-    #########################################################################
-    ###                   PUT THIS IN Graph class                        ####
-    ###           ADD CONDITION FOR WHEN IS IN MULTIPLE NODES            ####
-    #########################################################################
-    #########################################################################
 
     if(length(listId) > 1 ){
 

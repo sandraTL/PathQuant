@@ -1,27 +1,16 @@
 
+# for supplement files...
 metabolitesInKEGGandInMap <- function(completeMetaboliteDF, mapId){
 
 
     allMetaboliteInKEGG <- getAllMetaboliteInKEGG();
     allMetaboliteInMap <- getAllMetaboliteInMap(mapId);
 
-    for(x in 1:length(completeMetaboliteDF[,1])){
-
-        p1 <- paste("^",completeMetaboDF[x,1],sep="")
-        p1 <- paste(p1,"$",sep="")
-
-
-
-
-
-
-
-    }
-
+     numberOfMetabolites(allMetaboliteInMap, shinAndAlDF[,2])
 
 }
 
-
+# for supplement files..
 genesInKEGGandInMap <- function(completeGeneDF, hsaId){
 
     allgeneInKEGG <- getAllHumanGeneInKEGG();
@@ -32,5 +21,12 @@ genesInKEGGandInMap <- function(completeGeneDF, hsaId){
         p1 <- paste(p1,"$",sep="")
 
     }
+
+}
+
+associationsInKegg <- function(associationDF){
+
+
+
 
 }

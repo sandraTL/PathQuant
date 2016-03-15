@@ -13,11 +13,15 @@ mergeRowsWithSmallestValueByKEGGId <- function(df){
 
         #find rows ID of this replicated element
         rowReplicat <- which(df$KEGGId == x)
+      #  print("dataframe 15")
+
         keggId <- data.frame(KEGGId = df$KEGGId);
 
-        df <- df[,-ncol(df)]
+       # print(df)
+        if(ncol(df) > 2){
+           # print("1")
+            df <- df[,-ncol(df)]
 
-        # row ID to be replaced with smallest value
         rowReplicatToReplace <- rowReplicat[1]
 
         # row to remove
@@ -25,18 +29,40 @@ mergeRowsWithSmallestValueByKEGGId <- function(df){
 
         # subset of rows with the replicated value
         rowReplicatSubDF <- df[rowReplicat,]
-
-        # sort all columns by ascending order
         rowReplicatSortedSubDF <- apply(rowReplicatSubDF,2,sort)
-        rowReplicatSortedSubDF <- data.frame(rowReplicatSortedSubDF);
+        rowMinValues <- rowReplicatSortedSubDF[1,]
+        }else{
+       # print("2")
+        df <- data.frame("pl" = df[,-ncol(df)])
+        rowReplicatToReplace <- rowReplicat[1]
+
+            # row to remove
+        rowReplicatToRemove <- rowReplicat[-1]
+            # subset of rows with the replicated value
+        rowReplicatSubDF <- data.frame("pl" = df[rowReplicat,])
+       # print("2_1")
+       # print(dim(rowReplicatSubDF))
+        rowReplicatSortedSubDF <- data.frame("pl"=
+                                rowReplicatSubDF[order(rowReplicatSubDF[,1]),])
+       # print("2_2")
+       # print(rowReplicatSortedSubDF)
+       # print("2_3")
+      #  print(rowReplicatSubDF)
+        rowMinValues <- rowReplicatSortedSubDF[1,]
+        }
+
+        # row ID to be replaced with smallest value
+
+        # sort all columns by ascending order (more than 1 column)
 
         # keep only the first row -> the one with smallest vlaues
-         rowMinValues <- rowReplicatSortedSubDF[1,]
+
 
         df[rowReplicatToReplace,] <- rowMinValues;
 
         df <- cbind(df, keggId)
         df <- df[-rowReplicatToRemove,]
+       # print(df)
 
      }
 
@@ -44,7 +70,7 @@ mergeRowsWithSmallestValueByKEGGId <- function(df){
 
 }
 
-merge2DFWithSmallestValue <- function(df1, df2)
+merge2DFWithSmallestValue <- function(df1, df2){
 
 for (row in 1:nrow(df)) {
     r <- mergeVectorsLowerValues(df1[row,], df2[row,]);
@@ -52,7 +78,7 @@ for (row in 1:nrow(df)) {
     finalDF <- rbind(finalDF,rf);
     return <- finalDF;
 }
-
+}
 removeDuplicatedColumnDF <- function(df){
 
 df[is.na(df)] <- Inf;

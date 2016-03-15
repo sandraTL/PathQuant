@@ -8,7 +8,6 @@
 #' @examples
 #' getPathwayKGML("hsa01100")
 
-
 getPathwayKGML <- function(pathwayId) {
 
     adressfile <- toStringAdressfile(pathwayId);
@@ -30,6 +29,7 @@ getPathwayKGML <- function(pathwayId) {
 return <-file;
 }
 
+#set path to store downloaded file
 toStringDestfile <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
     s1 <- "~/";
@@ -42,7 +42,7 @@ toStringDestfile <- function(pathwayId){
     return <- destfile;
 }
 
-
+#set path for download
 toStringAdressfile <- function(pathwayId){
 
     s1 <- "rest.kegg.jp/get/";
@@ -54,6 +54,7 @@ toStringAdressfile <- function(pathwayId){
     return <- adressfile;
 }
 
+# see if file was already dowloaded
 isFileInDirectory <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
 
@@ -72,6 +73,7 @@ isFileInDirectory <- function(pathwayId){
     return <- bool;
 }
 
+# set adress to download compound kgml file
 toCompoundAdressfile <- function(compoundKeggId){
 
     s1 <- "rest.kegg.jp/list/";
@@ -82,6 +84,7 @@ toCompoundAdressfile <- function(compoundKeggId){
     return <- adressfile;
 }
 
+# get list of all kinds metabolite in KEGG.
 getAllMetaboliteInKEGG <- function(){
 
 
@@ -92,6 +95,7 @@ getAllMetaboliteInKEGG <- function(){
     return <- metaboliteList;
 }
 
+# get list of all human genes in KEGG
 getAllHumanGeneInKEGG<- function(){
 
     geneList <- as.vector(names(KEGGREST::keggList("hsa")))
@@ -99,6 +103,7 @@ getAllHumanGeneInKEGG<- function(){
     return <- geneList;
 }
 
+# get a list of all metbolites on a specific map
 getAllMetaboliteInMap <- function(mapId){
 
     metaboliteList <- as.vector(KEGGREST::keggLink("cpd",mapId))
@@ -107,6 +112,7 @@ getAllMetaboliteInMap <- function(mapId){
     return <- metaboliteList;
 }
 
+# get list of all genes in a specific map
 getAllGeneInMap<- function(hsaId){
 
     geneList <- as.vector(KEGGREST::keggLink("genes",hsaId))

@@ -111,19 +111,23 @@ setMethod("allShortestPaths","Graph", function(object, associatedGeneMetaDF,
     ##### choose smallest values for each metabolites ######
     # adding column with metaboliteKEGGId
     output <- cbind(output, KEGGId = c(metaboliteVector));
-
+   # print("graph 114")
+   # print(output)
     output <- mergeRowsWithSmallestValueByKEGGId(output)
-
+   # print(output)
     finalColNames <- output$KEGGId;
     output <- output[-ncol(output)]
 
     # transposing output to do the same with genes
     output <- data.frame(t(output))
     rownames(output) <- c(1:nrow(output))
-
+   # print("graph 124")
+   # print(output)
+   # print(repeatedGeneVector)
     ##### choose smallest values for each genes ######
     # adding column with geneKEGGId
     output <- cbind(output, KEGGId = c(repeatedGeneVector));
+   # print(output)
     output <-mergeRowsWithSmallestValueByKEGGId(output)
 
 
@@ -723,6 +727,7 @@ getDistanceAll <- function(pathwayId, associatedGeneMetaDF,
         }else{
             #graph creation
             graphe <-  createGraphFromPathway(pathwayId);
+
             finalDF <- getFinalDFSHortestDistance(graphe, associatedGeneMetaDF,
                                                   completeMetaboliteDF );
 
@@ -783,6 +788,18 @@ setMethod("getFinalDFSHortestDistance", "Graph", function(object,
     idM <- getIdMetabolitesInGraph(object, completeMetaboliteDF)
     idM <- na.omit(idM)
 
+    if(length(idMg) == 0){
+
+        stop("Sorry no gene of your entry data are on the selected map, thus
+              no distance was calculated", call. = FALSE)
+
+    }
+    if(length(idM) == 0){
+
+        stop("Sorry no metabolites of your entry data are on the selected map, thus
+              no distance was calculated", call. = FALSE)
+    }
+
     #' get all shortest paths for both ends of gene to all metabolites
     r <- allShortestPaths(object, idMg  , idM);
 
@@ -825,7 +842,7 @@ setMethod("getIdGeneInGraph", "Graph", function(object,
     #########################################################################
     # print("getIdGeneInGraph")
 
-    # print(associatedGeneMetaDF)
+
     f <- apply(associatedGeneMetaDF,1, function(x){
 
         # ' get both metabolites id from Graph related to the gene of data
@@ -835,11 +852,13 @@ setMethod("getIdGeneInGraph", "Graph", function(object,
 
     f <- do.call(rbind, f)
 
+    if(!is.null(f)){
 
     f <- f[, c(1,indexMetabolite+1)]
 
     f <- f[rowSums(is.na(f)) != 1,] # delete rows with 2 NA or more
     colnames(f) <- c("geneKEGGId","geneGraphId ") #set colnames
+    }
     return <- f;
 
 })

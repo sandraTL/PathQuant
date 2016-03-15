@@ -13,6 +13,24 @@
 
 heatmapFunction <- function(pathwayId, data){
 
+
+    if(length(data) == 0){
+        stop("Sorry your data is empty, please enter you data
+             where colnames(df) <- c(gene,metabolite)frame with
+             KEGG id of gene (ex : hsa:00001) in first
+             column and associated KEGG id metabolite (ex: C00001)
+             in second column", call. = FALSE);
+    }
+    if(!is.data.frame(data) || length(data[1,])< 2 ||
+       length(data[1,])> 3){
+        stop("Sorry your data is empty, please enter you data
+             where colnames(df) <- c(gene,metabolite)frame with
+             KEGG id of gene (ex : hsa:00001) in first
+             column and associated KEGG id metabolite (ex: C00001)
+             in second column", call. = FALSE);
+
+    }
+
     graphe <-  createGraphFromPathway(pathwayId);
     rGeneList<-numberOfReactions(graphe@edgeDF,data[,1])
     rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, data[,2])
@@ -23,9 +41,15 @@ heatmapFunction <- function(pathwayId, data){
 
     tempDf1 <- removeNotInGraph(tempDf1)
 
+    if(nrow(tempDf1) == 0 ){
+        stop("Sorry, for each pairs of gene/metabolite entered, either the gene
+             or the metabolite or both weren't mapped on the selected pathway.
+             Thus, no distance was calculated", call. = FALSE)
+    }
     data <- subset(tempDf1[,c(1,3)])
 
     data1 <- data.frame(c(data[2]))
+
     AllSP <- getDistanceAll(pathwayId, data, data1);
 
     geneCommonName <- getCommonNames(as.vector(unlist(rownames(AllSP))), "gene")
@@ -71,9 +95,9 @@ heatmapFunction <- function(pathwayId, data){
         ggplot2::xlab("Genes")+
         ggplot2::ylab("Metabolites")+
         ggplot2::geom_rect(data=frames, size=1, fill=NA, colour="black",
-    ggplot2::aes(xmin=Row-0.5, xmax=Row+0.5, ymin=Col-0.5, ymax=Col + 0.5)) +
+        ggplot2::aes(xmin=Row-0.5, xmax=Row+0.5, ymin=Col-0.5, ymax=Col + 0.5))+
         ggplot2::geom_text(label = as.numeric(dat$Distance, 1),
-    size =2, family="Arial",ggplot2::aes(x = Row, y = Col)) +
+    size = 2, family="Arial",ggplot2::aes(x = Row, y = Col)) +
 
 
 
