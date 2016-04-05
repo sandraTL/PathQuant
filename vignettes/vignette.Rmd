@@ -80,26 +80,6 @@ df1 <- getDistanceAll(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF
 df1[1:5,]
 ```
 
-###heatmapAsso Function 
-This function calculates Distance between every gene in a associations 
-to every metabolites in an associations. Thus, the purpose of the function is to
-provide a rapid insight of the difference of the distance between associated or 
-not gene/metabolite pairs. If a distance is Inf, it means both gene and metabolite 
-are on the selected map but no path exist between them.
-
-####Arguments : 
-    pathwayId: is the KEGG Id of the selected map
-    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
-                            reprensents an associations with the first column as
-                            gene KEGG Ids and the sencond column as metabolite
-                            KEGG Ids.
-
-
-```{r, fig.width=7, fig.height=4}
-
-heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
-
-```
 
 ###distanceGeneToAllMetabolite Function
 This function calculates the distance between 1 gene and
@@ -117,12 +97,39 @@ associated metabolite was found at this distance of the gene.
                            all measured metabolites.
     gene : KEGG ID of the selected gene used to calculates all distances from.
 
-```{r, fig.width=7,fig.height=4 }
+```{r, fig.width=7,fig.height=4}
 
-distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:1373")
-distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:27165")
+distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:1373")
+distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:27165")
+
 
 ```
+
+###heatmapAsso Function 
+This function calculates the distance between every gene in a associations 
+to every metabolites in an associations. Thus, the purpose of the function is to
+provide a rapid insight of the difference of the distance between associated or 
+not gene/metabolite pairs. If a distance is Inf, it means both gene and metabolite 
+are on the selected map but no path exist between them.
+
+####Arguments : 
+    pathwayId: is the KEGG Id of the selected map
+    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column as
+                            gene KEGG Ids and the sencond column as metabolite
+                            KEGG Ids.
+
+```{r, fig.width=7,fig.height=4}
+heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
+
+
+```
+```{r}
+
+
+
+```
+
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
