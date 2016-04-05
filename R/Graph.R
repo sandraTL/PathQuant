@@ -256,6 +256,9 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' @export
 #' @examples getDistanceAsso(pathwayId, data, ouput)
 getDistanceAsso <- function(pathwayId, associatedGeneMetaDF, ordered = FALSE){
+
+    pathwayId <- gsub("hsa:", "hsa", pathwayId)
+
     #################################################################
     ################  test input parameters  ########################
     mError <- "error in associatedGeneMetaDF,
@@ -828,6 +831,7 @@ mergeVectorsLowerValues <- function(A,B) {
 getDistanceAll <- function(pathwayId, associatedGeneMetaDF,
                            completeMetaboliteDF){
 
+    pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <- "error in completeMetaboliteDF, please input a dataframe of 1 column
     with a list of KEGG ids metabolites (ex: C00001)"
 

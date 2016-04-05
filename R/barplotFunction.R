@@ -16,7 +16,7 @@
 
 distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
                             completeMetaboliteDF, gene){
-
+    pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"error in completeMetaboliteDF, please input a dataframe of 1
     column with a list of KEGG ids metabolites (ex: C00001)"
 
@@ -110,6 +110,7 @@ distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
 }
 
 barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
+
 
     # initiating variable for barplotGraph
     geneCommonName <- getCommonNames(c(gene), "gene")

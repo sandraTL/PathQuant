@@ -12,7 +12,7 @@
 #' @examples heatmapAsso(hsa01100, data)
 
 heatmapAsso <- function(pathwayId, associatedGeneMetaDF){
-
+    pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"Error in input associatedGeneMetaboDF, please enter you data
              where colnames(df) <- c(gene,metabolite) frame with
              KEGG ids of genes (ex : hsa:00001) in first

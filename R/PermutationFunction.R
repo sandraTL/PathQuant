@@ -15,7 +15,7 @@
 permutationTest <-
     function(pathwayId,data,geneMeasured,metaboliteMeasured,
              permutation,output = c("medians","pvalue","histogram")) {
-
+        pathwayId <- gsub("hsa:", "hsa", pathwayId)
         geneMeasured <- c(t(geneMeasured))
         metaboliteMeasured <- c(t(metaboliteMeasured))
 
