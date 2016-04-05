@@ -255,39 +255,48 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' @keywords KEGG
 #' @export
 #' @examples getDistanceAsso(pathwayId, data, ouput)
-getDistanceAsso <- function(pathwayId, data, ordered = FALSE,
-                            output = c("xslx","data.frame")){
+getDistanceAsso <- function(pathwayId, associatedGeneMetaDF, ordered = FALSE){
+    #################################################################
+    ################  test input parameters  ########################
+    mError <- "error in associatedGeneMetaDF,
+    where colnames(df) <- c(gene,metabolite) frame with
+    KEGG ids of genes (ex : hsa:00001) in first
+    column and associated KEGG ids metabolites (ex: C00001)
+    in second column"
 
-    #if the xml file was already dowmloaded
     if(isFileInDirectory(pathwayId) == FALSE){
-
         file <-  getPathwayKGML(pathwayId)
-        # op <- options(warn=2)
-        #        file <- tryCatch(getPathwayKGML(pathwayId),error=function(e) e,
-        #                       warning=function(w) w)
-
-        #        if(is(file,"warning")){
-        #            if(file[1]$message == "download had nonzero exit status"){
-        #            stop("pathway doesn't exist in KEGG database",call. = FALSE )
-        #            }
-        #        }
-
     }
+    if(is.data.frame(associatedGeneMetaDF) && nrow(associatedGeneMetaDF)==0){
+      stop(mError,call. = FALSE )
+    }
+    if(is.data.frame(associatedGeneMetaDF) &&
+       !ncol(associatedGeneMetaDF) == 2){
+        stop(mError,call. = FALSE )
+    }
+    for(row in 1:nrow(associatedGeneMetaDF)){
 
+        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+            stop(mError, call. = FALSE);
+        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
+           && length(associatedGeneMetaDF[row,2]) != 5)
+            stop(mError, call. = FALSE);
+    }
+    #################################################################
+    #################################################################
 
 
     finalDF <- data.frame();
-
     #graph creation
-
     if(!exists("graphe")){
-
     graphe <-  createGraphFromPathway(pathwayId);
     }
 
 
+
+
     #modify function calculate distance directly for association
-    finalDF <- getFinalAssoDfSd(graphe, data);
+    finalDF <- getFinalAssoDfSd(graphe, associatedGeneMetaDF);
 
 
     #print("changeDFassosToRigthDistances")
@@ -323,33 +332,133 @@ getDistanceAsso <- function(pathwayId, data, ordered = FALSE,
 
 
 #Adding common names for genes and emtabolites
-#     geneCommonName <- getCommonNames(as.vector(unlist(finalDF[,1])), "gene")
-#     geneCommonName <- as.vector(unlist(geneCommonName))
+     geneCommonName <- getCommonNames(as.vector(unlist(finalDF[,1])), "gene")
+     geneCommonName <- as.vector(unlist(geneCommonName))
 #
-#     metaboliteCommonName <- getCommonNames(as.vector(unlist(finalDF[,3])),
-#                                            "metabolite")
-#     metaboliteCommonName <- as.vector(unlist(metaboliteCommonName))
+     metaboliteCommonName <- getCommonNames(as.vector(unlist(finalDF[,3])),
+                                            "metabolite")
+     metaboliteCommonName <- as.vector(unlist(metaboliteCommonName))
 
-#     finalDF1 <- data.frame("geneCommonName" = geneCommonName,
-#                            "geneKEGGId" = finalDF[,1],
+     finalDF1 <- data.frame("geneCommonName" = geneCommonName,
+                            "geneKEGGId" = finalDF[,1],
+                            "isGeneInMap" = finalDF[,2],
+                            "metaboliteCommonName" = metaboliteCommonName,
+                            "metaboliteKEGGId" = finalDF[,3],
+                            "isMetaboliteInMap" = finalDF[,4],
+                            "distance" = finalDF[,5]);
+#
+#     ##permutation use
+#     finalDF1 <- data.frame("geneKEGGId" = finalDF[,1],
 #                            "isGeneInMap" = finalDF[,2],
-#                            "metaboliteCommonName" = metaboliteCommonName,
 #                            "metaboliteKEGGId" = finalDF[,3],
 #                            "isMetaboliteInMap" = finalDF[,4],
-#                            "distance" = finalDF[,5]);
-
-    ##permutation use
-    finalDF1 <- data.frame("geneKEGGId" = finalDF[,1],
-                           "isGeneInMap" = finalDF[,2],
-                           "metaboliteKEGGId" = finalDF[,3],
-                           "isMetaboliteInMap" = finalDF[,4],
-                           "distance" = finalDF[,5]);  # return <- finalDF1;
-    #     write.table(finalDF1, file = "AssociatedDataDistance.txt",sep="\t"
-    #                 ,row.names=FALSE);
-    if(output == "xslx"){assoDataXlsx(finalDF1)}
-    else if(output == "data.frame"){return <- finalDF1;}
+#                            "distance" = finalDF[,5]);  # return <- finalDF1;
+#     #     write.table(finalDF1, file = "AssociatedDataDistance.txt",sep="\t"
+#     #                 ,row.names=FALSE);
+#     if(output == "xslx"){assoDataXlsx(finalDF1)}
+#     else if(output == "data.frame"){return <- finalDF1;}
 
 }
+
+
+
+#' Fonction that calculates distance between each gene-metabolite pairs.
+#'
+#' The igrpah created to simulate the KEGG pathways as metabolties as nodes
+#' and genes (related gene enzymes and reaction) as egdes.
+#'
+#' The shortest distance is taking from calculation from both vertices related
+#' to a gene to the metabolites of interest.
+#'
+#' for param data:
+#'      gene = KEGGid of gene hsa:...
+#'      metabolites : KEGGid of metabolites C....
+#' for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
+#'
+#' @param data(gene, metabolites )
+#' @keywords KEGG
+#' @examples getDistanceAsso(pathwayId, data, ouput)
+getDistanceAssoPerm <- function(pathwayId, associatedGeneMetaDF, ordered = FALSE){
+    #################################################################
+    ################  test input parameters  ########################
+    mError <- "error in associatedGeneMetaDF,
+    where colnames(df) <- c(gene,metabolite) frame with
+    KEGG ids of genes (ex : hsa:00001) in first
+    column and associated KEGG ids metabolites (ex: C00001)
+    in second column"
+
+    if(isFileInDirectory(pathwayId) == FALSE){
+        file <-  getPathwayKGML(pathwayId)
+    }
+    if(is.data.frame(associatedGeneMetaDF) && nrow(associatedGeneMetaDF)==0){
+        stop(mError,call. = FALSE )
+    }
+    if(is.data.frame(associatedGeneMetaDF) &&
+       !ncol(associatedGeneMetaDF) == 2){
+        stop(mError,call. = FALSE )
+    }
+    for(row in 1:nrow(associatedGeneMetaDF)){
+
+        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+            stop(mError, call. = FALSE);
+        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
+           && length(associatedGeneMetaDF[row,2]) != 5)
+            stop(mError, call. = FALSE);
+    }
+    #################################################################
+    #################################################################
+
+
+    finalDF <- data.frame();
+    #graph creation
+    if(!exists("graphe")){
+        graphe <-  createGraphFromPathway(pathwayId);
+    }
+
+
+
+
+    #modify function calculate distance directly for association
+    finalDF <- getFinalAssoDfSd(graphe, associatedGeneMetaDF);
+
+
+    #print("changeDFassosToRigthDistances")
+    #Change Na in finalDF to Inf value
+    finalDF <- changeDFassoToRigthDistances(finalDF);
+
+    # order result by increasing distances
+    finalDF$distance[is.na(finalDF$distance)] <- NaN;
+
+
+
+    if(ordered == TRUE){
+        finalDF <- finalDF[ order(finalDF[,7]), ]
+    }
+
+
+    # Remove rows with distance between same gene and metbolites choosing
+    # the smallest distance.
+    finalDF <- removeRowsDistanceAsso(finalDF)
+
+    rowNumbers <- 1:length(finalDF[,1])
+    row.names(finalDF) <- row.names(1:length(finalDF[,1]))
+    finalDF <- subset(finalDF, , c(2,3,5,6,7))
+
+
+        ##permutation use
+        finalDF1 <- data.frame("geneKEGGId" = finalDF[,1],
+                               "isGeneInMap" = finalDF[,2],
+                               "metaboliteKEGGId" = finalDF[,3],
+                               "isMetaboliteInMap" = finalDF[,4],
+                               "distance" = finalDF[,5]);  # return <- finalDF1;
+        #     write.table(finalDF1, file = "AssociatedDataDistance.txt",sep="\t"
+        #                 ,row.names=FALSE);
+    #     if(output == "xslx"){assoDataXlsx(finalDF1)}
+    #     else if(output == "data.frame"){return <- finalDF1;}
+
+}
+
+
 
 changeDFassoToRigthDistances <- function(associatedShortestPathsDF){
 
@@ -488,15 +597,31 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
     #########################################################################
     #####  Add condition to insure indexMetabolite can only be 1 or 2   #####
     #########################################################################
+    testDataDF <- apply(data,1,function(x){
+        if(substr(x[1],0,4) != "hsa:"){
+
+            stop("genes are not all valide KEGGId's",call. = FALSE )
+        }
+
+
+        if(substr(x[2],0,1) != "C" && length(x[2]) != 6){
+
+            stop("metabolites are not all valide KEGGId's",call. = FALSE )
+        }
+
+    })
+
 
     completeAssoDF <- data.frame();
     f <- apply(data,1, function(x){
         #  print("fromAssosDFEntryToIGraphIdDF---------1")
+
         # ' get both metabolites id from Graph related to the gene of data
         m1 <- getHeadTailKgmlIdOfEdge(object@graph , x[1], object@edgeDF);
 
         # print("fromAssosDFEntryToIGraphIdDF---------2")
-        # ' get metabolites id from Graph of data
+
+         # ' get metabolites id from Graph of dat
         m2 <- getCompoundNodeKgmlId(object@graph, x[2], object@nodeDF);
 
         temp <- x;
@@ -703,28 +828,57 @@ mergeVectorsLowerValues <- function(A,B) {
 getDistanceAll <- function(pathwayId, associatedGeneMetaDF,
                            completeMetaboliteDF){
 
+    mError1 <- "error in completeMetaboliteDF, please input a dataframe of 1 column
+    with a list of KEGG ids metabolites (ex: C00001)"
+
+    mError2 <- "error in associatedGeneMetaDF,
+             where colnames(df) <- c(gene,metabolite) frame with
+             KEGG ids of genes (ex : hsa:00001) in first
+             column and associated KEGG ids metabolites (ex: C00001)
+             in second column"
+
+
 
     finalDF <- data.frame();
-    #if the xml file was already dowmloaded
+
+
     # look when it was downloaded if it has been to long redownload
     if(isFileInDirectory(pathwayId) == FALSE){
-
         getPathwayKGML(pathwayId);
     }
 
-    if(!is.data.frame(associatedGeneMetaDF) || length(associatedGeneMetaDF[1,])< 2 ||
+    #test completeMetaboliteDF
+    if(is.data.frame(completeMetaboDF) && nrow(completeMetaboliteDF) == 0){
+        stop(mError1, call. = FALSE);
+    }
+    #test associatedGeneMetaDF
+    if(!is.data.frame(associatedGeneMetaDF) ||
+       length(associatedGeneMetaDF[1,])< 2 ||
        length(associatedGeneMetaDF[1,])> 3){
-        e <- simpleError("dataframe dimension is wrong, please enter you data
-                         where colnames(df) <- c(gene,metabolite)frame with
-                         KEGG id of gene (ex : hsa:00001) in first
-                         column and associated KEGG id metabolite (ex: C00001)
-                         in second column")
-        tryCatch(stop(e), finally = print("please try again"))
 
-    }else{
-        if(is.null(getKGMLRootNode(pathwayId))){
-            print("path you entered do not exist, enter valid hsa number without :");
-        }else{
+        stop(mError2, call. = FALSE)
+    }
+
+    for(row in 1:nrow(completeMetaboliteDF)){
+
+        if(substr(completeMetaboliteDF[row,1],0,1) != "C"
+           && length(associatedGeneMetaDF[row,1]) != 5)
+            stop(mError1, call. = FALSE);
+
+    }
+
+
+    for(row in 1:nrow(associatedGeneMetaDF)){
+
+        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+            stop(mError2, call. = FALSE);
+        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
+           && length(associatedGeneMetaDF[row,2]) != 5)
+            stop(mError2, call. = FALSE);
+        }
+
+
+
             #graph creation
             graphe <-  createGraphFromPathway(pathwayId);
 
@@ -732,8 +886,7 @@ getDistanceAll <- function(pathwayId, associatedGeneMetaDF,
                                                   completeMetaboliteDF );
 
             return <- finalDF;
-        }
-    }
+
 
 }
 

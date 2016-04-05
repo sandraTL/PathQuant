@@ -11,40 +11,46 @@
 #' @export
 #' @examples heatmapFunction(hsa01100, data)
 
-heatmapFunction <- function(pathwayId, data){
+heatmapFunction <- function(pathwayId, associatedGeneMetaDF){
 
+    mError1 <-"Error in input associatedGeneMetaboDF, please enter you data
+             where colnames(df) <- c(gene,metabolite) frame with
+             KEGG ids of genes (ex : hsa:00001) in first
+             column and associated KEGG ids metabolites (ex: C00001)
+             in second column"
+    mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
+             or the metabolite or both weren't mapped on the selected pathway.
+             Thus, no distance was calculated"
 
-    if(length(data) == 0){
-        stop("Sorry your data is empty, please enter you data
-             where colnames(df) <- c(gene,metabolite)frame with
-             KEGG id of gene (ex : hsa:00001) in first
-             column and associated KEGG id metabolite (ex: C00001)
-             in second column", call. = FALSE);
+    if(length(associatedGeneMetaDF) == 0){
+        stop(mError1, call. = FALSE);
     }
-    if(!is.data.frame(data) || length(data[1,])< 2 ||
-       length(data[1,])> 3){
-        stop("Sorry your data is empty, please enter you data
-             where colnames(df) <- c(gene,metabolite)frame with
-             KEGG id of gene (ex : hsa:00001) in first
-             column and associated KEGG id metabolite (ex: C00001)
-             in second column", call. = FALSE);
+    if(!is.data.frame(associatedGeneMetaDF) ||
+       length(associatedGeneMetaDF[1,])< 2 ||
+       length(associatedGeneMetaDF[1,])> 3){
+        stop(mError1, call. = FALSE);
+    }
+    for(row in 1:nrow(associatedGeneMetaDF)){
 
+        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+            stop(mError1, call. = FALSE);
+        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
+           && length(associatedGeneMetaDF[row,2]) != 5)
+            stop(mError1, call. = FALSE);
     }
 
     graphe <-  createGraphFromPathway(pathwayId);
-    rGeneList<-numberOfReactions(graphe@edgeDF,data[,1])
-    rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, data[,2])
-    tempDf1 <- data.frame(cbind(g1 = as.vector(data[,1]),
+    rGeneList<-numberOfReactions(graphe@edgeDF,associatedGeneMetaDF[,1])
+    rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, associatedGeneMetaDF[,2])
+    tempDf1 <- data.frame(cbind(g1 = as.vector(associatedGeneMetaDF[,1]),
                                 g2 = as.vector(as.numeric(rGeneList)),
-                                m1 = as.vector(data[,2]),
+                                m1 = as.vector(associatedGeneMetaDF[,2]),
                                 m2 = as.vector(as.numeric(rMetaboliteList))))
 
     tempDf1 <- removeNotInGraph(tempDf1)
 
     if(nrow(tempDf1) == 0 ){
-        stop("Sorry, for each pairs of gene/metabolite entered, either the gene
-             or the metabolite or both weren't mapped on the selected pathway.
-             Thus, no distance was calculated", call. = FALSE)
+        stop(mError2, call. = FALSE)
     }
     data <- subset(tempDf1[,c(1,3)])
 

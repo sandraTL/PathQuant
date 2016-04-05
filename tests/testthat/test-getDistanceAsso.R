@@ -1,15 +1,21 @@
 
 context("test-getDistanceAsso")
 
-#Small exemple of associated data.frame entry
-# testWrigthInputDF = data.frame("genes" = as.vector(c("hsa:5105","hsa:47")),
-#                                "metabolites"= as.vector(c("C00042","C00036")));
 
+
+emptyDF = data.frame();
+
+oneColDF <- data.frame("gene" = c("aa","sdd","saaa"))
+twoColWrongDF <- data.frame("gene" = c("aa","hsa:1579","saaa"),
+                            "metabo" = c("a","C19615","a"))
+twoColWrongDF1 <- data.frame("gene" = c("hsa:3711","hsa:1579","hsa:34"),
+                             "metabo" = c("a","C19615","a"))
+twoColWrongDF2 <- data.frame("gene" = c("aa","hsa:1579","saaa"),
+                             "metabo" = c("C00001","C19615","C05271"))
 testWrigthInputDF = data.frame("genes" = as.vector(c("hsa:1579","hsa:34")),
                                "metabolites"= as.vector(c("C19615","C05271")));
 
-#Expected output of getDistanceAsso("hsa01100", testWrightInputDF, F,
-#                                                     output= "data.frame")
+
 testWrigthOutputDF = data.frame(
                         "geneCommonName" = c("CYP4A11","ACADM"),
                         "geneKEGGId" = c("hsa:1579","hsa:34"),
@@ -23,43 +29,29 @@ testWrigthOutputDF = data.frame(
 
 test_that("getDistanceAsso", {
 
-    # Normal Output
-   # output <- getDistanceAsso("hsa01100",testWrigthInputDF, F,"data.frame")
-   # print(output)
 
-    #test if output is a data.frame
-   # expect_that( output, is_a("data.frame"))
+    #input an non existant pathway
+    expect_error(getDistanceAsso("hsa0110",testWrigthInputDF, F))
 
-    # test expected output values of the function
- #  expect_equivalent(output, testWrigthOutputDF)
-    #test length of each columns and type of data in each column
-#     expect_equal(length(output[,1]), nrow(testWrigthInputDF))
-#     expect_that( output[,1], is_a("factor"))
-#
-#     expect_equal(length(output[,2]), nrow(testWrigthInputDF))
-#     expect_that( output[,2], is_a("factor"))
-#
-#     expect_equal(length(output[,3]), nrow(testWrigthInputDF))
-#     expect_that( output[,3], is_a("logical"))
+    #input an empty associatedGeneMetaboDF
+    expect_error(getDistanceAsso("hsa01100",emptyDF, F))
 
-#     expect_equal(length(output[,4]), nrow(testWrigthInputDF))
-#     expect_that( output[,4], is_a("factor"))
-#
-#     expect_equal(length(output[,5]), nrow(testWrigthInputDF))
-#     expect_that( output[,5], is_a("factor"))
-#
-#     expect_equal(length(output[,6]), nrow(testWrigthInputDF))
-#     expect_that( output[,6], is_a("logical"))
-#
-#     expect_equal(length(output[,7]), nrow(testWrigthInputDF))
-#     expect_that( output[,7], is_a("numeric"))
-#     #test if all distance is < 0 including Inf values
-#     expect_that( all(output[,7] >= 0), is_true())
+    #test expected good output
+    expect_equivalent(getDistanceAsso("hsa01100",testWrigthInputDF, F),
+                      testWrigthOutputDF)
 
-    # Pathway not in database
+    expect_equivalent(getDistanceAsso("hsa01100",testWrigthInputDF),
+                      testWrigthOutputDF)
 
-#     expect_error(getDistanceAsso("hsa0110",testWrigthInputDF, F,"data.frame")
-#                  ,"pathway doesn't exist in KEGG database", fixed=T)
+    #test associatedGeneMetaDF wrong values as Input
+    expect_error(getDistanceAsso("hsa01100",twoColWrongDF, F))
+
+    expect_error(getDistanceAsso("hsa01100",twoColWrongD1, F))
+
+    expect_error(getDistanceAsso("hsa01100",twoColWrongDF2, F))
+
+
+
 
 })
 

@@ -201,8 +201,8 @@ permutationFunction <-
 
             if (k == 1) {
                 distPermutated <-
-                    getDistanceAsso(pathwayId,
-                                    permutatedData,F,"data.frame")[,c(1,3,5)]
+                    getDistanceAssoPerm(pathwayId,
+                                    permutatedData,F)[,c(1,3,5)]
                 count <- c(rep(1, length(distPermutated[,1])))
                 distPermutated <- cbind(distPermutated, "count" = count)
 
@@ -278,8 +278,8 @@ permutationFunction <-
 
                 if (nrow(permutatedData) > 0) {
                     distkPermutated <-
-                        getDistanceAsso(pathwayId,
-                         permutatedData,F,"data.frame")[,c(1,3,5)]
+                        getDistanceAssoPerm(pathwayId,
+                         permutatedData,F)[,c(1,3,5)]
                     count <- c(rep(1, length(distkPermutated[,1])))
                     distkPermutated <- cbind(distkPermutated,"count" = count)
                     distPermutated <-
@@ -301,7 +301,7 @@ permutationFunction <-
         #print(distPermutated)
 
         distAssociated <-
-            getDistanceAsso(pathwayId,data,F, "data.frame")
+            getDistanceAssoPerm(pathwayId,data,F)
 
         medianAssociated <- median(distAssociated$distance)
 

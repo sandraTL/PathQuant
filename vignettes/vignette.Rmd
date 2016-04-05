@@ -1,0 +1,66 @@
+---
+title: "PathQuant vignette"
+author: "Sandra Therrien-Laperrière"
+date: "4 avril 2016"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+##Description  
+
+PathQuant aims to help quantify associations between Genomic and 
+Metabolomic Data. To do so, PathQuanr calculates distance in terms od reactions 
+between Genes and Metabolites mapped on KEGG's metabolic pathway maps.
+
+
+
+## Vignette Info
+
+Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+
+
+
+    output: 
+      rmarkdown::html_vignette:
+        css: mystyles.css
+
+## Fonctions
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.width=7, fig.height=4}
+library("PathQuant")
+
+heatmapFunction(metabolismOverviewMapKEGGId, shinAndAlDF)
+
+```
+
+
+```{r, fig.width=7,fig.height=4 }
+
+distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:1373")
+distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:27165")
+
+```
+```{r, size=12}
+
+ASP <- getDistanceAsso("hsa01100", shinAndAlDF, F)
+ASP[1:10,]
+
+ASP1 <- getDistanceAll("hsa01100", shinAndAlDF, completeMetaboDF)
+ASP1[1:10,]
+```
+
+
+
+
+
+
+
+
+
+
+

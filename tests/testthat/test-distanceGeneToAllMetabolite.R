@@ -2,44 +2,50 @@
 context("test-distanceGeneToAllMetabolite")
 
 #used variables for tests
-notExistingKeggPathway <- "hsa:001110"
-existingKeggPathway <- "hsa:01100"
+notExistingKeggPathway <- "hsa001110"
+existingKeggPathway <- "hsa01100"
 notExistingKeggGene <- "hsa:2716545"
-existingKeggGene <- "hsa:27165"
+existingKeggGene <- "hsa:1579"
 
 emptyDF <- data.frame();
 oneColDF <- data.frame("gene" = c("aa","sdd","saaa"))
-twoColWrongDF <- data.frame("gene" = c("aa","dd","saaa"),
-                            "metabo" = c("a","a","a"))
-AssoDataGoodDF <- data.frame("gene" = as.vector(c("hsa:1579","hsa:34")),
+
+twoColWrongDF <- data.frame("gene" = c("aa","hsa:1579","saaa"),
+                            "metabo" = c("a","C19615","a"))
+twoColWrongDF1 <- data.frame("gene" = c("hsa:3711","hsa:1579","hsa:34"),
+                             "metabo" = c("a","C19615","a"))
+twoColWrongDF2 <- data.frame("gene" = c("aa","hsa:1579","saaa"),
+                             "metabo" = c("C00001","C19615","C05271"))
+
+assoDataGoodDF <- data.frame("gene" = as.vector(c("hsa:1579","hsa:34")),
                             "metabolite"= as.vector(c("C19615","C05271")));
-MetaboGoodDF <- data.frame("metbaolite" = c("C19615","C05271"))
+metaboGoodDF <- data.frame("metbaolite" = c("C19615","C05271"))
 
 
-test_that("getPathwayKGML", {
+test_that("distanceGeneToAllMetabolite", {
+
+    #test pathwayID
+    expect_error(distanceGeneToAllMetabolite(notExistingKeggPathway,
+                 assoDataGoodDF, metaboGoodDF,existingKeggGene))
+
+    #test associatedGeneMetaDF
+    expect_error(distanceGeneToAllMetabolite(existingKeggPathway,
+                 twoColWrongDF, metaboGoodDF,existingKeggGene))
+
+    expect_error(distanceGeneToAllMetabolite(existingKeggPathway,
+                 twoColWrongDF1, metaboGoodDF,existingKeggGene))
+    expect_error(distanceGeneToAllMetabolite(existingKeggPathway,
+                 twoColWrongDF2, metaboGoodDF,existingKeggGene))
+
+    #test completeMetaboDF
+    expect_error(distanceGeneToAllMetabolite(existingKeggPathway,
+                 assoDataGoodDF, oneColDF,existingKeggGene))
+
+    # test if gene is in associatedGeneMetaDF
+    expect_error(distanceGeneToAllMetabolite(existingKeggPathway,
+                assoDataGoodDF, metaboGoodDF,notExistingKeggGene))
 
 
-
-#    arg1 <-  getPathwayKGML(existingKeggPathway)
-#      expect_error(arg1)
-
-#   testArg1<-distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                 AssoDataGoodDF, MetaboGoodDF,existingKeggGene)
-#   testArg2 <- distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                            emptyDF,MetaboGoodDF,existingKeggGene)
-#   testArg2_1 <- distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                           oneColDF,MetaboGoodDF,existingKeggGene)
-#   testArg2_2 <- distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                          twoColWrongDF,MetaboGoodDF,existingKeggGene)
-#   testArg3 <- distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                         AssoDataGoodDF, MetaboGoodDF,existingKeggGene)
-#
-#   print(distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                                     AssoDataGoodDF, MetaboGoodDF,existingKeggGene))
-#   expect_error(distanceGeneToAllMetabolite(notExistingKeggPathway,
-#                         AssoDataGoodDF, MetaboGoodDF,existingKeggGene))
- # expect_equal(testArg1,1)
-  ## to come testArg4
 })
 
 test_that("barplotFunctionGeneToAllMetabo",{

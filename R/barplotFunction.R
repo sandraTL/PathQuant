@@ -17,13 +17,51 @@
 distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
                             completeMetaboliteDF, gene){
 
-    # argument test
+    mError1 <-"error in completeMetaboliteDF, please input a dataframe of 1
+    column with a list of KEGG ids metabolites (ex: C00001)"
+
+    mError2 <-"error in associatedGeneMetaDF,
+    where colnames(df) <- c(gene,metabolite) frame with
+    KEGG ids of genes (ex : hsa:00001) in first
+    column and associated KEGG ids metabolites (ex: C00001)
+    in second column"
+
+    mError3 <- "error in argument gene, the gene entered doesn't match any
+                gene in associatedGeneMetaDF"
+
+
+    #test associatedGeneMetaDF
     if(is.data.frame(completeMetaboliteDF) && nrow(completeMetaboliteDF)==0){
-        e <- simpleError("completeMetaboliteDF dataframe is empty, please
-                         enter your data as one column data.frame")
-        tryCatch(stop(e), finally = print("please try again"))
+        stop(mError1, call. = FALSE);
+    }
+    if(!is.data.frame(associatedGeneMetaDF) ||
+       length(associatedGeneMetaDF[1,])< 2 ||
+       length(associatedGeneMetaDF[1,])> 3){
+
+        stop(mError2, call. = FALSE)
+    }
+    for(row in 1:nrow(completeMetaboliteDF)){
+
+        if(substr(completeMetaboliteDF[row,1],0,1) != "C"
+           && length(associatedGeneMetaDF[row,1]) != 5)
+            stop(mError1, call. = FALSE);
 
     }
+    for(row in 1:nrow(associatedGeneMetaDF)){
+
+        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+            stop(mError2, call. = FALSE);
+        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
+           && length(associatedGeneMetaDF[row,2]) != 5)
+            stop(mError2, call. = FALSE);
+    }
+
+    if(length(data.frame(
+        associatedGeneMetaDF[associatedGeneMetaDF$gene == gene,])[,1]) == 0){
+
+        stop(mError3, call. = FALSE);
+    }
+
 
     #' get all shortest paths from data entry
     shortestsPathsDF <- data.frame(t(getDistanceAll(pathwayId,
@@ -95,22 +133,24 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                               panel.grid.major = ggplot2::element_blank(),
                               panel.grid.minor = ggplot2::element_blank(),
                               text = ggplot2::element_text(size=12,family="Arial"),
-                              axis.line = ggplot2::element_line(colour = "black"))
+                              axis.line.x = ggplot2::element_line(color="black"),
+                              axis.line.y = ggplot2::element_line(color="black")
+                              )
              + ggplot2::xlab("Distance from Gene")
              + ggplot2::ylab("Metabolite count")
              + ggplot2::ggtitle(geneCommonName)
              + ggplot2::coord_fixed(ratio = 1)
              + ggplot2::geom_rect(data = frequenceDF,
-                                  ggplot2::aes(xmin = (maxDistance+1 -8),
+                                  ggplot2::aes(xmin = (maxDistance+1 -6),
                                                xmax = maxDistance+1,
                                                ymin = (maxFrequency -1),
                                                ymax = maxFrequency),
                                   fill = "grey80")
-             + ggplot2::annotate("text", x = (maxDistance-3),
+             + ggplot2::annotate("text", x = (maxDistance-2),
                                  y = (maxFrequency -0.5),
                                  label = legend_text,
                                  colour = "black",
-                                 size=5,
+                                 size=4,
                                  family="Arial" )
              + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
 

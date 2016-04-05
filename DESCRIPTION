@@ -19,6 +19,8 @@ Imports:
     KEGGREST,knitr,rmarkdown,scales
 VignetteBuilder: knitr
 Suggests:
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 LazyData: TRUE
 RoxygenNote: 5.0.1
