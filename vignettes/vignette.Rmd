@@ -11,33 +11,112 @@ vignette: >
 
 ##Description  
 
-PathQuant aims to help quantify associations between Genomic and 
-Metabolomic Data. To do so, PathQuanr calculates distance in terms od reactions 
-between Genes and Metabolites mapped on KEGG's metabolic pathway maps.
+PathQuant aims to quantify associations between Genomic and 
+Metabolomic Data. To do so, PathQuant calculates distance in terms of reactions 
+between Genes and Metabolites mapped on KEGG's metabolic pathway maps. We 
+developped functions to give the user tools to calculate dsitance for 
+associatiosn data, but also to be able to compare the distance of associated
+gene/metabolite pairs to not associated pairs in a statistical manner.
 
+## Info 
 
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+The example data used is from the Shin & al Study [1]. The associatedGeneMetaDF
+is a subset of associated data including all associations where both elements
+have a KEGG Id. The completeMetaboliteDF is also a subset of all measured 
+metabolites in the Shin & al study including all metabolites habing a KEGG Id.
 
 ## Fonctions
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.width=7, fig.height=4}
+```{r}
 library("PathQuant")
+```
+###getDistanceAsso Function 
+Thsi functino enables the user to select a KEGG map on wich the associated data 
+will be mapped to calculate the shortest distance between each associations.The 
+output of the function is an exhaustive dataframe as it has the following 
+columns : geneKEGGId, geneCommonName, isGeneOnMap, metaboliteKEGGId, 
+metaboliteCommonName, isMetaboliteOnMap, distance). If a distance is Inf,it 
+means both gene and metabolite are on the map but no path exist between them.
+If a distance is NaN, it means either the gene or the metabolite or both aren't 
+on the map.
 
-heatmapFunction(metabolismOverviewMapKEGGId, shinAndAlDF)
+####Arguments : 
+    pathwayId: is the KEGG Id of the selected map
+    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column as
+                            gene KEGG Ids and the sencond column as metabolite
+                            KEGG Ids.
+  Options :
+    ordered : boolean, orders the dataframe by distance columns (ascendent).
+
+```{r, size=12}
+
+df <- getDistanceAsso(metabolismOverviewMapKEGGId, shinAndAlDF, F)
+df[1:10,]
 
 ```
 
+###getDistanceAll Function 
+This function calculates the shortest distance between every gene in 
+an association to all measured metabolites on a selected map. The output of this
+function is a dataframe of all calculated distance. If a distance is Inf, it 
+means both gene and metabolite are on the selected map but no path exist between
+them and if the distance is NaN, it means either the gene or metabolite or both 
+aren't on the selected map. The aim of this function is to be used for statiscal
+analysis of the results. In most cases, it is necessary to compare the distance 
+of associated data vs not associated data. 
+
+####Arguments : 
+    pathwayId: is the KEGG Id of the selected map
+    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column as
+                            gene KEGG Ids and the sencond column as metabolite
+                            KEGG Ids.
+    completeMetaboliteDF : is a dataframe of 1 column with the KEGG Ids of
+                           all measured metabolites.
+
+
+```{r, size=12}
+df1 <- getDistanceAll(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF)
+df1[1:5,]
+```
+
+###heatmapAsso Function 
+This function calculates Distance between every gene in a associations 
+to every metabolites in an associations. Thus, the purpose of the function is to
+provide a rapid insight of the difference of the distance between associated or 
+not gene/metabolite pairs. If a distance is Inf, it means both gene and metabolite 
+are on the selected map but no path exist between them.
+
+####Arguments : 
+    pathwayId: is the KEGG Id of the selected map
+    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column as
+                            gene KEGG Ids and the sencond column as metabolite
+                            KEGG Ids.
+
+
+```{r, fig.width=7, fig.height=4}
+
+heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
+
+```
+
+###distanceGeneToAllMetabolite Function
+This function calculates the distance between 1 gene and
+all metabolites measured. The output is a barplot showing the distribution of 
+the distance calulated. With a percentage of Inf distance. A red bar means an
+associated metabolite was found at this distance of the gene. 
+
+####Arguments : 
+    pathwayId: is the KEGG Id of the selected map
+    associatedGeneMetaDF : is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column as
+                            gene KEGG Ids and the sencond column as metabolite
+                            KEGG Ids.
+    completeMetaboliteDF : is a dataframe of 1 column with the KEGG Ids of
+                           all measured metabolites.
+    gene : KEGG ID of the selected gene used to calculates all distances from.
 
 ```{r, fig.width=7,fig.height=4 }
 
@@ -45,16 +124,10 @@ distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:1373
 distanceGeneToAllMetabolite("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:27165")
 
 ```
-```{r, size=12}
-
-ASP <- getDistanceAsso("hsa01100", shinAndAlDF, F)
-ASP[1:10,]
-
-ASP1 <- getDistanceAll("hsa01100", shinAndAlDF, completeMetaboDF)
-ASP1[1:10,]
-```
 
 
+1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
+Metabolites.” Nature genetics 46.6 (2014): 543–550. PMC.
 
 
 

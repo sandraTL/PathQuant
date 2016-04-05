@@ -12,7 +12,7 @@
 #' @export
 #' @examples permutationFunction("hsa01100", data, gene, metabolite, 1000)
 
-permutationFunction <-
+permutationTest <-
     function(pathwayId,data,geneMeasured,metaboliteMeasured,
              permutation,output = c("medians","pvalue","histogram")) {
 

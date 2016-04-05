@@ -3,6 +3,6 @@
 export(distanceGeneToAllMetabolite)
 export(getDistanceAll)
 export(getDistanceAsso)
-export(heatmapFunction)
-export(permutationFunction)
+export(heatmapAsso)
+export(permutationTest)
 importFrom(igraph,shortest_paths)

@@ -9,9 +9,9 @@
 #' @param pathwayId, data(gene, metabolites)
 #' @keywords  Graph, heatmap, shortestDistance
 #' @export
-#' @examples heatmapFunction(hsa01100, data)
+#' @examples heatmapAsso(hsa01100, data)
 
-heatmapFunction <- function(pathwayId, associatedGeneMetaDF){
+heatmapAsso <- function(pathwayId, associatedGeneMetaDF){
 
     mError1 <-"Error in input associatedGeneMetaboDF, please enter you data
              where colnames(df) <- c(gene,metabolite) frame with
