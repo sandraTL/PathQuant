@@ -1,11 +1,8 @@
 
-#' This function extract from KGML a list of metabolites (id and name) that
-#' makes the nodes of the graph ** some metablite can from more than 1 node,
-#' which is why the id of the nodes is not the name of the metabolite.
-#' data.frame (id, keggId)
-#' @param pathway id
-#' @keywords  kegg
-#' @examples getListNodeFromKGML("hsa01100")
+# This function extract from KGML a list of metabolites (id and name) that
+# makes the nodes of the graph ** some metablite can from more than 1 node,
+# which is why the id of the nodes is not the name of the metabolite.
+# data.frame (id, keggId)
 
 getListNodeFromKGML <- function(pathwayId) {
 
@@ -26,16 +23,10 @@ getListNodeFromKGML <- function(pathwayId) {
 }
 
 
-#' A KEGGREST function
-#'
-#' This function creates a data.frame containing the first part of our edge list
-#' the "gene" reactions
-#' data.frame(kgmlIdSubstratre, kgmlIdProduct, substrateName, productName,
-#' kgmlIdReaction, reactionName, reactionType)
-#' @param pathway id
-#' @keywords  keggrest, kgml
-#' @examples getListReactionFromKGML("hsa01100")
-
+# This function creates a data.frame containing the first part of our edge list
+# the "gene" reactions
+# data.frame(kgmlIdSubstratre, kgmlIdProduct, substrateName, productName,
+# kgmlIdReaction, reactionName, reactionType)
 
 getListReactionFromKGML <- function(pathwayId) {
 
@@ -77,18 +68,12 @@ getListReactionFromKGML <- function(pathwayId) {
 }
 
 
-#' A KEGG Function
-#'
-#' This function extract from KGML a list of reaction of entry-type "gene"
-#' Returns a dataFrame object : id, entryId, reaction, ko
-#' @param pathway id
-#' @keywords  kegg, Gene, Reaction
-#' @examples getListEdgeFromGeneKGML("hsa01100")
-
+# This function extract from KGML a list of reaction of entry-type "gene"
+# Returns a dataFrame object : id, entryId, reaction, ko
 
 getListEdgeFromGeneKGML <- function(pathwayId) {
 
-    #get the root of the KGML document
+    # get the root of the KGML document
     xmltop <- getKGMLRootNode(pathwayId);
 
     # Get value of atributes (id, name(ko) and reaction) of entry of type
@@ -114,12 +99,12 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
 
 
 getKGMLRootNode <- function(pathwayId){
-    #get the root of the KGML document
+    # get the root of the KGML document
     pathFile <- toStringPathFile(pathwayId);
 
     if(is.na(file.info(pathFile)$size)== FALSE){
         xmlfile <- XML::xmlParse(pathFile);
-        xmltop <- XML::xmlRoot(xmlfile); #gives content of root
+        xmltop <- XML::xmlRoot(xmlfile); # gives content of root
     }else
         xmltop = NULL;
 
@@ -132,7 +117,7 @@ getKGMLRootNode <- function(pathwayId){
 
 toStringPathFile <- function(pathwayId){
 
-    #concatenation of pathwayId to set swdir for the xml
+    # concatenation of pathwayId to set swdir for the xml
     s1 <- "~/";
     s2 <-  toString(pathwayId);
     s3 <- ".xml"
@@ -158,12 +143,8 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
                 # return the first name of list of genes or metabolites
                 if(type == "gene"){
                     tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
-                    #print(tempName)
-                    # print(vectorOfKEGGIds[oldcount:count])
                 }else if(type == "metabolite"){
                     tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
-                    # print(tempName)
-                    #print(vectorOfKEGGIds[oldcount:count])
 
                 }
 
@@ -181,13 +162,11 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
             if(type == "gene"){
                 tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
-                # print(tempName)
-                # print(vectorOfKEGGIds[oldcount:count])
+
 
             }else if(type == "metabolite"){
                 tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
-                # print(tempName)
-                # print(vectorOfKEGGIds[oldcount:count])
+
             }
             return <- tempName;
         } )

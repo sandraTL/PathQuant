@@ -1,28 +1,47 @@
-#' Permutation test to evauluate if gene-metabolite associations pairs
-#' are significantly closer than randomly selected gene-metabolite pairs
+
+#' Statistical permutation test to asses the relevance of associated
+#' gene-metabolite pairs vs. randomly selected pairs
 #'
-#' @param data, data.frame() colunm c(gene, metabolite) representing association
-#' between them for each row geneMeasured, list of evaluated genes in study
-#' (associated and not associated) metaboliteMeasured, list of measured
-#' metabolites in study (associated and not associated)
-#' permutation, number of permutation to execute
-#' output, "medians" median value of permutated sets - "pvalue" - "histogram"
+#' Permutation test to evauluate if gene-metabolite associations pairs of
+#' your data parameter are significantly closer than randomly selected
+#' gene-metabolite pairs by calculating shortest distance between assocatied
+#' gene-metabolite pairs vs. randomly selected pairs.
 #'
-#' @keywords permutation
+#' If a gene or a metabolite is present on multiple edges or nodes, then
+#' shortest distance are calculated for every combinaison possible and the
+#' shortest distance is selected.
+#'
+#' @param pathwayId KEGG Id of selected map
+#' @param data is a dataframe with 2 columns. Where each line
+#'        reprensents an associations with the first column as
+#'        gene KEGG Ids and the sencond column as metabolite
+#'        KEGG Ids.
+#' @param gene is a dataframe of 1 column with the KEGG Ids of
+#'        all measured genes.
+#' @param metabolite is a dataframe of 1 column with the KEGG Ids of
+#'        all measured metabolites.
+#' @param permutation is the number desired permutations
+#' @param output medians (list of median of every permutation), pvalue of the
+#'        permutation test, histogram (a histrogram representing the
+#'        distribution of every permutation median)
+#'
+#' @keywords permutation, statistic test, median, shrotestDistance, graph,KEGG
 #' @export
-#' @examples permutationFunction("hsa01100", data, gene, metabolite, 1000)
+#' @examples permutationFunction(metabolismOverviewMapKEGGId, shinAndAlDF,
+#'             completeGeneDF,completeMetaboDF, 1000, "histogram")
 
 permutationTest <-
-    function(pathwayId,data,geneMeasured,metaboliteMeasured,
+    function(pathwayId,data,gene,metabolite,
              permutation,output = c("medians","pvalue","histogram")) {
-        pathwayId <- gsub("hsa:", "hsa", pathwayId)
-        geneMeasured <- c(t(geneMeasured))
-        metaboliteMeasured <- c(t(metaboliteMeasured))
 
-        #create graph object
+        pathwayId <- gsub("hsa:", "hsa", pathwayId)
+        gene <- c(t(gene))
+        metabolite <- c(t(metabolite))
+
+        # create graph object
         graphe <-  createGraphFromPathway(pathwayId);
 
-        #initalise vector for medians of all permutations
+        # initalise vector for medians of all permutations
         permutatedMedians <- rep(NA,permutation)
 
         # change data to eliminate associations not where the gene or
@@ -52,14 +71,14 @@ permutationTest <-
         metaboliteList <- as.vector(unique(data[,2]))
 
         # making sure there is no doubles in the list of all gene measured
-        geneMeasured <- unique(geneMeasured)
+        gene <- unique(gene)
 
         # generate vectors with number of reactions for catalysed by gene
         rPossibleGeneToPermutate <-
-            numberOfReactions(graphe@edgeDF,geneMeasured)
+            numberOfReactions(graphe@edgeDF,gene)
 
         # remove gene not in the graph from list of all genes
-        tempDf <- data.frame(cbind(g1 = as.vector(geneMeasured),
+        tempDf <- data.frame(cbind(g1 = as.vector(gene),
                                    g2 = as.vector(
                                        as.numeric(rPossibleGeneToPermutate)
                                    )))
@@ -74,21 +93,21 @@ permutationTest <-
             as.numeric(as.vector(tempDf[,2]))
 
         # making sure there is no doubles in the list of all metabolites measured
-        metaboliteMeasured <- as.vector(unique(metaboliteMeasured))
+        metabolite <- as.vector(unique(metabolite))
 
         # generate vectors with number of repetition of each metabolite
         rPossibleMetaboliteToPermutate <-
             numberOfMetabolites(graphe@nodeDF,
-                                metaboliteMeasured)
+                                metabolite)
 
         # remove metabolites not in the graph from list of all metabolites
         tempDf2 <- data.frame(cbind(
-            g1 = as.vector(metaboliteMeasured),
+            g1 = as.vector(metabolite),
             g2 = as.vector(as.numeric(rPossibleMetaboliteToPermutate))
         ))
 
         tempDf2 <- removeNotInGraph(tempDf2)
-        metaboliteMeasured <- as.vector(tempDf2[,1])
+        metabolite <- as.vector(tempDf2[,1])
         rPossibleMetaboliteToPermutate <-
             as.numeric(as.vector(tempDf2[,2]))
         distPermutated <- "";
@@ -99,7 +118,7 @@ permutationTest <-
         {
             setTxtProgressBar(pb, k)
 
-            metaboliteMeasured <- as.vector(tempDf2[,1])
+            metabolite <- as.vector(tempDf2[,1])
 
             rPossibleMetaboliteToPermutate <-
                 as.numeric(as.vector(tempDf2[,2]))
@@ -110,7 +129,7 @@ permutationTest <-
                 as.numeric(as.vector(tempDf[,2]))
 
             metaboliteShuffled <-
-                sample(metaboliteMeasured,length(metaboliteList))
+                sample(metabolite,length(metaboliteList))
 
             geneShuffled <- vector()
             # for all associated, replace by permutated genes
@@ -159,8 +178,8 @@ permutationTest <-
                 geneShuffled <- c(geneShuffled,
                     as.character(possibleGeneToPermutate[genePositionShuffled]))
 
-                #' take out chosen gene (and his number of reactions)
-                #' from list of possible genes
+                # take out chosen gene (and his number of reactions)
+                # from list of possible genes
                 possibleGeneToPermutate <-
                     possibleGeneToPermutate[-genePositionShuffled]
                 rPossibleGeneToPermutate <-
@@ -171,8 +190,8 @@ permutationTest <-
             rownames(permutatedData) <-
                 c(1:length(permutatedData[,1]))
 
-            #' create new 'data' where associated genes and metabolites
-            #' are replace by shuffle genes and metabolites for genes
+            # create new 'data' where associated genes and metabolites
+            # are replace by shuffle genes and metabolites for genes
 
             for (j in 1:length(geneList)) {
 
@@ -234,8 +253,8 @@ permutationTest <-
 
 
 
-                        #' get id of known distance rows in permutation set to
-                        #' to delete from distance calculation process
+                        # get id of known distance rows in permutation set to
+                        # to delete from distance calculation process
                         idRowToDelete <- permutatedData[which(
                           permutatedData$geneKEGGId == knownDistances[v,1]&
                           permutatedData$metaboliteKEGGId == knownDistances[v,2]
@@ -246,7 +265,7 @@ permutationTest <-
                         knownDistances[,2] <-
                             factor(knownDistances[,2],
                                    levels = levels(distPermutated[,2]))
-                        #'get rows to update count
+                        #get rows to update count
                         idRowToUpdateCount <- distPermutated[which(
                           distPermutated$geneKEGGId == knownDistances[v,1]&
                           distPermutated$metaboliteKEGGId == knownDistances[v,2]
@@ -295,11 +314,8 @@ permutationTest <-
 
             }
 
-         # print(distPermutated)
         }
         # get median distance associated
-        #print(distPermutated)
-
         distAssociated <-
             getDistanceAssoPerm(pathwayId,data,F)
 
@@ -449,57 +465,3 @@ removeNotInGraph <- function(df) {
     return <- df;
 
 }
-
-# Multiple plot function
-#
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-multiplot <-
-    function(..., plotlist = NULL, file, cols = 1, layout = NULL) {
-        library(grid)
-
-        # Make a list from the ... arguments and plotlist
-        plots <- c(list(...), plotlist)
-
-        numPlots = length(plots)
-
-        # If layout is NULL, then use 'cols' to determine layout
-        if (is.null(layout)) {
-            # Make the panel
-            # ncol: Number of columns of plots
-            # nrow: Number of rows needed, calculated from # of cols
-            layout <-
-                matrix(seq(1, cols * ceiling(numPlots / cols)),
-                       ncol = cols, nrow = ceiling(numPlots / cols))
-        }
-
-        if (numPlots == 1) {
-            print(plots[[1]])
-
-        } else {
-            # Set up the page
-            grid.newpage()
-            pushViewport(viewport(layout = grid.layout(nrow(layout),
-                                                       ncol(layout))))
-
-            # Make each plot, in the correct location
-            for (i in 1:numPlots) {
-                # Get the i,j matrix positions of the regions that contain this subplot
-                matchidx <-
-                    as.data.frame(which(layout == i, arr.ind = TRUE))
-
-                print(
-                    plots[[i]], vp = viewport(
-                        layout.pos.row = matchidx$row,
-                        layout.pos.col = matchidx$col
-                    )
-                )
-            }
-        }
-    }

@@ -2,28 +2,38 @@
 % Please edit documentation in R/Graph.R
 \name{getDistanceAsso}
 \alias{getDistanceAsso}
-\title{Fonction that calculates distance between each gene-metabolite pairs.}
+\title{Function calculating shortest distance between each gene-metabolite pairs.}
 \usage{
-getDistanceAsso(pathwayId, associatedGeneMetaDF, ordered = FALSE)
+getDistanceAsso(pathwayId, data, ordered = FALSE)
 }
 \arguments{
-\item{data(gene, }{metabolites )}
+\item{pathwayId}{KEGG Id of selected map}
+
+\item{data}{is a dataFrame with 2 columns. Where each line
+reprensents an associations with the first column as
+gene KEGG Ids and the sencond column as metabolite
+KEGG Ids.}
+
+\item{ordered}{[option] ascendent ordering of distance}
 }
 \description{
-The igrpah created to simulate the KEGG pathways as metabolties as nodes
-and genes (related gene enzymes and reaction) as egdes.
+Function calculating shortest distance between each gene-metabolite pairs of
+your data parameter on a graph model of KEGG map selected, where nodes are
+metabolites and reactions are edges.
 }
 \details{
-The shortest distance is taking from calculation from both vertices related
-to a gene to the metabolites of interest.
+If a gene or a metabolite is present on multiple edges or nodes, then
+shortest distance are calculated for every combinaison possible and the
+shortest distance is selected.
 
-for param data:
-     gene = KEGGid of gene hsa:...
-     metabolites : KEGGid of metabolites C....
-for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
+Output : dataframe with the following columns : geneCommonName, geneKEGGId,
+isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
+isMetaboliteInMap, distance
 }
 \examples{
-getDistanceAsso(pathwayId, data, ouput)
+getDistanceAsso(metabolismOverviewMapKEGGId,shinAndAlDF)
 }
 \keyword{KEGG}
+\keyword{graph,}
+\keyword{shortestDistance,}
 

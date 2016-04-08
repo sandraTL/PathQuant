@@ -1,101 +1,117 @@
 
-
-#' function that output a barplot graph related to one specific gene with all
-#' the shortest distances from that gene to all metabolites
+#' Function calculating shortest distance between a selected gene of a
+#' gene-metabolite pairs and every metabolites.
 #'
-#' for param data:
-#'      gene = KEGGid of gene hsa:...
-#'      metabolites : KEGGid of metabolites C....
-#' for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
-#' for param gene : is a gene in data ex: hsa:8801
-#' @param KEGGPathwayId, data(gene, metabolites),allMeasuredMetaboliteesDF, gene
-#' @keywords  Graph, barplot, shortestDistance
+#' Function calculating shortest distance between a selected gene of a
+#' gene-metabolite pairs and every metabolites (in a pair or not)
+#' on a graph model of KEGG map selected, where nodes are metabolites and
+#' reactions are edges.
+#'
+#' If a gene or a metabolite is present on multiple edges or nodes, then
+#' shortest distance are calculated for every combinaison possible and the
+#' shortest distance is selected.
+#'
+#' Output: barplot showing the distribution of the calculated distance, where
+#' red bars represent a distance with an associated metabolite and grey bars
+#' distance with no associated metabolites.
+#'
+#' @param pathwayId KEGG Id of selected map
+#' @param data is a dataFrame with 2 columns. Where each line
+#'        reprensents an associations with the first column as
+#'        gene KEGG Ids and the sencond column as metabolite
+#'        KEGG Ids.
+#' @param metabolite is a dataframe of 1 column with the KEGG Ids of
+#'        all measured metabolites.
+#' @param gene is the KEGG Id of the selected gene
+#' @keywords graph, shortestDistance, KEGG
+#'
 #' @export
-#' @examples barplotFunction(hsa01100, associatedGeneMetaDF,
-#'  completeMetaboliteDF, gene)
+#' @examples distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId,
+#' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
-distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
-                            completeMetaboliteDF, gene){
+distanceGeneToAllMetabolite <- function(pathwayId, data,
+                            metabolite, gene){
+
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <-"error in completeMetaboliteDF, please input a dataframe of 1
+    mError1 <-"error in metabolite, please input a dataframe of 1
     column with a list of KEGG ids metabolites (ex: C00001)"
 
-    mError2 <-"error in associatedGeneMetaDF,
+    mError2 <-"error in data,
     where colnames(df) <- c(gene,metabolite) frame with
     KEGG ids of genes (ex : hsa:00001) in first
     column and associated KEGG ids metabolites (ex: C00001)
     in second column"
 
     mError3 <- "error in argument gene, the gene entered doesn't match any
-                gene in associatedGeneMetaDF"
+                gene in data"
 
 
-    #test associatedGeneMetaDF
-    if(is.data.frame(completeMetaboliteDF) && nrow(completeMetaboliteDF)==0){
+    #test data
+    if(is.data.frame(metabolite) && nrow(metabolite)==0){
         stop(mError1, call. = FALSE);
     }
-    if(!is.data.frame(associatedGeneMetaDF) ||
-       length(associatedGeneMetaDF[1,])< 2 ||
-       length(associatedGeneMetaDF[1,])> 3){
+    if(!is.data.frame(data) ||
+       length(data[1,])< 2 ||
+       length(data[1,])> 3){
 
         stop(mError2, call. = FALSE)
     }
-    for(row in 1:nrow(completeMetaboliteDF)){
+    for(row in 1:nrow(metabolite)){
 
-        if(substr(completeMetaboliteDF[row,1],0,1) != "C"
-           && length(associatedGeneMetaDF[row,1]) != 5)
+        if(substr(metabolite[row,1],0,1) != "C"
+           && length(data[row,1]) != 5)
             stop(mError1, call. = FALSE);
 
     }
-    for(row in 1:nrow(associatedGeneMetaDF)){
+    for(row in 1:nrow(data)){
 
-        if(substr(associatedGeneMetaDF[row,1],1,4)!="hsa:")
+        if(substr(data[row,1],1,4)!="hsa:")
             stop(mError2, call. = FALSE);
-        if(substr(associatedGeneMetaDF[row,2],0,1) != "C"
-           && length(associatedGeneMetaDF[row,2]) != 5)
+        if(substr(data[row,2],0,1) != "C"
+           && length(data[row,2]) != 5)
             stop(mError2, call. = FALSE);
     }
 
     if(length(data.frame(
-        associatedGeneMetaDF[associatedGeneMetaDF$gene == gene,])[,1]) == 0){
+        data[data$gene == gene,])[,1]) == 0){
 
         stop(mError3, call. = FALSE);
     }
 
 
-    #' get all shortest paths from data entry
+    # get all shortest paths from data entry
     shortestsPathsDF <- data.frame(t(getDistanceAll(pathwayId,
-                     associatedGeneMetaDF[associatedGeneMetaDF$gene == gene,],
-                     completeMetaboliteDF)));
+                     data[data$gene == gene,],
+                     metabolite)));
 
     associatedMetabo <- data.frame(
-                        getAssociatedMetaboByGene(associatedGeneMetaDF,gene))
+                        getAssociatedMetaboByGene(data,gene))
 
-    #'adjust gene parameter
+    # adjust gene parameter
     gene1 <- gsub(":", ".", gene);
 
-    #' add metabolite row
+    # add metabolite row
     shortestsPathsDF[ "metabolites" ] <- rownames(shortestsPathsDF);
 
-    #' get a subset of shortestsPathsDF contaning only geneOf interest, gene
-    #' and metaboltie column
+    # get a subset of shortestsPathsDF contaning only geneOf interest, gene
+    # and metaboltie column
 
     maxVal <- getMaxValIgnoreInfVal(shortestsPathsDF)
 
-    #' get frequency of every value until the maxVal found + Inf val
+    # get frequency of every value until the maxVal found + Inf val
     frequenceDF <- data.frame(table(factor(shortestsPathsDF[,1],
                                             levels=c(0:maxVal,Inf))))
-    #' set column names of frequenceDF
+    # set column names of frequenceDF
     colnames(frequenceDF) <- c("Distance", "Freq")
 
-    #' get associations values for all distance pair calculated
+    # get associations values for all distance pair calculated
     associationsMetaboDF <- getAssociationsDF(shortestsPathsDF,associatedMetabo)
 
-    #' bind info into 1 DF
+    # bind info into 1 DF
     shortestsPathsDF <- cbind(shortestsPathsDF,
                               Associations = associationsMetaboDF);
 
-    #' Association of the distance where there is an association
+    # Association of the distance where there is an association
     associationsfrequencyDF <- getFrequenceAssociationsDF(frequenceDF,
                                                           shortestsPathsDF,
                                                           gene1);
@@ -108,6 +124,8 @@ distanceGeneToAllMetabolite <- function(pathwayId, associatedGeneMetaDF,
     barplotFunctionGeneToAllMetabo(frequenceDF,gene)
 
 }
+
+# Function to output barplot.
 
 barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
 
@@ -230,8 +248,9 @@ getAssociatedMetaboByGene <- function(data, gene){
 
 }
 
-#' function to modify the frequency data.frame by adding more distance that are
-#' then the one already defined
+
+# function to modify the frequency data.frame by adding more distance that are
+# then the one already defined, ulterior use.
 
 barplot_adjustMaximalDistance <- function(maximumDistance, frequenciesDF,
                                           maxDistFrequenciesDF){

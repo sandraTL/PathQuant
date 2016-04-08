@@ -2,37 +2,44 @@
 % Please edit documentation in R/barplotFunction.R
 \name{distanceGeneToAllMetabolite}
 \alias{distanceGeneToAllMetabolite}
-\title{function that output a barplot graph related to one specific gene with all
-the shortest distances from that gene to all metabolites}
+\title{Function calculating shortest distance between a selected gene of a
+gene-metabolite pairs and every metabolites.}
 \usage{
-distanceGeneToAllMetabolite(pathwayId, associatedGeneMetaDF,
-  completeMetaboliteDF, gene)
+distanceGeneToAllMetabolite(pathwayId, data, metabolite, gene)
 }
 \arguments{
-\item{KEGGPathwayId, }{data(gene, metabolites),allMeasuredMetaboliteesDF, gene}
+\item{pathwayId}{KEGG Id of selected map}
+
+\item{data}{is a dataFrame with 2 columns. Where each line
+reprensents an associations with the first column as
+gene KEGG Ids and the sencond column as metabolite
+KEGG Ids.}
+
+\item{metabolite}{is a dataframe of 1 column with the KEGG Ids of
+all measured metabolites.}
+
+\item{gene}{is the KEGG Id of the selected gene}
 }
 \description{
-for param data:
-     gene = KEGGid of gene hsa:...
-     metabolites : KEGGid of metabolites C....
-for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
-for param gene : is a gene in data ex: hsa:8801
+Function calculating shortest distance between a selected gene of a
+gene-metabolite pairs and every metabolites (in a pair or not)
+on a graph model of KEGG map selected, where nodes are metabolites and
+reactions are edges.
+}
+\details{
+If a gene or a metabolite is present on multiple edges or nodes, then
+shortest distance are calculated for every combinaison possible and the
+shortest distance is selected.
+
+Output: barplot showing the distribution of the calculated distance, where
+red bars represent a distance with an associated metabolite and grey bars
+distance with no associated metabolites.
 }
 \examples{
-barplotFunction(hsa01100, associatedGeneMetaDF,
- completeMetaboliteDF, gene)
-get all shortest paths from data entry
-adjust gene parameter
-add metabolite row
-get a subset of shortestsPathsDF contaning only geneOf interest, gene
-and metaboltie column
-get frequency of every value until the maxVal found + Inf val
-set column names of frequenceDF
-get associations values for all distance pair calculated
-bind info into 1 DF
-Association of the distance where there is an association
+distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId,
+shinAndAlDF, completeMetaboDF, "hsa:1373")
 }
-\keyword{Graph,}
-\keyword{barplot,}
-\keyword{shortestDistance}
+\keyword{KEGG}
+\keyword{graph,}
+\keyword{shortestDistance,}
 

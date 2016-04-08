@@ -2,24 +2,37 @@
 % Please edit documentation in R/heatmapFunction.R
 \name{heatmapAsso}
 \alias{heatmapAsso}
-\title{function that output a heatmap graph showing all results
- from getDistanceAll function}
+\title{Function that output a heatmap to visualize distance calculated between every
+gene-metabolite associations in input.}
 \usage{
-heatmapAsso(pathwayId, associatedGeneMetaDF)
+heatmapAsso(pathwayId, data)
 }
 \arguments{
-\item{pathwayId, }{data(gene, metabolites)}
+\item{pathwayId}{KEGG Id of selected map}
+
+\item{data}{is a dataFrame with 2 columns. Where each line
+reprensents an associations with the first column as
+gene KEGG Ids and the sencond column as metabolite
+KEGG Ids.}
 }
 \description{
-for param data:
-     gene = KEGGid of gene hsa:...
-     metabolites : KEGGid of metabolites C....
-for param pathwayId : KEGG id of pathways without ':' ex: hsa01100
+Function calculting shortest distance between every genes and metabolites in
+a gene-metabolite pairs of your data parameter on a graph model of KEGG map
+selected, where nodes are metabolites and reactions are edges.
+}
+\details{
+If a gene or a metabolite is present on multiple edges or nodes, then
+shortest distance are calculated for every combinaison possible and the
+shortest distance is selected.
+
+Output : Heatmap graphic where black countoured distances represent
+          an association.
 }
 \examples{
-heatmapFunction(hsa01100, data)
+heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
 }
-\keyword{Graph,}
+\keyword{KEGG}
+\keyword{graph,}
 \keyword{heatmap,}
-\keyword{shortestDistance}
+\keyword{shortestDistance,}
 

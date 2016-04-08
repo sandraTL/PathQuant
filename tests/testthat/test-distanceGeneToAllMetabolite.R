@@ -50,8 +50,6 @@ test_that("distanceGeneToAllMetabolite", {
 
 test_that("barplotFunctionGeneToAllMetabo",{
 
-
-
 })
 test_that("getFrequenceAssociationsDF",{})
 test_that("getAssociationsDF",{})

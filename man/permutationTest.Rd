@@ -2,33 +2,51 @@
 % Please edit documentation in R/PermutationFunction.R
 \name{permutationTest}
 \alias{permutationTest}
-\title{Permutation test to evauluate if gene-metabolite associations pairs
-are significantly closer than randomly selected gene-metabolite pairs}
+\title{Statistical permutation test to asses the relevance of associated
+gene-metabolite pairs vs. randomly selected pairs}
 \usage{
-permutationTest(pathwayId, data, geneMeasured, metaboliteMeasured, permutation,
+permutationTest(pathwayId, data, gene, metabolite, permutation,
   output = c("medians", "pvalue", "histogram"))
 }
 \arguments{
-\item{data, }{data.frame() colunm c(gene, metabolite) representing association
-between them for each row geneMeasured, list of evaluated genes in study
-(associated and not associated) metaboliteMeasured, list of measured
-metabolites in study (associated and not associated)
-permutation, number of permutation to execute
-output, "medians" median value of permutated sets - "pvalue" - "histogram"}
+\item{pathwayId}{KEGG Id of selected map}
+
+\item{data}{is a dataframe with 2 columns. Where each line
+reprensents an associations with the first column as
+gene KEGG Ids and the sencond column as metabolite
+KEGG Ids.}
+
+\item{gene}{is a dataframe of 1 column with the KEGG Ids of
+all measured genes.}
+
+\item{metabolite}{is a dataframe of 1 column with the KEGG Ids of
+all measured metabolites.}
+
+\item{permutation}{is the number desired permutations}
+
+\item{output}{medians (list of median of every permutation), pvalue of the
+permutation test, histogram (a histrogram representing the
+distribution of every permutation median)}
 }
 \description{
-Permutation test to evauluate if gene-metabolite associations pairs
-are significantly closer than randomly selected gene-metabolite pairs
+Permutation test to evauluate if gene-metabolite associations pairs of
+your data parameter are significantly closer than randomly selected
+gene-metabolite pairs by calculating shortest distance between assocatied
+gene-metabolite pairs vs. randomly selected pairs.
+}
+\details{
+If a gene or a metabolite is present on multiple edges or nodes, then
+shortest distance are calculated for every combinaison possible and the
+shortest distance is selected.
 }
 \examples{
-permutationFunction("hsa01100", data, gene, metabolite, 1000)
-take out chosen gene (and his number of reactions)
-from list of possible genes
-create new 'data' where associated genes and metabolites
-are replace by shuffle genes and metabolites for genes
-get id of known distance rows in permutation set to
-to delete from distance calculation process
-get rows to update count
+permutationFunction(metabolismOverviewMapKEGGId, shinAndAlDF,
+            completeGeneDF,completeMetaboDF, 1000, "histogram")
 }
-\keyword{permutation}
+\keyword{graph,KEGG}
+\keyword{median,}
+\keyword{permutation,}
+\keyword{shrotestDistance,}
+\keyword{statistic}
+\keyword{test,}
 

@@ -35,17 +35,14 @@ correctReactionString <- function(edgeDF){
 
 }
 
-#'Since it is not possible to have the related gene when parsing the
-#'reaction nodes in the KGML. I had to parse de reaction nodes and the
-#'gene entry nodes separatly and then combinde the 2 with the information
-#'needed.
-#'
-#'the results gives a data.frame(substrateId, productId, subtrateName,
-#'productName, reactionId, reactionName, ko(gene))
-#'
-#' @param id of the explored pathway
-#' @keywords reaction data.frame
-#' @examples finalReactionEdgeDF(pathwayId)
+# Since it is not possible to have the related gene when parsing the
+# reaction nodes in the KGML. I had to parse de reaction nodes and the
+# gene entry nodes separatly and then combinde the 2 with the information
+# needed.
+#
+# the results gives a data.frame(substrateId, productId, subtrateName,
+# productName, reactionId, reactionName, ko(gene))
+
 
 finalReactionEdgeDF <- function(pathwayId){
 

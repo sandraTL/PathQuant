@@ -30,7 +30,7 @@ metabolites in the Shin & al study including all metabolites habing a KEGG Id.
 library("PathQuant")
 ```
 ###getDistanceAsso Function 
-Thsi functino enables the user to select a KEGG map on wich the associated data 
+Thsi function enables the user to select a KEGG map on wich the associated data 
 will be mapped to calculate the shortest distance between each associations.The 
 output of the function is an exhaustive dataframe as it has the following 
 columns : geneKEGGId, geneCommonName, isGeneOnMap, metaboliteKEGGId, 
