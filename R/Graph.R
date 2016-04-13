@@ -203,38 +203,11 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-
-    #################################################################
-    ################  test input parameters  ########################
-    mError <- "error in data,
-    where colnames(df) <- c(gene,metabolite) frame with
-    KEGG ids of genes (ex : hsa:00001) in first
-    column and associated KEGG ids metabolites (ex: C00001)
-    in second column"
-
-    if(isFileInDirectory(pathwayId) == FALSE){
-        file <-  getPathwayKGML(pathwayId)
-    }
-    if(is.data.frame(data) && nrow(data)==0){
-      stop(mError,call. = FALSE )
-    }
-    if(is.data.frame(data) &&
-       !ncol(data) == 2){
-        stop(mError,call. = FALSE )
-    }
-    for(row in 1:nrow(data)){
-
-        if(substr(data[row,1],1,4)!="hsa:")
-            stop(mError, call. = FALSE);
-        if(substr(data[row,2],0,1) != "C"
-           && length(data[row,2]) != 5)
-            stop(mError, call. = FALSE);
-    }
-    #################################################################
-    #################################################################
-
-
     finalDF <- data.frame();
+
+    # test input parameters
+    test_getDistanceAsso(pathwayId,data)
+
     # graph creation
     if(!exists("graphe")){
     graphe <-  createGraphFromPathway(pathwayId);
@@ -249,43 +222,32 @@ getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
     # order result by increasing distances
     finalDF$distance[is.na(finalDF$distance)] <- NaN;
 
-
-
     if(ordered == TRUE){
         finalDF <- finalDF[ order(finalDF[,7]), ]
     }
 
-    ######################################################################
-    ######################################################################
-    ######## Could had information on the nodes or the multiple   ########
-    ########               path of shortest paths                 ########
-    ######################################################################
-    ######################################################################
+    #****** Could had information on the nodes or the multiple
+    #****** path of shortest paths finalDF col 1 and 4
 
     # Remove rows with distance between same gene and metbolites choosing
     # the smallest distance.
-
     finalDF <- removeRowsDistanceAsso(finalDF)
 
-    rowNumbers <- 1:length(finalDF[,1])
-    row.names(finalDF) <- row.names(1:length(finalDF[,1]))
-    finalDF <- subset(finalDF, , c(2,3,5,6,7))
 
-     # Adding common names for genes and emtabolites
-     geneCommonName <- getCommonNames(as.vector(unlist(finalDF[,1])), "gene")
-     geneCommonName <- as.vector(unlist(geneCommonName))
+    # Adding common names for genes and emtabolites
+    geneCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                        (unlist(finalDF[,2])), "gene")))
+    metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                        (unlist(finalDF[,5])),"metabolite")))
 
-     metaboliteCommonName <- getCommonNames(as.vector(unlist(finalDF[,3])),
-                                            "metabolite")
-     metaboliteCommonName <- as.vector(unlist(metaboliteCommonName))
-
-     finalDF1 <- data.frame("geneCommonName" = geneCommonName,
-                            "geneKEGGId" = finalDF[,1],
-                            "isGeneInMap" = finalDF[,2],
+     # create final output
+    finalDF1 <- data.frame("geneCommonName" = geneCommonName,
+                            "geneKEGGId" = finalDF[,2],
+                            "isGeneInMap" = finalDF[,3],
                             "metaboliteCommonName" = metaboliteCommonName,
-                            "metaboliteKEGGId" = finalDF[,3],
-                            "isMetaboliteInMap" = finalDF[,4],
-                            "distance" = finalDF[,5]);
+                            "metaboliteKEGGId" = finalDF[,5],
+                            "isMetaboliteInMap" = finalDF[,6],
+                            "distance" = finalDF[,7]);
 }
 
 
@@ -301,37 +263,13 @@ getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
 # shortest distance is selected.
 
 getDistanceAssoPerm <- function(pathwayId, data, ordered = FALSE){
-    #################################################################
-    ################  test input parameters  ########################
 
-    mError <- "error in data,
-    where colnames(df) <- c(gene,metabolite) frame with
-    KEGG ids of genes (ex : hsa:00001) in first
-    column and associated KEGG ids metabolites (ex: C00001)
-    in second column"
 
-    if(isFileInDirectory(pathwayId) == FALSE){
-        file <-  getPathwayKGML(pathwayId)
-    }
-    if(is.data.frame(data) && nrow(data)==0){
-        stop(mError,call. = FALSE )
-    }
-    if(is.data.frame(data) &&
-       !ncol(data) == 2){
-        stop(mError,call. = FALSE )
-    }
-    for(row in 1:nrow(data)){
-
-        if(substr(data[row,1],1,4)!="hsa:")
-            stop(mError, call. = FALSE);
-        if(substr(data[row,2],0,1) != "C"
-           && length(data[row,2]) != 5)
-            stop(mError, call. = FALSE);
-    }
-    #################################################################
-    #################################################################
+    # test input parameters
+    test_getDistanceAssoPerm(pathwayId, data);
 
     finalDF <- data.frame();
+
     #graph creation
     if(!exists("graphe")){
         graphe <-  createGraphFromPathway(pathwayId);
@@ -354,17 +292,12 @@ getDistanceAssoPerm <- function(pathwayId, data, ordered = FALSE){
     # the smallest distance.
     finalDF <- removeRowsDistanceAsso(finalDF)
 
-    rowNumbers <- 1:length(finalDF[,1])
-    row.names(finalDF) <- row.names(1:length(finalDF[,1]))
-    finalDF <- subset(finalDF, , c(2,3,5,6,7))
-
-
-        ##permutation use
-        finalDF1 <- data.frame("geneKEGGId" = finalDF[,1],
-                               "isGeneInMap" = finalDF[,2],
-                               "metaboliteKEGGId" = finalDF[,3],
-                               "isMetaboliteInMap" = finalDF[,4],
-                               "distance" = finalDF[,5]);
+    # output for permutation use
+    finalDF1 <- data.frame("geneKEGGId" = finalDF[,2],
+                               "isGeneInMap" = finalDF[,3],
+                               "metaboliteKEGGId" = finalDF[,5],
+                               "isMetaboliteInMap" = finalDF[,6],
+                               "distance" = finalDF[,7]);
 }
 
 
@@ -674,64 +607,23 @@ getDistanceAll <- function(pathwayId, data,
                            metabolite){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <- "error in metabolite, please input a dataframe of 1 column
-    with a list of KEGG ids metabolites (ex: C00001)"
 
-    mError2 <- "error in data,
-             where colnames(df) <- c(gene,metabolite) frame with
-             KEGG ids of genes (ex : hsa:00001) in first
-             column and associated KEGG ids metabolites (ex: C00001)
-             in second column"
-
-
+    # test inputs
+    test_getDistanceAll(pathwayId, data, metabolite)
 
     finalDF <- data.frame();
-
 
     # look when it was downloaded if it has been to long redownload
     if(isFileInDirectory(pathwayId) == FALSE){
         getPathwayKGML(pathwayId);
     }
 
-    # test metabolite
-    if(is.data.frame(completeMetaboDF) && nrow(metabolite) == 0){
-        stop(mError1, call. = FALSE);
-    }
-    # test data
-    if(!is.data.frame(data) ||
-       length(data[1,])< 2 ||
-       length(data[1,])> 3){
+    #graph creation
+    graphe <-  createGraphFromPathway(pathwayId);
 
-        stop(mError2, call. = FALSE)
-    }
-
-    for(row in 1:nrow(metabolite)){
-
-        if(substr(metabolite[row,1],0,1) != "C"
-           && length(data[row,1]) != 5)
-            stop(mError1, call. = FALSE);
-
-    }
-
-
-    for(row in 1:nrow(data)){
-
-        if(substr(data[row,1],1,4)!="hsa:")
-            stop(mError2, call. = FALSE);
-        if(substr(data[row,2],0,1) != "C"
-           && length(data[row,2]) != 5)
-            stop(mError2, call. = FALSE);
-        }
-
-
-
-            #graph creation
-            graphe <-  createGraphFromPathway(pathwayId);
-
-            finalDF <- getFinalDFSHortestDistance(graphe, data,
+    finalDF <- getFinalDFSHortestDistance(graphe, data,
                                                   metabolite );
-
-            return <- finalDF;
+    return <- finalDF;
 
 
 }

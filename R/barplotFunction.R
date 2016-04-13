@@ -26,10 +26,10 @@
 #' @keywords graph, shortestDistance, KEGG
 #'
 #' @export
-#' @examples distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId,
+#' @examples distributionGene(metabolismOverviewMapKEGGId,
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
-distanceGeneToAllMetabolite <- function(pathwayId, data,
+distributionGene <- function(pathwayId, data,
                             metabolite, gene){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
