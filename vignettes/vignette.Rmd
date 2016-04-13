@@ -1,12 +1,9 @@
----
-title: "PathQuant vignette"
-author: "Sandra Therrien-Laperrière"
-date: "4 avril 2016"
-output: html_document
 
-vignette: |
-  %\VignetteIndexEntry{Vignette Title} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
----
+# PathQuant Vignette 
+###author "Sandra Therrien-Laperrière"
+###date "4 avril 2016"
+
+
 
 ##Description  
 
@@ -98,12 +95,11 @@ associated metabolite was found at this distance of the gene.
     gene : KEGG ID of the selected gene used to calculates all distances from.
 
 ```{r, fig.width=7,fig.height=4}
-
 distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:1373")
 distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:27165")
-
-
 ```
+![CPS1](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
+![GLS2](https://github.com/sandraTL/PathQuant/blob/master/vignettes/GLS2.png)
 
 ###heatmapAsso Function 
 This function calculates the distance between every gene in a associations 
@@ -121,15 +117,9 @@ are on the selected map but no path exist between them.
 
 ```{r, fig.width=7,fig.height=4}
 heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
-
-
-```
-```{r}
-
-
-
 ```
 
+![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
