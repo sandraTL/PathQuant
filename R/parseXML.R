@@ -109,9 +109,16 @@ getKGMLRootNode <- function(pathwayId){
 
         xmlfile <- XML::xmlParse(pathFile);
         xmltop <- XML::xmlRoot(xmlfile); # gives content of root
-    }else
-        xmltop = NULL;
+    }else{
+        getPathwayKGML(pathwayId)
+        xmlfile <- XML::xmlParse(pathFile);
+        xmltop <- XML::xmlRoot(xmlfile); # gives content of root
 
+<<<<<<< HEAD
+=======
+    }
+    #
+>>>>>>> analysis of submaps - beggining
     return <- xmltop;
 
 }
@@ -132,7 +139,14 @@ toStringPathFile <- function(pathwayId){
 
 getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
+
         count <- 1;
+
+    ### Vérifiez la connection internet
+
+    if(length(vectorOfKEGGIds) > 10 ){
+        count <- 0;
+    # analysis of submaps - beggining
         names <- character();
 
         while(count <= length(vectorOfKEGGIds)){
@@ -140,7 +154,7 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
             names <- append(names,names1)
             count <- count + 1;
         }
-
+}
        return <- names;
 
 }
@@ -178,3 +192,149 @@ getGeneInfoUrl <- function(geneId){
  url <- paste(url, geneId, sep = "")
  return <- url;
 }
+
+
+getFirstLevelSubMaps <- function(pathwayId) {
+
+    xmltop <- getKGMLRootNode(pathwayId);
+
+
+    mapId <- XML::xpathSApply(xmltop, "//entry[@type = 'map']",
+                                   function(x) (XML::xmlAttrs(x))['name']);
+
+return <- mapId
+}
+
+
+
+
+
+
+isAllGeneOfSubGraphsInKEGGOverview <- function(subGraphId){
+
+    overviewGeneList <- KEGGREST::keggLink("genes", "hsa01100")
+
+
+    subGraphGeneList <- KEGGREST::keggLink("genes", subGraphId)
+
+    notInOverview <- c();
+    for(i in 1:length(subGraphGeneList)){
+
+        subGraphGene_Grep<- paste("\\",subGraphGeneList[[i]],"\\b",sep="")
+
+        r <- grep(subGraphGene_Grep, overviewGeneList);
+
+        if(length(r) == 0){
+            notInOverview <- c(notInOverview,subGraphGeneList[[i]])
+        }
+
+    }
+
+    return(notInOverview)
+
+}
+
+allSubMapsMetaboliteAnalysis <- function(){
+
+    allSubMaps <- getFirstLevelSubMaps("hsa01100")
+    analysisResults<- NULL;
+
+    for(i in 1:length(allSubMaps)){
+        allSubMaps[[i]] <- gsub("path:", "", allSubMaps[[i]])
+
+        if(substr(allSubMaps[[i]],1,3) == "hsa"){
+            mapSubMapId <- gsub("hsa", "map", allSubMaps[[i]])
+       numberGeneOfSubMap <- length(KEGGREST::keggLink("cpd",mapSubMapId))
+
+     notInOverview  <- isAllMetaboliteOfSubGraphsInKEGGOverview(mapSubMapId)
+     subMapName <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$NAME
+     subMapClass <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$CLASS
+
+        if(length(notInOverview) == 0){
+            notInOverview <- NA;
+            numberGeneNotInOverview <- 0;
+        }else{
+        numberGeneNotInOverview <- length(notInOverview)
+        notInOverview <- paste(notInOverview, collapse = ',')
+        }
+        analysisResults <-rbind(analysisResults,
+              c(subMapKEGGId = as.vector(allSubMaps[[i]]),
+                subMapName = as.vector(subMapName),
+                subMapClass = as.vector(subMapClass),
+                numberMetaboliteOfSubMap = as.vector(numberGeneOfSubMap),
+                numberMetaboliteNotInOverview = as.vector(numberGeneNotInOverview),
+                metaboliteNotInOverviewKEGGId = as.vector(notInOverview)))
+
+
+        }
+    }
+
+   return <- analysisResults;
+
+}
+
+isAllMetaboliteOfSubGraphsInKEGGOverview <- function(subGraphId){
+
+    overviewMetaboliteList <- KEGGREST::keggLink("cpd", "map01100")
+
+
+    subGraphMetaboliteList <- KEGGREST::keggLink("cpd", subGraphId)
+
+    notInOverview <- c();
+
+    if(length(subGraphMetaboliteList)>0){
+    for(i in 1:length(subGraphMetaboliteList)){
+
+        subGraphMetabolite_Grep<-
+            paste("\\",subGraphMetaboliteList[[i]],"\\b",sep="")
+
+        r <- grep(subGraphMetabolite_Grep, overviewMetaboliteList);
+
+        if(length(r) == 0){
+            notInOverview <- c(notInOverview,subGraphMetaboliteList[[i]])
+        }
+
+    }
+   }
+    return(notInOverview)
+
+}
+
+allSubMapsGeneAnalysis <- function(){
+
+    allSubMaps <- getFirstLevelSubMaps("hsa01100")
+    analysisResults<- NULL;
+    for(i in 1:length(allSubMaps)){
+        allSubMaps[[i]] <- gsub("path:", "", allSubMaps[[i]])
+        if(substr(allSubMaps[[i]],1,3) == "hsa"){
+            numberGeneOfSubMap <- length(KEGGREST::keggLink("genes",allSubMaps[[i]]))
+
+            notInOverview  <- isAllGeneOfSubGraphsInKEGGOverview(allSubMaps[[i]])
+            subMapName <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$NAME
+            subMapClass <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$CLASS
+
+            if(length(notInOverview) == 0){
+                notInOverview <- NA;
+                numberGeneNotInOverview <- 0;
+            }else{
+                numberGeneNotInOverview <- length(notInOverview)
+                notInOverview <- paste(notInOverview, collapse = ',')
+            }
+            analysisResults <-rbind(analysisResults,
+                                    c(subMapKEGGId = as.vector(allSubMaps[[i]]),
+                                      subMapName = as.vector(subMapName),
+                                      subMapClass = as.vector(subMapClass),
+                                      numberGeneOfSubMap = as.vector(numberGeneOfSubMap),
+                                      numberGeneNotInOverview = as.vector(numberGeneNotInOverview),
+                                      geneNotInOverviewKEGGId = as.vector(notInOverview)))
+
+
+
+        }
+    }
+
+    return <- analysisResults;
+
+}
+
+

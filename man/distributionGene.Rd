@@ -2,35 +2,38 @@
 % Please edit documentation in R/barplotFunction.R
 \name{distributionGene}
 \alias{distributionGene}
-\title{Distance distribution plots for single gene}
+\title{Function calculating shortest distance between a selected gene of a
+gene-metabolite pairs and every metabolites.}
 \usage{
-distributionGene(pathwayId, association, metabolite, gene)
+distributionGene(pathwayId, data, metabolite, gene)
 }
 \arguments{
-\item{pathwayId}{KEGG Id of selected pathway.}
+\item{pathwayId}{KEGG Id of selected map}
 
-\item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
-metabolites. Only use KEGG Ids.}
+\item{data}{is a dataFrame with 2 columns. Where each line
+reprensents an associations with the first column as
+gene KEGG Ids and the sencond column as metabolite
+KEGG Ids.}
 
-\item{metabolite}{Dataframe of 1 column, representing all the measured
-metabolites. Only use KEGG Ids.}
+\item{metabolite}{is a dataframe of 1 column with the KEGG Ids of
+all measured metabolites.}
 
-\item{gene.}{Gene selected Only use KEGG.}
+\item{gene}{is the KEGG Id of the selected gene}
 }
 \description{
-Function ploting the distribution of distances between a gene and all
-measured metabolite, highlithing the distance of its associated metabolites.
+Function calculating shortest distance between a selected gene of a
+gene-metabolite pairs and every metabolites (in a pair or not)
+on a graph model of KEGG map selected, where nodes are metabolites and
+reactions are edges.
 }
 \details{
-The plot is depicted as frequency bars, which represent
-the number of metabolites at a given distance for the selected gene.
-Frequency bars are shown in grey for metabolites that are not associated with
-the selected gene and in red if there is at least one metabolite associated
-with this gene.
-
-If a gene or a metabolite is present on multiple edges or nodes, then the
+If a gene or a metabolite is present on multiple edges or nodes, then
+shortest distance are calculated for every combinaison possible and the
 shortest distance is selected.
+
+Output: barplot showing the distribution of the calculated distance, where
+red bars represent a distance with an associated metabolite and grey bars
+distance with no associated metabolites.
 }
 \examples{
 distributionGene(metabolismOverviewMapKEGGId,

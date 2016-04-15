@@ -442,6 +442,8 @@ numberOfReactions <- function(reactionDF,geneList) {
 
 numberOfMetabolites <- function(nodeDF,metaboliteList) {
     f <- lapply(metaboliteList, function(x) {
+
+
         nbreMetabolites <- length(grep(x, nodeDF$keggId))
 
         return <- nbreMetabolites;

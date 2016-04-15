@@ -5,9 +5,9 @@
 getHeadTailKgmlIdOfEdge <- function(g, hsaGene,  reactionDF){
 
     # return lines of DF that contains hsa gene
+    hsaGene_Grep<- paste("\\",hsaGene,"\\b",sep="")
+    listId <-grep(hsaGene_Grep, reactionDF$ko)
 
-    hsaGene1 <- paste("\\",hsaGene,"\\b",sep="")
-    listId <-grep(hsaGene1, reactionDF$ko)
 
     nodesVector1 <- data.frame();
     if(length(listId) > 1){
