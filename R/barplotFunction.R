@@ -29,8 +29,7 @@
 #' @examples distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId,
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
-distanceGeneToAllMetabolite <- function(pathwayId, data,
-                            metabolite, gene){
+distanceGeneToAllMetabolite <- function(pathwayId, data,metabolite, gene){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"error in metabolite, please input a dataframe of 1

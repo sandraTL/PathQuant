@@ -1,17 +1,12 @@
----
-title: "PathQuant vignette"
-author: "Sandra Therrien-Laperrière"
-date: "4 avril 2016"
-output: html_document
 
-vignette: |
-  %\VignetteIndexEntry{Vignette Title} %\VignetteEncoding{UTF-8} %\VignetteEngine{knitr::rmarkdown}
----
+# PathQuant Vignette 
+###author "Sandra Therrien-Laperrière"
+###date "4 avril 2016"
 
 ##Description  
 
-PathQuant aims to quantify associations between Genomic and 
-Metabolomic Data. To do so, PathQuant calculates distance in terms of reactions 
+PathQuant aims to quantify associations between gene-metabolite association.
+To do so, PathQuant calculates distance in terms of reactions 
 between Genes and Metabolites mapped on KEGG's metabolic pathway maps. We 
 developped functions to give the user tools to calculate dsitance for 
 associatiosn data, but also to be able to compare the distance of associated
@@ -19,10 +14,8 @@ gene/metabolite pairs to not associated pairs in a statistical manner.
 
 ## Info 
 
-The example data used is from the Shin & al Study [1]. The associatedGeneMetaDF
-is a subset of associated data including all associations where both elements
-have a KEGG Id. The completeMetaboliteDF is also a subset of all measured 
-metabolites in the Shin & al study including all metabolites habing a KEGG Id.
+The example data used is from the Shin & al Study [1]. 'associatedGeneMetaDF'
+is a subset of gene-metabolite associations reported in this study whereas 'completeMetaboliteDF' is all the measured metabolite of this study.
 
 ## Fonctions
 
@@ -30,7 +23,7 @@ metabolites in the Shin & al study including all metabolites habing a KEGG Id.
 library("PathQuant")
 ```
 ###getDistanceAsso Function 
-Thsi function enables the user to select a KEGG map on wich the associated data 
+This function enables the user to select a KEGG map on wich the associated data 
 will be mapped to calculate the shortest distance between each associations.The 
 output of the function is an exhaustive dataframe as it has the following 
 columns : geneKEGGId, geneCommonName, isGeneOnMap, metaboliteKEGGId, 
@@ -81,11 +74,10 @@ df1[1:5,]
 ```
 
 
-###distanceGeneToAllMetabolite Function
+###distributionGene Function
 This function calculates the distance between 1 gene and
 all metabolites measured. The output is a barplot showing the distribution of 
-the distance calulated. With a percentage of Inf distance. A red bar means an
-associated metabolite was found at this distance of the gene. 
+the distance calulated. The plot is depicted as frequency bars, which represent the number of metabolites at a given distance for the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
 
 ####Arguments : 
     pathwayId: is the KEGG Id of the selected map
@@ -98,12 +90,11 @@ associated metabolite was found at this distance of the gene.
     gene : KEGG ID of the selected gene used to calculates all distances from.
 
 ```{r, fig.width=7,fig.height=4}
-
 distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:1373")
 distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId, shinAndAlDF, completeMetaboDF, "hsa:27165")
-
-
 ```
+![CPS1](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
+![GLS2](https://github.com/sandraTL/PathQuant/blob/master/vignettes/GLS2.png)
 
 ###heatmapAsso Function 
 This function calculates the distance between every gene in a associations 
@@ -121,20 +112,13 @@ are on the selected map but no path exist between them.
 
 ```{r, fig.width=7,fig.height=4}
 heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
-
-
-```
-```{r}
-
-
-
 ```
 
+![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
 Metabolites.” Nature genetics 46.6 (2014): 543–550. PMC.
-
 
 
 
