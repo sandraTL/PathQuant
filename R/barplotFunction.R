@@ -170,7 +170,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                  label = legend_text,
                                  colour = "black",
                                  size=4,
-                                 family="Arial" )
+                                 family="Courier New" )
              + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
 
              + ggplot2::scale_fill_manual(values = c("FALSE" ="grey",
