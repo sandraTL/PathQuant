@@ -149,11 +149,11 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                       size=0.5, position="identity",width=1)
              + ggplot2::theme_bw()
              + ggplot2::theme(panel.border = ggplot2::element_blank(),
-                              panel.grid.major = ggplot2::element_blank(),
-                              panel.grid.minor = ggplot2::element_blank(),
-                              text = ggplot2::element_text(size=12,family="Arial"),
-                              axis.line.x = ggplot2::element_line(color="black"),
-                              axis.line.y = ggplot2::element_line(color="black")
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size=12,family="Courier New"),
+                 axis.line.x = ggplot2::element_line(color="black"),
+                 axis.line.y = ggplot2::element_line(color="black")
                               )
              + ggplot2::xlab("Distance from Gene")
              + ggplot2::ylab("Metabolite count")

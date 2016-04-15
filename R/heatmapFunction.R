@@ -105,7 +105,7 @@ heatmapAsso <- function(pathwayId, data){
             panel.border = ggplot2::element_rect(colour="black",fill=NA,size=2),
             panel.grid.major = ggplot2::element_blank(),
             panel.grid.minor = ggplot2::element_blank(),
-            text = ggplot2::element_text(size=12, family="Arial"),
+            text = ggplot2::element_text(size=12, family="Courier New"),
             axis.text=ggplot2::element_text(colour="black"),
             axis.text.x = ggplot2::element_text(angle=315,vjust=1,hjust=0))+
         ggplot2::scale_fill_gradientn(colours = colors)+

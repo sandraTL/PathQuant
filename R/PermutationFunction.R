@@ -400,7 +400,7 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
             panel.border = ggplot2::element_blank(),
             panel.grid.major = ggplot2::element_blank(),
             panel.grid.minor = ggplot2::element_blank(),
-            text = ggplot2::element_text(size = 12, family = "Arial"),
+            text = ggplot2::element_text(size = 12, family = "Courier New"),
             axis.line = ggplot2::element_line(colour = "black")
 
         )
