@@ -153,7 +153,7 @@ getNames <- function(geneId){
 
      while(foundName == FALSE){
 
-         allLines[i] <- str_trim(allLines[i], "both")
+         allLines[i] <- stringr::str_trim(allLines[i], "both")
          tmp <- strsplit(allLines[i], "\\s+|,|;")
 
          if(!is.null(tmp[[1]][1])){
