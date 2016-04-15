@@ -129,49 +129,49 @@ toStringPathFile <- function(pathwayId){
 
 getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
-    ### Vérifiez la connection internet
-    if(length(vectorOfKEGGIds) > 10 ){
-        count <- 0;
+        count <- 1;
         names <- character();
+
         while(count <= length(vectorOfKEGGIds)){
-            oldcount <- count + 1;
-            count <- count + 10;
-            query <- KEGGREST::keggGet(vectorOfKEGGIds[oldcount:count])
-            lenghtOfQuery <- length(query[])
-
-            names1 <- lapply(query[], function(x){
-                # return the first name of list of genes or metabolites
-                if(type == "gene"){
-                    tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
-                }else if(type == "metabolite"){
-                    tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
-
-                }
-
-                return <- tempName;
-
-            } )
+            names1<- getNames(vectorOfKEGGIds[count])
             names <- append(names,names1)
+            count <- count + 1;
         }
-        names <- do.call(rbind, names);
-    }else{
-        query <- KEGGREST::keggGet(vectorOfKEGGIds)
-        lenghtOfQuery <- length(query[])
-        names <- lapply(query[], function(x){
-            # return the first name of list of genes
 
-            if(type == "gene"){
-                tempName <- unlist(strsplit(x$NAME[1], "[,]"))[1];
+       return <- names;
 
+}
 
-            }else if(type == "metabolite"){
-                tempName <- unlist(strsplit(x$NAME[1], "[;]"))[1];
+getNames <- function(geneId){
 
-            }
-            return <- tempName;
-        } )
-        names <- do.call(rbind, names);
-    }
+    ### Vérifiez la connection internet
+     url <- getGeneInfoUrl(geneId)
+     foundName <- FALSE;
+     allLines <- readLines(url);
+     i <- 1;
+     name<- NULL;
 
-    return <- names;
+     while(foundName == FALSE){
+
+         allLines[i] <- str_trim(allLines[i], "both")
+         tmp <- strsplit(allLines[i], "\\s+|,|;")
+
+         if(!is.null(tmp[[1]][1])){
+            if(tmp[[1]][1] =="NAME"){
+
+             name <- tmp[[1]][2]
+             foundName <- TRUE;
+
+         }}
+
+         i <- i+1;
+     }
+     return <- name
+}
+
+getGeneInfoUrl <- function(geneId){
+
+ url <- "http://rest.kegg.jp/get/"
+ url <- paste(url, geneId, sep = "")
+ return <- url;
 }
