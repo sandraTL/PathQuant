@@ -151,7 +151,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
              + ggplot2::theme(panel.border = ggplot2::element_blank(),
                  panel.grid.major = ggplot2::element_blank(),
                  panel.grid.minor = ggplot2::element_blank(),
-                 text = ggplot2::element_text(size=12,family="Courier New"),
+                 text = ggplot2::element_text(size=12,family="Courier"),
                  axis.line.x = ggplot2::element_line(color="black"),
                  axis.line.y = ggplot2::element_line(color="black")
                               )
@@ -170,7 +170,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                  label = legend_text,
                                  colour = "black",
                                  size=4,
-                                 family="Courier New" )
+                                 family="Courier" )
              + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
 
              + ggplot2::scale_fill_manual(values = c("FALSE" ="grey",
