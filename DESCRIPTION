@@ -13,7 +13,7 @@ Description: Modeling of KEGG metabolism pathway maps to calculate shortest
 License: GNU-3
 Imports:
     igraph, XML, RUnit, ggplot2, data.table, knitr,rmarkdown,scales,stringr,
-    RCurl, Rtools
+    RCurl
 VignetteBuilder: knitr
 Suggests:
     testthat, knitr, rmarkdown
