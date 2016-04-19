@@ -2,22 +2,39 @@
 # PathQuant Vignette 
 ###author "Sandra Therrien-Laperrière"
 ###date "4 avril 2016"
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> refs/remotes/sandraTL/master
 
 ##Description  
+<<<<<<< HEAD
 PathQuant aims to quantify associations between gene-metabolite association.
 To do so, PathQuant calculates distance in terms of reactions between Genes and 
 Metabolites mapped on KEGG's metabolic pathway maps. We developped functions to 
 give the user tools to calculate dsitance for associatiosn data, but also to be 
 able to compare the distance of associated gene/metabolite pairs to not 
 associated pairs in a statistical manner.
+=======
+
+PathQuant aims to quantify associations between gene-metabolite association.
+To do so, PathQuant calculates distance in terms of reactions 
+between Genes and Metabolites mapped on KEGG's metabolic pathway maps. We 
+developped functions to give the user tools to calculate dsitance for 
+associatiosn data, but also to be able to compare the distance of associated
+gene/metabolite pairs to not associated pairs in a statistical manner.
+>>>>>>> e371826d85fa044c774058d5710b452889285f97
 
 ## Info 
 
 The example data used is from the Shin & al Study [1]. 'associatedGeneMetaDF'
+<<<<<<< HEAD
 is a subset of gene-metabolite associations reported in this study whereas 
 'completeMetaboliteDF' is all the measured metabolite of this study.
+=======
+is a subset of gene-metabolite associations reported in this study whereas 'completeMetaboliteDF' is all the measured metabolite of this study.
+>>>>>>> e371826d85fa044c774058d5710b452889285f97
 
 ## Fonctions
 
@@ -79,11 +96,15 @@ df1[1:5,]
 ###distributionGene Function
 This function calculates the distance between 1 gene and
 all metabolites measured. The output is a barplot showing the distribution of 
+<<<<<<< HEAD
 the distance calulated. The plot is depicted as frequency bars, which represent 
 the number of metabolites at a given distance for the selected gene. Frequency 
 bars are shown in grey for metabolites that are not associated with the selected
 gene and in red if there is at least one metabolite associated with this gene.
 
+=======
+the distance calulated. The plot is depicted as frequency bars, which represent the number of metabolites at a given distance for the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
+>>>>>>> e371826d85fa044c774058d5710b452889285f97
 
 ####Arguments : 
     pathwayId: is the KEGG Id of the selected map
@@ -125,7 +146,6 @@ heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
 Metabolites.” Nature genetics 46.6 (2014): 543–550. PMC.
-
 
 
 
