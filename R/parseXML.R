@@ -103,6 +103,7 @@ getKGMLRootNode <- function(pathwayId){
     pathFile <- toStringPathFile(pathwayId);
 
     if(is.na(file.info(pathFile)$size)== FALSE){
+
         xmlfile <- XML::xmlParse(pathFile);
         xmltop <- XML::xmlRoot(xmlfile); # gives content of root
     }else
@@ -118,11 +119,11 @@ getKGMLRootNode <- function(pathwayId){
 toStringPathFile <- function(pathwayId){
 
     # concatenation of pathwayId to set swdir for the xml
-    s1 <- "~/";
+
     s2 <-  toString(pathwayId);
-    s3 <- ".xml"
-    s4 <- paste(s1,s2, sep= "");
-    pathFile <- paste(s4, s3, sep="");
+    s3 <- ".txt"
+
+    pathFile <- paste(s2, s3, sep="");
 
     return <- pathFile;
 }
