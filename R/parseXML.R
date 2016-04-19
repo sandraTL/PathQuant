@@ -109,7 +109,6 @@ getKGMLRootNode <- function(pathwayId){
     }else
         xmltop = NULL;
 
-    #
     return <- xmltop;
 
 }

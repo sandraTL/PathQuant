@@ -8,15 +8,13 @@ gene-metabolite pairs and all metabolite.}
 getDistanceAll(pathwayId, data, metabolite)
 }
 \arguments{
-\item{pathwayId}{KEGG Id of selected map}
+\item{pathwayId}{KEGG Id of selected pathway.}
 
-\item{data}{is a dataFrame with 2 columns. Where each line
-reprensents an associations with the first column as
-gene KEGG Ids and the sencond column as metabolite
+\item{metabolite}{Dataframe of 1 column, representing all the measured
+metabolites. Only use KEGG Ids.}
+
+\item{gene}{Dataframe of 1 column, representing all genes reported. Only use
 KEGG Ids.}
-
-\item{metabolite}{is a dataframe of 1 column with the KEGG Ids of
-all measured metabolites.}
 }
 \description{
 Function calculating shortest distance between every gene in a
@@ -33,7 +31,7 @@ Output : dataframe with metabolite in columns and gene in rows with
          shortest distance values.
 }
 \examples{
-getDistanceAll(metabolismOverviewMapKEGGId,shinAndAlDF,
+getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
           completeMetaboDF)
 }
 \keyword{KEGG}
