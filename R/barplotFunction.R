@@ -26,10 +26,15 @@
 #' @keywords graph, shortestDistance, KEGG
 #'
 #' @export
-#' @examples distanceGeneToAllMetabolite(metabolismOverviewMapKEGGId,
+#' @examples distributionGene(metabolismOverviewMapKEGGId,
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
+<<<<<<< HEAD
 distanceGeneToAllMetabolite <- function(pathwayId, data,metabolite, gene){
+=======
+distributionGene <- function(pathwayId, data,
+                            metabolite, gene){
+>>>>>>> refs/remotes/sandraTL/master
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"error in metabolite, please input a dataframe of 1
@@ -148,11 +153,11 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                       size=0.5, position="identity",width=1)
              + ggplot2::theme_bw()
              + ggplot2::theme(panel.border = ggplot2::element_blank(),
-                              panel.grid.major = ggplot2::element_blank(),
-                              panel.grid.minor = ggplot2::element_blank(),
-                              text = ggplot2::element_text(size=12,family="Arial"),
-                              axis.line.x = ggplot2::element_line(color="black"),
-                              axis.line.y = ggplot2::element_line(color="black")
+                 panel.grid.major = ggplot2::element_blank(),
+                 panel.grid.minor = ggplot2::element_blank(),
+                 text = ggplot2::element_text(size=12),
+                 axis.line.x = ggplot2::element_line(color="black"),
+                 axis.line.y = ggplot2::element_line(color="black")
                               )
              + ggplot2::xlab("Distance from Gene")
              + ggplot2::ylab("Metabolite count")
@@ -168,8 +173,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                  y = (maxFrequency -0.5),
                                  label = legend_text,
                                  colour = "black",
-                                 size=4,
-                                 family="Arial" )
+                                 size=4 )
              + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
 
              + ggplot2::scale_fill_manual(values = c("FALSE" ="grey",

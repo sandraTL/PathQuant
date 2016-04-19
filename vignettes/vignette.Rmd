@@ -2,6 +2,11 @@
 # PathQuant Vignette 
 ###author "Sandra Therrien-Laperrière"
 ###date "4 avril 2016"
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> refs/remotes/sandraTL/master
 
 ##Description  
 

@@ -46,7 +46,7 @@ test_that("getDistanceAsso", {
     #test associatedGeneMetaDF wrong values as Input
     expect_error(getDistanceAsso("hsa01100",twoColWrongDF, F))
 
-    expect_error(getDistanceAsso("hsa01100",twoColWrongD1, F))
+    expect_error(getDistanceAsso("hsa01100",twoColWrongDF1, F))
 
     expect_error(getDistanceAsso("hsa01100",twoColWrongDF2, F))
 

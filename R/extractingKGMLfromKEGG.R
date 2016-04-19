@@ -14,8 +14,8 @@ getPathwayKGML <- function(pathwayId) {
     destfile <- toStringDestfile(pathwayId);
 
     op <- options(warn=2)
-    file <- tryCatch( download.file(adressfile, destfile,
-                                    quiet = TRUE,method = "curl"),error=function(e) e,
+    file <- tryCatch( download.file(adressfile, destfile, "libcurl")
+                      ,error=function(e) e,
                      warning=function(w) w)
 
     if(is(file,"warning")){
@@ -84,41 +84,41 @@ toCompoundAdressfile <- function(compoundKeggId){
     return <- adressfile;
 }
 
-# get list of all kinds metabolite in KEGG.
-getAllMetaboliteInKEGG <- function(){
-
-
-    metaboliteList <- as.vector(names(KEGGREST::keggList("cpd")))
-
-    metaboliteList <- gsub("cpd:", "", metaboliteList)
-   # adressfile <- "rest.kegg.jp/list/cpd";
-    return <- metaboliteList;
-}
-
-# get list of all human genes in KEGG
-getAllHumanGeneInKEGG<- function(){
-
-    geneList <- as.vector(names(KEGGREST::keggList("hsa")))
-    #adressfile <- "rest.kegg.jp/list/hsa";
-    return <- geneList;
-}
-
-# get a list of all metbolites on a specific map
-getAllMetaboliteInMap <- function(mapId){
-
-    metaboliteList <- as.vector(KEGGREST::keggLink("cpd",mapId))
-    metaboliteList <- gsub("cpd:", "", metaboliteList)
-
-    return <- metaboliteList;
-}
-
-# get list of all genes in a specific map
-getAllGeneInMap<- function(hsaId){
-
-    geneList <- as.vector(KEGGREST::keggLink("genes",hsaId))
-
-    return <- geneList;
-}
+# # get list of all kinds metabolite in KEGG.
+# getAllMetaboliteInKEGG <- function(){
+#
+#
+#     metaboliteList <- as.vector(names(KEGGREST::keggList("cpd")))
+#
+#     metaboliteList <- gsub("cpd:", "", metaboliteList)
+#    # adressfile <- "rest.kegg.jp/list/cpd";
+#     return <- metaboliteList;
+# }
+#
+# # get list of all human genes in KEGG
+# getAllHumanGeneInKEGG<- function(){
+#
+#     geneList <- as.vector(names(KEGGREST::keggList("hsa")))
+#     #adressfile <- "rest.kegg.jp/list/hsa";
+#     return <- geneList;
+# }
+#
+# # get a list of all metbolites on a specific map
+# getAllMetaboliteInMap <- function(mapId){
+#
+#     metaboliteList <- as.vector(KEGGREST::keggLink("cpd",mapId))
+#     metaboliteList <- gsub("cpd:", "", metaboliteList)
+#
+#     return <- metaboliteList;
+# }
+#
+# # get list of all genes in a specific map
+# getAllGeneInMap<- function(hsaId){
+#
+#     geneList <- as.vector(KEGGREST::keggLink("genes",hsaId))
+#
+#     return <- geneList;
+# }
 
 
 
