@@ -8,12 +8,11 @@ gene-metabolite associations in input.}
 heatmapAsso(pathwayId, data)
 }
 \arguments{
-\item{pathwayId}{KEGG Id of selected map}
+\item{pathwayId}{KEGG Id of selected pathway.}
 
-\item{data}{is a dataFrame with 2 columns. Where each line
-reprensents an associations with the first column as
-gene KEGG Ids and the sencond column as metabolite
-KEGG Ids.}
+\item{association}{Dataframe with 2 columns, where each line reprensents an
+associations. First column are the genes and the sencond column as the
+metabolites. Only use KEGG Ids.}
 }
 \description{
 Function calculting shortest distance between every genes and metabolites in

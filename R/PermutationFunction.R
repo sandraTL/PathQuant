@@ -11,15 +11,14 @@
 #' shortest distance are calculated for every combinaison possible and the
 #' shortest distance is selected.
 #'
-#' @param pathwayId KEGG Id of selected map
-#' @param data is a dataframe with 2 columns. Where each line
-#'        reprensents an associations with the first column as
-#'        gene KEGG Ids and the sencond column as metabolite
+#' @param pathwayId KEGG Id of selected pathway.
+#' @param association Dataframe with 2 columns, where each line reprensents an
+#'        associations. First column are the genes and the sencond column as the
+#'        metabolites. Only use KEGG Ids.
+#' @param gene Dataframe of 1 column, representing all genes reported. Only use
 #'        KEGG Ids.
-#' @param gene is a dataframe of 1 column with the KEGG Ids of
-#'        all measured genes.
-#' @param metabolite is a dataframe of 1 column with the KEGG Ids of
-#'        all measured metabolites.
+#' @param metabolite Dataframe of 1 column, representing all the measured
+#'        metabolites. Only use KEGG Ids.
 #' @param permutation is the number desired permutations
 #' @param output medians (list of median of every permutation), pvalue of the
 #'        permutation test, histogram (a histrogram representing the

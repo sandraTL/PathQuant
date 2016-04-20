@@ -13,11 +13,10 @@
 #' Output : Heatmap graphic where black countoured distances represent
 #'           an association.
 #'
-#' @param pathwayId  KEGG Id of selected map
-#' @param data  is a dataFrame with 2 columns. Where each line
-#'        reprensents an associations with the first column as
-#'        gene KEGG Ids and the sencond column as metabolite
-#'        KEGG Ids.
+#' @param pathwayId KEGG Id of selected pathway.
+#' @param association Dataframe with 2 columns, where each line reprensents an
+#'        associations. First column are the genes and the sencond column as the
+#'        metabolites. Only use KEGG Ids.
 #' @keywords graph, heatmap, shortestDistance, KEGG
 #' @export
 #' @examples heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)

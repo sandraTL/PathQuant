@@ -9,24 +9,23 @@ permutationTest(pathwayId, data, gene, metabolite, permutation,
   output = c("medians", "pvalue", "histogram"))
 }
 \arguments{
-\item{pathwayId}{KEGG Id of selected map}
+\item{pathwayId}{KEGG Id of selected pathway.}
 
-\item{data}{is a dataframe with 2 columns. Where each line
-reprensents an associations with the first column as
-gene KEGG Ids and the sencond column as metabolite
+\item{gene}{Dataframe of 1 column, representing all genes reported. Only use
 KEGG Ids.}
 
-\item{gene}{is a dataframe of 1 column with the KEGG Ids of
-all measured genes.}
-
-\item{metabolite}{is a dataframe of 1 column with the KEGG Ids of
-all measured metabolites.}
+\item{metabolite}{Dataframe of 1 column, representing all the measured
+metabolites. Only use KEGG Ids.}
 
 \item{permutation}{is the number desired permutations}
 
 \item{output}{medians (list of median of every permutation), pvalue of the
 permutation test, histogram (a histrogram representing the
 distribution of every permutation median)}
+
+\item{association}{Dataframe with 2 columns, where each line reprensents an
+associations. First column are the genes and the sencond column as the
+metabolites. Only use KEGG Ids.}
 }
 \description{
 Permutation test to evauluate if gene-metabolite associations pairs of

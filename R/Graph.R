@@ -189,14 +189,12 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
 #' isMetaboliteInMap, distance
 #'
-#' @param pathwayId  KEGG Id of selected map
-#' @param data  is a dataFrame with 2 columns. Where each line
-#'        reprensents an associations with the first column as
-#'        gene KEGG Ids and the sencond column as metabolite
-#'        KEGG Ids.
+#' @param pathwayId KEGG Id of selected pathway.
+#' @param association Dataframe with 2 columns, where each line reprensents an
+#'        associations. First column are the genes and the sencond column as the
+#'        metabolites. Only use KEGG Ids.
 #' @param ordered [option] ascendent ordering of distance
 #' @keywords graph, shortestDistance, KEGG
-#'
 #' @export
 #' @examples getDistanceAsso(metabolismOverviewMapKEGGId,shinAndAlDF)
 
@@ -590,17 +588,14 @@ mergeVectorsLowerValues <- function(A,B) {
 #' Output : dataframe with metabolite in columns and gene in rows with
 #'          shortest distance values.
 #'
-#' @param pathwayId KEGG Id of selected map
-#' @param data is a dataFrame with 2 columns. Where each line
-#'        reprensents an associations with the first column as
-#'        gene KEGG Ids and the sencond column as metabolite
+#' @param pathwayId KEGG Id of selected pathway.
+#' @param gene Dataframe of 1 column, representing all genes reported. Only use
 #'        KEGG Ids.
-#' @param metabolite is a dataframe of 1 column with the KEGG Ids of
-#'        all measured metabolites.
+#' @param metabolite Dataframe of 1 column, representing all the measured
+#'        metabolites. Only use KEGG Ids.
 #' @keywords graph, shortestDistance, KEGG
-#'
 #' @export
-#' @examples getDistanceAll(metabolismOverviewMapKEGGId,shinAndAlDF,
+#' @examples getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
 #'           completeMetaboDF)
 
 getDistanceAll <- function(pathwayId, data,

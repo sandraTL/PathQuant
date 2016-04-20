@@ -1,43 +1,37 @@
 
-#' A KEGG Function
-#'
-#' This function allows you to get a KGML format of a pathway and save
-#' xml format in data directory
-#' @param this function parses all data from kegg
-#' @keywords  kegg
-#' @examples
-#' getPathwayKGML("hsa01100")
+# A KEGG Function
+#
+# This function allows you to get a KGML format of a pathway and save
+# xml format in data directory
+# getPathwayKGML("hsa01100")
 
 getPathwayKGML <- function(pathwayId) {
 
-    adressfile <- toStringAdressfile(pathwayId);
-    destfile <- toStringDestfile(pathwayId);
+     adressfile <- toStringAdressfile(pathwayId)
+    destfile <- toStringDestfile(pathwayId)
 
-    op <- options(warn=2)
-    file <- tryCatch( download.file(adressfile, destfile, "libcurl")
-                      ,error=function(e) e,
-                     warning=function(w) w)
+    URL <- "http://rest.kegg.jp/get/hsa01100/kgml"
+    xmlFile <- RCurl::getURL(URL)
 
-    if(is(file,"warning")){
+    if (xmlFile == "") {
+        stop("pathway do not exist in KEGG database", call. = FALSE)
+    } else{
+        xmlFile <- XML::xmlParse(xmlFile)
 
-        if(file[1]$message == "download had nonzero exit status"){
-
-            stop("pathway do not exist in KEGG database",call. = FALSE )
-        }
+        XML::saveXML(xmlFile, file = destfile)
     }
+    return <- xmlFile
 
-return <-file;
 }
 
 #set path to store downloaded file
 toStringDestfile <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
-    s1 <- "~/";
-    setwd(s1);
+
     s2 <-  toString(pathwayId);
-    s3 <- ".xml"
-    s4 <- paste(s1,s2, sep= "");
-    destfile <- paste(s4, s3, sep="");
+    s3 <- ".txt"
+
+    destfile <- paste(s2, s3, sep="");
 
     return <- destfile;
 }
@@ -58,19 +52,19 @@ toStringAdressfile <- function(pathwayId){
 isFileInDirectory <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
 
-    bool = FALSE;
-    files <- list.files("~/")
-    s2 <-  toString(pathwayId);
-    s3 <- ".xml"
+    pathFile <- toStringDestfile(pathwayId)
+    bool <- FALSE;
+      res <-  tryCatch({
+             XML::xmlParse(pathFile)
+             bool <- TRUE
+         }, error = function(e) {
+             bool <- FALSE;
 
-    file <- paste(s2, s3, sep="");
-    m <- match(file, files, nomatch = NA, incomparables = NULL)
+         }, finally = {
+             return <- bool;
+         })
 
-    if(is.na(m) == FALSE){
-        bool = TRUE;
-    }
-
-    return <- bool;
+ return <- res;
 }
 
 # set adress to download compound kgml file

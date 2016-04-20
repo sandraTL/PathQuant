@@ -1,15 +1,15 @@
 
-#'Function fractioning reaction list from every gene from KGML file
-#'
-#'
-#'exemple : id R1... R2... R3... ko
-#' -> id R1 ko
-#' -> id R2 ko
-#' -> id R3 ko
-#'
-#' @param data frame des reactions extraites du KGML en listes
-#' @keywords  kegg
-#' @examples completeEdgeList(edgeDataFrame)
+# Function fractioning reaction list from every gene from KGML file
+#
+#
+# exemple : id R1... R2... R3... ko
+#  -> id R1 ko
+#  -> id R2 ko
+#  -> id R3 ko
+#
+#  @param data frame des reactions extraites du KGML en listes
+#  @keywords  kegg
+#  @examples completeEdgeList(edgeDataFrame)
 
 unlistEdgeReactionCol <- function(edgeDataFrame){
 

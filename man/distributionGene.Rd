@@ -10,13 +10,38 @@ distributionGene(pathwayId, associations, metabolite, gene)
 % Please edit documentation in R/barplotFunction.R
 \name{distributionGene}
 \alias{distributionGene}
-\title{Function calculating shortest distance between a selected gene of a
-gene-metabolite pairs and every metabolites.}
+\title{Distance distribution plots for single gene}
 \usage{
 distributionGene(pathwayId, data, metabolite, gene)
 >>>>>>> refs/remotes/sandraTL/master:man/distributionGene.Rd
 }
 \arguments{
+<<<<<<< HEAD
+\item{pathwayId}{KEGG Id of selected pathway.}
+
+\item{metabolite}{Dataframe of 1 column, representing all the measured
+metabolites. Only use KEGG Ids.}
+
+\item{association}{Dataframe with 2 columns, where each line reprensents an
+associations. First column are the genes and the sencond column as the
+metabolites. Only use KEGG Ids.}
+
+\item{Selected}{gene. Only use KEGG.}
+}
+\description{
+Function ploting the distribution of distances between a gene and all
+measured metabolite, highlithing the distance of its associated metabolites.
+}
+\details{
+The plot is depicted as frequency bars, which represent
+the number of metabolites at a given distance for the selected gene.
+Frequency bars are shown in grey for metabolites that are not associated with
+the selected gene and in red if there is at least one metabolite associated
+with this gene.
+
+If a gene or a metabolite is present on multiple edges or nodes, then the
+shortest distance is selected.
+=======
 \item{pathwayId}{KEGG Id of selected pathway}
 
 \item{associations}{Dataframe with 2 columns, where each line reprensents an associations. First column are the genes and the sencond column as the metabolites. Only use KEGG Ids.}
@@ -32,6 +57,7 @@ Function ploting the distribution of distances between a gene and all measured m
 Function calculating shortest distance between a selected gene and all measured metabolites.The plot is depicted as frequency bars, which represent the number of metabolites at a given distance for the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
 
 If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
+>>>>>>> e371826d85fa044c774058d5710b452889285f97
 }
 \examples{
 <<<<<<< HEAD:man/distanceGeneToAllMetabolite.Rd

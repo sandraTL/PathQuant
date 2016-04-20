@@ -1,30 +1,26 @@
 
-#' Function calculating shortest distance between a selected gene of a
-#' gene-metabolite pairs and every metabolites.
+#' Distance distribution plots for single gene
 #'
-#' Function calculating shortest distance between a selected gene of a
-#' gene-metabolite pairs and every metabolites (in a pair or not)
-#' on a graph model of KEGG map selected, where nodes are metabolites and
-#' reactions are edges.
+#' Function ploting the distribution of distances between a gene and all
+#' measured metabolite, highlithing the distance of its associated metabolites.
 #'
-#' If a gene or a metabolite is present on multiple edges or nodes, then
-#' shortest distance are calculated for every combinaison possible and the
+#' The plot is depicted as frequency bars, which represent
+#' the number of metabolites at a given distance for the selected gene.
+#' Frequency bars are shown in grey for metabolites that are not associated with
+#' the selected gene and in red if there is at least one metabolite associated
+#' with this gene.
+#'
+#' If a gene or a metabolite is present on multiple edges or nodes, then the
 #' shortest distance is selected.
 #'
-#' Output: barplot showing the distribution of the calculated distance, where
-#' red bars represent a distance with an associated metabolite and grey bars
-#' distance with no associated metabolites.
-#'
-#' @param pathwayId KEGG Id of selected map
-#' @param data is a dataFrame with 2 columns. Where each line
-#'        reprensents an associations with the first column as
-#'        gene KEGG Ids and the sencond column as metabolite
-#'        KEGG Ids.
-#' @param metabolite is a dataframe of 1 column with the KEGG Ids of
-#'        all measured metabolites.
-#' @param gene is the KEGG Id of the selected gene
+#' @param pathwayId KEGG Id of selected pathway.
+#' @param association Dataframe with 2 columns, where each line reprensents an
+#'        associations. First column are the genes and the sencond column as the
+#'        metabolites. Only use KEGG Ids.
+#' @param metabolite Dataframe of 1 column, representing all the measured
+#'        metabolites. Only use KEGG Ids.
+#' @param Selected gene. Only use KEGG.
 #' @keywords graph, shortestDistance, KEGG
-#'
 #' @export
 #' @examples distributionGene(metabolismOverviewMapKEGGId,
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
