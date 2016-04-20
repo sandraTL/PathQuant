@@ -25,12 +25,9 @@
 #' @examples distributionGene(metabolismOverviewMapKEGGId,
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
-<<<<<<< HEAD
-distanceGeneToAllMetabolite <- function(pathwayId, data,metabolite, gene){
-=======
-distributionGene <- function(pathwayId, data,
-                            metabolite, gene){
->>>>>>> refs/remotes/sandraTL/master
+
+distributionGene <- function(pathwayId, data, metabolite, gene){
+
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"error in metabolite, please input a dataframe of 1
