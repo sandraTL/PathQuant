@@ -4,33 +4,30 @@
 \alias{getDistanceAsso}
 \title{Function calculating shortest distance between each gene-metabolite pairs.}
 \usage{
-getDistanceAsso(pathwayId, data, ordered = FALSE)
+getDistanceAsso(pathwayId, association, ordered = FALSE)
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
 
-\item{ordered}{[option] ascendent ordering of distance}
-
 \item{association}{Dataframe with 2 columns, where each line reprensents an
 associations. First column are the genes and the sencond column as the
 metabolites. Only use KEGG Ids.}
+
+\item{ordered}{[option] ascendent ordering of distance}
 }
 \description{
-Function calculating shortest distance between each gene-metabolite pairs of
-your data parameter on a graph model of KEGG map selected, where nodes are
-metabolites and reactions are edges.
+Function calculating shortest distance between each gene-metabolite
+associations on your selected KEGG pathway.
 }
 \details{
-If a gene or a metabolite is present on multiple edges or nodes, then
-shortest distance are calculated for every combinaison possible and the
+If a gene or a metabolite is present on multiple edges or nodes, then the
 shortest distance is selected.
-
 Output : dataframe with the following columns : geneCommonName, geneKEGGId,
 isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
 isMetaboliteInMap, distance
 }
 \examples{
-getDistanceAsso(metabolismOverviewMapKEGGId,shinAndAlDF)
+getDistanceAsso("hsa01100",shinAndAlDF)
 }
 \keyword{KEGG}
 \keyword{graph,}

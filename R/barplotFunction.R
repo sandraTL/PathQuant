@@ -19,7 +19,7 @@
 #'        metabolites. Only use KEGG Ids.
 #' @param metabolite Dataframe of 1 column, representing all the measured
 #'        metabolites. Only use KEGG Ids.
-#' @param Selected gene. Only use KEGG.
+#' @param gene. Gene selected Only use KEGG.
 #' @keywords graph, shortestDistance, KEGG
 #' @export
 #' @examples distributionGene(metabolismOverviewMapKEGGId,

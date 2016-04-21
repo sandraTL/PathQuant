@@ -2,31 +2,27 @@
 #' Statistical permutation test to asses the relevance of associated
 #' gene-metabolite pairs vs. randomly selected pairs
 #'
-#' Permutation test to evauluate if gene-metabolite associations pairs of
-#' your association parameter are significantly closer than randomly selected
-#' gene-metabolite pairs by calculating shortest distance between assocatied
-#' gene-metabolite pairs vs. randomly selected pairs.
+#' Permutation test to evauluate if gene-metabolite associations are significantly closer than randomly selected
+#' gene-metabolite pairs.
 #'
-#' If a gene or a metabolite is present on multiple edges or nodes, then
-#' shortest distance are calculated for every combinaison possible and the
-#' shortest distance is selected.
+#' If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
 #'
 #' @param pathwayId KEGG Id of selected pathway.
 #' @param association Dataframe with 2 columns, where each line reprensents an
-#'        associations. First column are the genes and the sencond column as the
+#'        associations. First column are genes and the sencond column are
 #'        metabolites. Only use KEGG Ids.
 #' @param gene Dataframe of 1 column, representing all genes reported. Only use
 #'        KEGG Ids.
 #' @param metabolite Dataframe of 1 column, representing all the measured
 #'        metabolites. Only use KEGG Ids.
-#' @param permutation is the number desired permutations
-#' @param output medians (list of median of every permutation), pvalue of the
-#'        permutation test, histogram (a histrogram representing the
-#'        distribution of every permutation median)
+#' @param permutation Number desired permutations
+#' @param output 'medians' of all permutations, 'pvalue' of the
+#'        permutation test, 'histogram' representing the
+#'        distribution of all permutations' median
 #'
-#' @keywords permutation, statistic test, median, shrotestDistance, graph,KEGG
+#' @keywords permutation, statistic test, median, shrotestDistance, graph, KEGG
 #' @export
-#' @examples permutationFunction(metabolismOverviewMapKEGGId, shinAndAlDF,
+#' @examples permutationFunction("hsa01100", shinAndAlDF,
 #'             completeGeneDF,completeMetaboDF, 1000, "histogram")
 
 permutationTest <-

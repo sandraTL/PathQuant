@@ -5,11 +5,15 @@
 \title{Statistical permutation test to asses the relevance of associated
 gene-metabolite pairs vs. randomly selected pairs}
 \usage{
-permutationTest(pathwayId, data, gene, metabolite, permutation,
+permutationTest(pathwayId, association, gene, metabolite, permutation,
   output = c("medians", "pvalue", "histogram"))
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
+
+\item{association}{Dataframe with 2 columns, where each line reprensents an
+associations. First column are genes and the sencond column are
+metabolites. Only use KEGG Ids.}
 
 \item{gene}{Dataframe of 1 column, representing all genes reported. Only use
 KEGG Ids.}
@@ -17,32 +21,25 @@ KEGG Ids.}
 \item{metabolite}{Dataframe of 1 column, representing all the measured
 metabolites. Only use KEGG Ids.}
 
-\item{permutation}{is the number desired permutations}
+\item{permutation}{Number desired permutations}
 
-\item{output}{medians (list of median of every permutation), pvalue of the
-permutation test, histogram (a histrogram representing the
-distribution of every permutation median)}
-
-\item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
-metabolites. Only use KEGG Ids.}
+\item{output}{'medians' of all permutations, 'pvalue' of the
+permutation test, 'histogram' representing the
+distribution of all permutations' median}
 }
 \description{
-Permutation test to evauluate if gene-metabolite associations pairs of
-your data parameter are significantly closer than randomly selected
-gene-metabolite pairs by calculating shortest distance between assocatied
-gene-metabolite pairs vs. randomly selected pairs.
+Permutation test to evauluate if gene-metabolite associations are significantly closer than randomly selected
+gene-metabolite pairs.
 }
 \details{
-If a gene or a metabolite is present on multiple edges or nodes, then
-shortest distance are calculated for every combinaison possible and the
-shortest distance is selected.
+If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
 }
 \examples{
-permutationFunction(metabolismOverviewMapKEGGId, shinAndAlDF,
+permutationFunction("hsa01100", shinAndAlDF,
             completeGeneDF,completeMetaboDF, 1000, "histogram")
 }
-\keyword{graph,KEGG}
+\keyword{KEGG}
+\keyword{graph,}
 \keyword{median,}
 \keyword{permutation,}
 \keyword{shrotestDistance,}

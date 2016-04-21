@@ -5,20 +5,20 @@
 \title{Function calculating shortest distance between every gene in a
 gene-metabolite pairs and all metabolite.}
 \usage{
-getDistanceAll(pathwayId, data, metabolite)
+getDistanceAll(pathwayId, gene, metabolite)
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
 
-\item{metabolite}{Dataframe of 1 column, representing all the measured
-metabolites. Only use KEGG Ids.}
-
 \item{gene}{Dataframe of 1 column, representing all genes reported. Only use
 KEGG Ids.}
+
+\item{metabolite}{Dataframe of 1 column, representing all the measured
+metabolites. Only use KEGG Ids.}
 }
 \description{
 Function calculating shortest distance between every gene in a
-gene-metabolite pairs of your data parameter and every metabolite
+gene-metabolite pairs of your association parameter and every metabolite
 (in a pair or not) on a graph model of KEGG map selected, where nodes are
 metabolites and reactions are edges.
 }

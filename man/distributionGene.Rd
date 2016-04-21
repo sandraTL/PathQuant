@@ -4,19 +4,19 @@
 \alias{distributionGene}
 \title{Distance distribution plots for single gene}
 \usage{
-distributionGene(pathwayId, data, metabolite, gene)
+distributionGene(pathwayId, association, metabolite, gene)
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
-
-\item{metabolite}{Dataframe of 1 column, representing all the measured
-metabolites. Only use KEGG Ids.}
 
 \item{association}{Dataframe with 2 columns, where each line reprensents an
 associations. First column are the genes and the sencond column as the
 metabolites. Only use KEGG Ids.}
 
-\item{Selected}{gene. Only use KEGG.}
+\item{metabolite}{Dataframe of 1 column, representing all the measured
+metabolites. Only use KEGG Ids.}
+
+\item{gene.}{Gene selected Only use KEGG.}
 }
 \description{
 Function ploting the distribution of distances between a gene and all

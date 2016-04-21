@@ -16,14 +16,15 @@ and a metabolite in pathway.
 --- code to run package ---
 # If you don not have devtools installed
 install.packages("devtools")
-library(devtools)
 
 # Install PathQuant 
+library(devtools)
 devtools::install_github("SandraTL/PathQuant")
 library("PathQuant")
 ```
 
 ### Information
+
 License: [GNU General Public License (v3)](http://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ### Instructions
@@ -31,8 +32,11 @@ License: [GNU General Public License (v3)](http://www.gnu.org/licenses/gpl-3.0.e
 * [Userguide Manuel](https://github.com/sandraTL/PathQuant/blob/master/manual.pdf)
 * [Vignette](https://github.com/sandraTL/PathQuant/blob/master/vignettes/vignette.Rmd)
 
-  
+
+
 ### TODO
 
+* Add functionnalities for multiple KEGG map distance calculations
+ 
 
 
