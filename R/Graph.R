@@ -178,7 +178,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' Function calculating shortest distance between each gene-metabolite pairs.
 #'
 #' Function calculating shortest distance between each gene-metabolite pairs of
-#' your data parameter on a graph model of KEGG map selected, where nodes are
+#' your association parameter on a graph model of KEGG map selected, where nodes are
 #' metabolites and reactions are edges.
 #'
 #' If a gene or a metabolite is present on multiple edges or nodes, then
@@ -198,13 +198,13 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' @export
 #' @examples getDistanceAsso(metabolismOverviewMapKEGGId,shinAndAlDF)
 
-getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
+getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     finalDF <- data.frame();
 
     # test input parameters
-    test_getDistanceAsso(pathwayId,data)
+    test_getDistanceAsso(pathwayId,association)
 
     # graph creation
     if(!exists("graphe")){
@@ -212,7 +212,7 @@ getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
     }
 
     # modify function calculate distance directly for association
-    finalDF <- getFinalAssoDfSd(graphe, data);
+    finalDF <- getFinalAssoDfSd(graphe, association);
 
     # Change Na in finalDF to Inf value
     finalDF <- changeDFassoToRigthDistances(finalDF);
@@ -577,7 +577,7 @@ mergeVectorsLowerValues <- function(A,B) {
 #' gene-metabolite pairs and all metabolite.
 #'
 #' Function calculating shortest distance between every gene in a
-#' gene-metabolite pairs of your data parameter and every metabolite
+#' gene-metabolite pairs of your association parameter and every metabolite
 #' (in a pair or not) on a graph model of KEGG map selected, where nodes are
 #' metabolites and reactions are edges.
 #'
@@ -598,13 +598,13 @@ mergeVectorsLowerValues <- function(A,B) {
 #' @examples getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
 #'           completeMetaboDF)
 
-getDistanceAll <- function(pathwayId, data,
+getDistanceAll <- function(pathwayId, gene,
                            metabolite){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
 
     # test inputs
-    test_getDistanceAll(pathwayId, data, metabolite)
+    test_getDistanceAll(pathwayId, gene, metabolite)
 
     finalDF <- data.frame();
 
@@ -616,8 +616,8 @@ getDistanceAll <- function(pathwayId, data,
     #graph creation
     graphe <-  createGraphFromPathway(pathwayId);
 
-    finalDF <- getFinalDFSHortestDistance(graphe, data,
-                                                  metabolite );
+    finalDF <- getFinalDFSHortestDistance(graphe, gene,
+                                                  metabolite);
     return <- finalDF;
 
 
@@ -686,7 +686,7 @@ setMethod("getIdGeneInGraph", "Graph", function(object,
     f <- apply(data,1, function(x){
 
         # ' get both metabolites id from Graph related to the gene of data
-        m1 <- getHeadTailKgmlIdOfEdge(object@graph , x[1], object@edgeDF);
+        m1 <- getHeadTailKgmlIdOfEdge(object@graph , x, object@edgeDF);
 
     })
 

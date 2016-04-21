@@ -3,7 +3,7 @@
 #' gene-metabolite pairs vs. randomly selected pairs
 #'
 #' Permutation test to evauluate if gene-metabolite associations pairs of
-#' your data parameter are significantly closer than randomly selected
+#' your association parameter are significantly closer than randomly selected
 #' gene-metabolite pairs by calculating shortest distance between assocatied
 #' gene-metabolite pairs vs. randomly selected pairs.
 #'
@@ -30,7 +30,7 @@
 #'             completeGeneDF,completeMetaboDF, 1000, "histogram")
 
 permutationTest <-
-    function(pathwayId,data,gene,metabolite,
+    function(pathwayId,association,gene,metabolite,
              permutation,output = c("medians","pvalue","histogram")) {
 
         pathwayId <- gsub("hsa:", "hsa", pathwayId)
@@ -43,13 +43,13 @@ permutationTest <-
         # initalise vector for medians of all permutations
         permutatedMedians <- rep(NA,permutation)
 
-        # change data to eliminate associations not where the gene or
+        # change association to eliminate associations not where the gene or
         # the metabolite or both are not in the graph
-        geneList <- (data[,1])
+        geneList <- (association[,1])
 
         rGeneList <- numberOfReactions(graphe@edgeDF,geneList)
 
-        metaboliteList <- (data[,2])
+        metaboliteList <- (association[,2])
         rMetaboliteList <-
             numberOfMetabolites(graphe@nodeDF, metaboliteList)
 
@@ -64,10 +64,10 @@ permutationTest <-
         tempDf1 <- removeNotInGraph(tempDf1)
         rGeneList <- as.numeric(as.vector(tempDf1[,2]))
         rMetaboliteList <- as.numeric(as.vector(tempDf1[,4]))
-        data <- subset(tempDf1, select = c(1,3))
+        association <- subset(tempDf1, select = c(1,3))
 
-        geneList <- as.vector(unique(data[,1]))
-        metaboliteList <- as.vector(unique(data[,2]))
+        geneList <- as.vector(unique(association[,1]))
+        metaboliteList <- as.vector(unique(association[,2]))
 
         # making sure there is no doubles in the list of all gene measured
         gene <- unique(gene)
@@ -185,11 +185,11 @@ permutationTest <-
                     rPossibleGeneToPermutate[-genePositionShuffled]
             }
 
-            permutatedData <- data.frame(data);
+            permutatedData <- data.frame(association);
             rownames(permutatedData) <-
                 c(1:length(permutatedData[,1]))
 
-            # create new 'data' where associated genes and metabolites
+            # create new 'association' where associated genes and metabolites
             # are replace by shuffle genes and metabolites for genes
 
             for (j in 1:length(geneList)) {
@@ -316,7 +316,7 @@ permutationTest <-
         }
         # get median distance associated
         distAssociated <-
-            getDistanceAssoPerm(pathwayId,data,F)
+            getDistanceAssoPerm(pathwayId,association,F)
 
         medianAssociated <- median(distAssociated$distance)
 
@@ -336,7 +336,7 @@ permutationTest <-
             permutatedMedians <-
                 data.frame("medians" =  permutatedMedians);
 
-            histogramFunction(permutatedMedians, medianAssociated);
+            histogramFunction(permutatedMedians, medianAssociated,permutation);
 
         }
     }

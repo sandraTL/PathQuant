@@ -3,7 +3,7 @@
 #' gene-metabolite associations in input.
 #'
 #' Function calculting shortest distance between every genes and metabolites in
-#' a gene-metabolite pairs of your data parameter on a graph model of KEGG map
+#' a gene-metabolite pairs of your association parameter on a graph model of KEGG map
 #' selected, where nodes are metabolites and reactions are edges.
 #'
 #' If a gene or a metabolite is present on multiple edges or nodes, then
@@ -21,9 +21,9 @@
 #' @export
 #' @examples heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
 
-heatmapAsso <- function(pathwayId, data){
+heatmapAsso <- function(pathwayId, association){
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <-"Error in input associatedGeneMetaboDF, please enter you data
+    mError1 <-"Error in input associatedGeneMetaboDF, please enter you association
              where colnames(df) <- c(gene,metabolite) frame with
              KEGG ids of genes (ex : hsa:00001) in first
              column and associated KEGG ids metabolites (ex: C00001)
@@ -32,29 +32,29 @@ heatmapAsso <- function(pathwayId, data){
              or the metabolite or both weren't mapped on the selected pathway.
              Thus, no distance was calculated"
 
-    if(length(data) == 0){
+    if(length(association) == 0){
         stop(mError1, call. = FALSE);
     }
-    if(!is.data.frame(data) ||
-       length(data[1,])< 2 ||
-       length(data[1,])> 3){
+    if(!is.data.frame(association) ||
+       length(association[1,])< 2 ||
+       length(association[1,])> 3){
         stop(mError1, call. = FALSE);
     }
-    for(row in 1:nrow(data)){
+    for(row in 1:nrow(association)){
 
-        if(substr(data[row,1],1,4)!="hsa:")
+        if(substr(association[row,1],1,4)!="hsa:")
             stop(mError1, call. = FALSE);
-        if(substr(data[row,2],0,1) != "C"
-           && length(data[row,2]) != 5)
+        if(substr(association[row,2],0,1) != "C"
+           && length(association[row,2]) != 5)
             stop(mError1, call. = FALSE);
     }
 
     graphe <-  createGraphFromPathway(pathwayId);
-    rGeneList<-numberOfReactions(graphe@edgeDF,data[,1])
-    rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, data[,2])
-    tempDf1 <- data.frame(cbind(g1 = as.vector(data[,1]),
+    rGeneList<-numberOfReactions(graphe@edgeDF,association[,1])
+    rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, association[,2])
+    tempDf1 <- data.frame(cbind(g1 = as.vector(association[,1]),
                                 g2 = as.vector(as.numeric(rGeneList)),
-                                m1 = as.vector(data[,2]),
+                                m1 = as.vector(association[,2]),
                                 m2 = as.vector(as.numeric(rMetaboliteList))))
 
     tempDf1 <- removeNotInGraph(tempDf1)
@@ -62,11 +62,11 @@ heatmapAsso <- function(pathwayId, data){
     if(nrow(tempDf1) == 0 ){
         stop(mError2, call. = FALSE)
     }
-    data <- subset(tempDf1[,c(1,3)])
+    association <- subset(tempDf1[,c(1,3)])
 
-    data1 <- data.frame(c(data[2]))
+    data1 <- data.frame(c(association[2]))
 
-    AllSP <- getDistanceAll(pathwayId, data, data1);
+    AllSP <- getDistanceAll(pathwayId, association, data1);
 
     geneCommonName <- getCommonNames(as.vector(unlist(rownames(AllSP))), "gene")
     geneCommonName <- as.vector(unlist(geneCommonName))
@@ -77,7 +77,7 @@ heatmapAsso <- function(pathwayId, data){
     #print(cbind(AllSP, geneCommonName, metaboliteCommonName))
     tempDat <- data.frame(Row = rep(rownames(AllSP), each= ncol(AllSP)),
                           Col = rep(colnames(AllSP), times= nrow(AllSP)))
-    isAsso <- getAssociationForHeatmap(data, tempDat)
+    isAsso <- getAssociationForHeatmap(association, tempDat)
 
 
 

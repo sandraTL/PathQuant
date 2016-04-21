@@ -26,63 +26,63 @@
 #' shinAndAlDF, completeMetaboDF, "hsa:1373")
 
 
-distributionGene <- function(pathwayId, data, metabolite, gene){
+distributionGene <- function(pathwayId, association, metabolite, gene){
 
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     mError1 <-"error in metabolite, please input a dataframe of 1
     column with a list of KEGG ids metabolites (ex: C00001)"
 
-    mError2 <-"error in data,
+    mError2 <-"error in association,
     where colnames(df) <- c(gene,metabolite) frame with
     KEGG ids of genes (ex : hsa:00001) in first
     column and associated KEGG ids metabolites (ex: C00001)
     in second column"
 
     mError3 <- "error in argument gene, the gene entered doesn't match any
-                gene in data"
+                gene in association"
 
 
-    #test data
+    #test association
     if(is.data.frame(metabolite) && nrow(metabolite)==0){
         stop(mError1, call. = FALSE);
     }
-    if(!is.data.frame(data) ||
-       length(data[1,])< 2 ||
-       length(data[1,])> 3){
+    if(!is.data.frame(association) ||
+       length(association[1,])< 2 ||
+       length(association[1,])> 3){
 
         stop(mError2, call. = FALSE)
     }
     for(row in 1:nrow(metabolite)){
 
         if(substr(metabolite[row,1],0,1) != "C"
-           && length(data[row,1]) != 5)
+           && length(association[row,1]) != 5)
             stop(mError1, call. = FALSE);
 
     }
-    for(row in 1:nrow(data)){
+    for(row in 1:nrow(association)){
 
-        if(substr(data[row,1],1,4)!="hsa:")
+        if(substr(association[row,1],1,4)!="hsa:")
             stop(mError2, call. = FALSE);
-        if(substr(data[row,2],0,1) != "C"
-           && length(data[row,2]) != 5)
+        if(substr(association[row,2],0,1) != "C"
+           && length(association[row,2]) != 5)
             stop(mError2, call. = FALSE);
     }
 
     if(length(data.frame(
-        data[data$gene == gene,])[,1]) == 0){
+        association[association$gene == gene,])[,1]) == 0){
 
         stop(mError3, call. = FALSE);
     }
 
 
-    # get all shortest paths from data entry
+    # get all shortest paths from association entry
     shortestsPathsDF <- data.frame(t(getDistanceAll(pathwayId,
-                     data[data$gene == gene,],
+                     association[association$gene == gene,],
                      metabolite)));
 
     associatedMetabo <- data.frame(
-                        getAssociatedMetaboByGene(data,gene))
+                        getAssociatedMetaboByGene(association,gene))
 
     # adjust gene parameter
     gene1 <- gsub(":", ".", gene);
@@ -167,7 +167,8 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                  label = legend_text,
                                  colour = "black",
                                  size=4 )
-             + ggplot2::scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8,10) )
+             + ggplot2::scale_y_continuous(expand = c(0,0),
+                                           breaks = c(2,4,6,8,10))
 
              + ggplot2::scale_fill_manual(values = c("FALSE" ="grey",
                                                      "TRUE" = "red3"),
