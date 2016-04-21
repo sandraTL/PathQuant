@@ -188,7 +188,7 @@ getFrequenceAssociationsDF <- function(frequenceDistDF,shortestsPathsDF,gene){
     test = FALSE;
     results <- data.frame();
 
-    #' creation of vector to fill bar colors automatically
+    # creation of vector to fill bar colors automatically
     for(row1 in 1:nrow(frequenceDistDF)){
         test = FALSE;
         for(row2 in 1:nrow(shortestsPathsDF)){
@@ -213,11 +213,11 @@ getFrequenceAssociationsDF <- function(frequenceDistDF,shortestsPathsDF,gene){
 
 getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
 
-    #' initiation of values
+    # initiation of values
     test = FALSE;
     results <- data.frame();
 
-    #' buiding boolean associations DF
+    # buiding boolean associations DF
     for(row1 in 1:nrow(assoDistanceDF)){
         test = FALSE;
         for(row2 in 1:nrow(associatedMetaboDF)){
