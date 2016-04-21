@@ -23,7 +23,7 @@ distributionGene(pathwayId, data, metabolite, gene)
 metabolites. Only use KEGG Ids.}
 
 \item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
+associations. First column are genes and sencond column are the
 metabolites. Only use KEGG Ids.}
 
 \item{Selected}{gene. Only use KEGG.}
@@ -61,11 +61,7 @@ If a gene or a metabolite is present on multiple edges or nodes, then the shorte
 }
 \examples{
 
-distributionGene("hsa01100",
-=======
-distributionGene(metabolismOverviewMapKEGGId,
-
-shinAndAlDF, completeMetaboDF, "hsa:1373")
+distributionGene("hsa01100",shinAndAlDF, completeMetaboDF, "hsa:1373")
 }
 \keyword{KEGG}
 \keyword{graph,}

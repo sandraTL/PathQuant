@@ -6,20 +6,18 @@
 #' a gene-metabolite pairs of your data parameter on a graph model of KEGG map
 #' selected, where nodes are metabolites and reactions are edges.
 #'
-#' If a gene or a metabolite is present on multiple edges or nodes, then
-#' shortest distance are calculated for every combinaison possible and the
-#' shortest distance is selected.
+#' If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
 #'
-#' Output : Heatmap graphic where black countoured distances represent
-#'           an association.
+#' Output : Heatmap of distances calculated between associated genes-metabolites.
+#' Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). 
 #'
 #' @param pathwayId KEGG Id of selected pathway.
 #' @param association Dataframe with 2 columns, where each line reprensents an
-#'        associations. First column are the genes and the sencond column as the
+#'        associations. First column are genes and the sencond column are
 #'        metabolites. Only use KEGG Ids.
 #' @keywords graph, heatmap, shortestDistance, KEGG
 #' @export
-#' @examples heatmapAsso(metabolismOverviewMapKEGGId, shinAndAlDF)
+#' @examples heatmapAsso("hsa01100", shinAndAlDF)
 
 heatmapAsso <- function(pathwayId, data){
     pathwayId <- gsub("hsa:", "hsa", pathwayId)

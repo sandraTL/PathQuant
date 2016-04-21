@@ -194,7 +194,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #' @param ordered [option] ascendent ordering of distance
 #' @keywords graph, shortestDistance, KEGG
 #' @export
-#' @examples getDistanceAsso(metabolismOverviewMapKEGGId,shinAndAlDF)
+#' @examples getDistanceAsso("hsa01100",shinAndAlDF)
 
 getDistanceAsso <- function(pathwayId, data, ordered = FALSE){
 
