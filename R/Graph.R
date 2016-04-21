@@ -177,14 +177,12 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 
 #' Function calculating shortest distance between each gene-metabolite pairs.
 #'
-#' Function calculating shortest distance between each gene-metabolite pairs of
-#' your data parameter on a graph model of KEGG map selected, where nodes are
-#' metabolites and reactions are edges.
+#' Function calculating shortest distance between each gene-metabolite associations on your selected 
+#' KEGG pathway. 
 #'
-#' If a gene or a metabolite is present on multiple edges or nodes, then
-#' shortest distance are calculated for every combinaison possible and the
+#'
+#' If a gene or a metabolite is present on multiple edges or nodes, then the
 #' shortest distance is selected.
-#'
 #' Output : dataframe with the following columns : geneCommonName, geneKEGGId,
 #' isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
 #' isMetaboliteInMap, distance

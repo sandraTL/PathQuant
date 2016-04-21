@@ -1,4 +1,4 @@
-<<<<<<< HEAD:man/distanceGeneToAllMetabolite.Rd
+
 
 \name{distributionGene}
 \alias{distributionGene}
@@ -13,10 +13,10 @@ distributionGene(pathwayId, associations, metabolite, gene)
 \title{Distance distribution plots for single gene}
 \usage{
 distributionGene(pathwayId, data, metabolite, gene)
->>>>>>> refs/remotes/sandraTL/master:man/distributionGene.Rd
+
 }
 \arguments{
-<<<<<<< HEAD
+
 \item{pathwayId}{KEGG Id of selected pathway.}
 
 \item{metabolite}{Dataframe of 1 column, representing all the measured
@@ -57,14 +57,14 @@ Function ploting the distribution of distances between a gene and all measured m
 Function calculating shortest distance between a selected gene and all measured metabolites.The plot is depicted as frequency bars, which represent the number of metabolites at a given distance for the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
 
 If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
->>>>>>> e371826d85fa044c774058d5710b452889285f97
+
 }
 \examples{
-<<<<<<< HEAD:man/distanceGeneToAllMetabolite.Rd
+
 distributionGene("hsa01100",
 =======
 distributionGene(metabolismOverviewMapKEGGId,
->>>>>>> refs/remotes/sandraTL/master:man/distributionGene.Rd
+
 shinAndAlDF, completeMetaboDF, "hsa:1373")
 }
 \keyword{KEGG}
