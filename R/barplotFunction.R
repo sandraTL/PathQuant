@@ -75,11 +75,11 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
         stop(mError3, call. = FALSE);
     }
 
-
+    geneDF <- data.frame("gene" = c(gene))
     # get all shortest paths from association entry
     shortestsPathsDF <- data.frame(t(getDistanceAll(pathwayId,
-                     association[association$gene == gene,],
-                     metabolite)));
+                                                    geneDF,metabolite)));
+
 
     associatedMetabo <- data.frame(
                         getAssociatedMetaboByGene(association,gene))
@@ -133,7 +133,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
     frequenceDF <- frequenceDF[-length(frequenceDF[,1]),]
     maxDistance <- as.numeric(as.character(frequenceDF[nrow(frequenceDF),][,1]))
     maxFrequency <- max(frequenceDF$Freq, na.rm = TRUE)
-
+print(numInfValue)
     legend_text <- paste("infinite distance count: ",numInfValue, sep = "")
 
     plot <- ggplot2::ggplot(frequenceDF, ggplot2::aes(

@@ -215,6 +215,7 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
     # Change Na in finalDF to Inf value
     finalDF <- changeDFassoToRigthDistances(finalDF);
 
+
     # order result by increasing distances
     finalDF$distance[is.na(finalDF$distance)] <- NaN;
 
@@ -404,7 +405,8 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
     #########################################################################
     #####  Add condition to insure indexMetabolite can only be 1 or 2   #####
     #########################################################################
-    testDataDF <- apply(data,1,function(x){
+
+     testDataDF <- apply(data,1,function(x){
         if(substr(x[1],0,4) != "hsa:"){
 
             stop("genes are not all valide KEGGId's",call. = FALSE )
@@ -424,7 +426,6 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
 
         #  get both metabolites id from Graph related to the gene of data
         m1 <- getHeadTailKgmlIdOfEdge(object@graph , x[1], object@edgeDF);
-
 
         #  get metabolites id from Graph of dat
         m2 <- getCompoundNodeKgmlId(object@graph, x[2], object@nodeDF);
@@ -517,7 +518,6 @@ setGeneric("getFinalAssoDfSd", function(object, data)
 setMethod("getFinalAssoDfSd", "Graph", function(object, data){
 
     finalDF <- data.frame();
-
 
     # indexMetabolite = 1 to get the first metabolite attached to gene
     m1g <- fromAssosDFEntryToIGraphIdDF(object, data, 1);

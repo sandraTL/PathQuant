@@ -9,7 +9,7 @@
 #' If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
 #'
 #' Output : Heatmap of distances calculated between associated genes-metabolites.
-#' Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). 
+#' Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest).
 #'
 #' @param pathwayId KEGG Id of selected pathway.
 #' @param association Dataframe with 2 columns, where each line reprensents an
@@ -21,7 +21,7 @@
 
 heatmapAsso <- function(pathwayId, association){
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <-"Error in input associatedGeneMetaboDF, please enter you association
+    mError1 <-"Error in input association, please enter you association
              where colnames(df) <- c(gene,metabolite) frame with
              KEGG ids of genes (ex : hsa:00001) in first
              column and associated KEGG ids metabolites (ex: C00001)
@@ -54,17 +54,18 @@ heatmapAsso <- function(pathwayId, association){
                                 g2 = as.vector(as.numeric(rGeneList)),
                                 m1 = as.vector(association[,2]),
                                 m2 = as.vector(as.numeric(rMetaboliteList))))
-
+print(tempDf1)
     tempDf1 <- removeNotInGraph(tempDf1)
 
     if(nrow(tempDf1) == 0 ){
         stop(mError2, call. = FALSE)
     }
     association <- subset(tempDf1[,c(1,3)])
+    gene<- data.frame(c(association[1]))
+    metabolite <- data.frame(c(association[2]))
+   print(association)
 
-    data1 <- data.frame(c(association[2]))
-
-    AllSP <- getDistanceAll(pathwayId, association, data1);
+    AllSP <- getDistanceAll(pathwayId, gene, metabolite);
 
     geneCommonName <- getCommonNames(as.vector(unlist(rownames(AllSP))), "gene")
     geneCommonName <- as.vector(unlist(geneCommonName))
@@ -72,7 +73,6 @@ heatmapAsso <- function(pathwayId, association){
     metaboliteCommonName <- getCommonNames(as.vector(unlist(colnames(AllSP))),
                                            "metabolite")
     metaboliteCommonName <- as.vector(unlist(metaboliteCommonName))
-    #print(cbind(AllSP, geneCommonName, metaboliteCommonName))
     tempDat <- data.frame(Row = rep(rownames(AllSP), each= ncol(AllSP)),
                           Col = rep(colnames(AllSP), times= nrow(AllSP)))
     isAsso <- getAssociationForHeatmap(association, tempDat)
