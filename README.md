@@ -14,7 +14,7 @@ and a metabolite in pathway.
 
 ```r
 --- code to run package ---
-# If you don not have devtools installed
+# If you do not have devtools installed
 install.packages("devtools")
 
 # Install PathQuant 
