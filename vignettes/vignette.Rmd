@@ -55,8 +55,8 @@ It enables the comparison of distances between de associated metabolite vs. non 
 
 ####Arguments : 
     pathwayId: KEGG Id of selected pathway.
-    association :Dataframe with 2 columns, where each line reprensents an
-                           associations. First column are genes and the sencond                                  column as the metabolites. Only use KEGG Ids.
+    completeGeneDF :is a dataframe of 1 column with the KEGG Ids of
+                           all measured genes.
     completeMetaboliteDF : is a dataframe of 1 column with the KEGG Ids of
                            all measured metabolites.
 
