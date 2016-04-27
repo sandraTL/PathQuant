@@ -62,7 +62,7 @@ It enables the comparison of distances between de associated metabolite vs. non 
 
 
 ```{r, size=12}
-df1 <- getDistanceAll("hsa01100", shinAndAlDF, completeMetaboDF)
+df1 <- getDistanceAll("hsa01100", completeGeneDF, completeMetaboDF)
 df1[1:5,]
 ```
 
