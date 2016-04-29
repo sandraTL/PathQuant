@@ -30,6 +30,10 @@ permutationTest <-
              permutation,output = c("medians","pvalue","histogram")) {
 
         pathwayId <- gsub("hsa:", "hsa", pathwayId)
+
+        test_permutationTest(pathwayId, association, gene, metabolite,
+                             permutation, output)
+
         gene <- c(t(gene))
         metabolite <- c(t(metabolite))
 

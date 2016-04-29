@@ -21,32 +21,12 @@
 
 heatmapAsso <- function(pathwayId, association){
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <-"Error in input association, please enter you association
-             where colnames(df) <- c(gene,metabolite) frame with
-             KEGG ids of genes (ex : hsa:00001) in first
-             column and associated KEGG ids metabolites (ex: C00001)
-             in second column"
+
     mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
              or the metabolite or both weren't mapped on the selected pathway.
              Thus, no distance was calculated"
 
-    if(length(association) == 0){
-        stop(mError1, call. = FALSE);
-    }
-    if(!is.data.frame(association) ||
-       length(association[1,])< 2 ||
-       length(association[1,])> 3){
-        stop(mError1, call. = FALSE);
-    }
-    for(row in 1:nrow(association)){
-
-        if(substr(association[row,1],1,4)!="hsa:")
-            stop(mError1, call. = FALSE);
-        if(substr(association[row,2],0,1) != "C"
-           && length(association[row,2]) != 5)
-            stop(mError1, call. = FALSE);
-    }
-
+    test_heatmap(pathwayId, association);
     graphe <-  createGraphFromPathway(pathwayId);
     rGeneList<-numberOfReactions(graphe@edgeDF,association[,1])
     rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, association[,2])
@@ -54,7 +34,7 @@ heatmapAsso <- function(pathwayId, association){
                                 g2 = as.vector(as.numeric(rGeneList)),
                                 m1 = as.vector(association[,2]),
                                 m2 = as.vector(as.numeric(rMetaboliteList))))
-print(tempDf1)
+
     tempDf1 <- removeNotInGraph(tempDf1)
 
     if(nrow(tempDf1) == 0 ){
@@ -63,7 +43,7 @@ print(tempDf1)
     association <- subset(tempDf1[,c(1,3)])
     gene<- data.frame(c(association[1]))
     metabolite <- data.frame(c(association[2]))
-   print(association)
+
 
     AllSP <- getDistanceAll(pathwayId, gene, metabolite);
 

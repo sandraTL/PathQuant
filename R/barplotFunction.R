@@ -29,51 +29,11 @@
 distributionGene <- function(pathwayId, association, metabolite, gene){
 
 
-    pathwayId <- gsub("hsa:", "hsa", pathwayId)
-    mError1 <-"error in metabolite, please input a dataframe of 1
-    column with a list of KEGG ids metabolites (ex: C00001)"
-
-    mError2 <-"error in association,
-    where colnames(df) <- c(gene,metabolite) frame with
-    KEGG ids of genes (ex : hsa:00001) in first
-    column and associated KEGG ids metabolites (ex: C00001)
-    in second column"
-
-    mError3 <- "error in argument gene, the gene entered doesn't match any
-                gene in association"
+    pathwayId <- gsub("hsa:", "hsa", pathwayId);
+    test_distributionGene(pathwayId, association, metabolite, gene);
 
 
-    #test association
-    if(is.data.frame(metabolite) && nrow(metabolite)==0){
-        stop(mError1, call. = FALSE);
-    }
-    if(!is.data.frame(association) ||
-       length(association[1,])< 2 ||
-       length(association[1,])> 3){
 
-        stop(mError2, call. = FALSE)
-    }
-    for(row in 1:nrow(metabolite)){
-
-        if(substr(metabolite[row,1],0,1) != "C"
-           && length(association[row,1]) != 5)
-            stop(mError1, call. = FALSE);
-
-    }
-    for(row in 1:nrow(association)){
-
-        if(substr(association[row,1],1,4)!="hsa:")
-            stop(mError2, call. = FALSE);
-        if(substr(association[row,2],0,1) != "C"
-           && length(association[row,2]) != 5)
-            stop(mError2, call. = FALSE);
-    }
-
-    if(length(data.frame(
-        association[association$gene == gene,])[,1]) == 0){
-
-        stop(mError3, call. = FALSE);
-    }
 
     geneDF <- data.frame("gene" = c(gene))
     # get all shortest paths from association entry
@@ -133,7 +93,7 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
     frequenceDF <- frequenceDF[-length(frequenceDF[,1]),]
     maxDistance <- as.numeric(as.character(frequenceDF[nrow(frequenceDF),][,1]))
     maxFrequency <- max(frequenceDF$Freq, na.rm = TRUE)
-print(numInfValue)
+
     legend_text <- paste("infinite distance count: ",numInfValue, sep = "")
 
     plot <- ggplot2::ggplot(frequenceDF, ggplot2::aes(
