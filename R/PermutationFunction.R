@@ -316,7 +316,7 @@ permutationTest <-
             getDistanceAssoPerm(pathwayId,association,F)
 
         medianAssociated <- median(distAssociated$distance)
-
+        print(medianAssociated)
         # output functions
         if (output == "medians") {
             #return <- distPermutated
@@ -333,7 +333,11 @@ permutationTest <-
             permutatedMedians <-
                 data.frame("medians" =  permutatedMedians);
 
+<<<<<<< HEAD
             histogramFunction(permutatedMedians, medianAssociated,permutation);
+=======
+            histogramFunction(permutatedMedians, medianAssociated, permutation);
+>>>>>>> permutation graph, + parse of ortholog genes start
 
         }
     }
@@ -409,6 +413,7 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
                              fill = "grey80")
         + ggplot2::annotate("text", x = maxDistance -1.5, y = maxFrequencie-0.25 ,
                  label = legend_text,colour = "black",size=5)
+
         + ggplot2::xlab("Permutated Medians")
         + ggplot2::ylab("Frenquency (%)")
         + ggplot2::scale_y_continuous(expand = c(0,0))

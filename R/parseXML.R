@@ -98,6 +98,58 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
 
 }
 
+# This function extract from KGML a list of reaction of entry-type "gene"
+# Returns a dataFrame object : id, entryId, reaction, ko
+
+getListOrthologGeneFromKGML <- function(pathwayId) {
+
+    # get the root of the KGML document
+    xmltop <- getKGMLRootNode(pathwayId);
+
+    # Get value of atributes (id, name(ko) and reaction) of entry of type
+    # ortholog, some don't have reaction argument thus won't have an edge in
+    # our final graph they will have NA in data.frame.
+    orthologListId <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                   function(x) (XML::xmlAttrs(x))['id']);
+    print(length(orthologListId))
+    orthologListKo <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                   function(x) (XML::xmlAttrs(x))['name']);
+    print(length(orthologListKo))
+    orthologListReaction <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                         function(x) (XML::xmlAttrs(x))['reaction']);
+    print(length(orthologListReaction))
+
+    print(length(orthologListCoords))
+    orthologDF <- data.frame("reactionId" = as.vector(as.character(orthologListId)),
+                             "reactions" = as.vector(as.character(orthologListReaction)),
+                             "ko" = as.vector(as.character(orthologListKo)),
+                             "x" = as.vector(rep(-1, length(orthologListReaction))),
+                             "y" = as.vector(rep(-1, length(orthologListReaction))));
+
+    for(row in 1:length(orthologDF[,1])){
+      id <- orthologDF[row,1]
+      coords <- XML::xpathSApply(xmltop, "//entry[@id = id]//graphics",
+                         function(x) (XML::xmlAttrs(x))['coords']);
+      print(length(coords))
+     if(length(coords) == 1){
+          orthologDF[row,4] <- coords;
+     }
+    }
+
+    orthologListNameCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
+                                           function(x) (XML::xmlAttrs(x))['name']);
+    print(length(orthologListNameCoords))
+    orthologListCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
+                                         function(x) (XML::xmlAttrs(x))['coords']);
+
+
+    print(length(orthologDF[,1]))
+    orthologCoords <- data.frame("nameCoords" =as.vector(as.character(orthologListNameCoords)),
+                                 "coords" = as.vector(as.character(orthologListCoords)));
+    print(length(orthologCoords[,1]))
+    #return <- orthologDF;
+
+}
 
 
 
