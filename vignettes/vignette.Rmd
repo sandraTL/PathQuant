@@ -90,7 +90,7 @@ distributionGene("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:27165")
 
 ###heatmapAsso Function 
  Function that output a heatmap to visualize distance calculated between every gene-metabolite associations in input.
-Heatmap of distances calculated between associated genes-metabolites reported by Shin et al.. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). The distance calculated for the 33 gene-metabolite associations are reported in cells with a thick black border. Inf = infinite value, which mean that there is no known path between gene and metabolite.
+Heatmap of distances calculated between associated genes-metabolites reported by Shin et al.. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). The distance calculated for the 30 gene-metabolite associations are reported in cells with a thick black border. Inf = infinite value, which mean that there is no known path between gene and metabolite.
 
 ####Arguments : 
     pathwayId: KEGG Id of selected pathway.
@@ -104,6 +104,37 @@ heatmapAsso("hsa01100", shinAndAlDF)
 ```
 
 ![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
+
+
+###permutationTest Function
+Statistical permutation test function to asses the relevance of associated
+gene-metabolite pairs vs. randomly selected pairs.
+This function produces permutation sets by creating random gene-metabolite
+associations and calcuates the median distance of every permutation to output :
+1) 'medians' 2) 'histogram' 3) 'pvalue'. 
+Replacing gene : random gene is choosed within the set of measured genes catalysing +/- 1 reaction(s). Gene catalysing 1 reaction are repalce by a gene 
+calatysing 1 reaction from set of measured genes 'completeGeneDF'.
+Metabolites are replaced by any of the measured metabolites: 'completeMetaboDF'.
+ 
+####Arguments : 
+    pathwayId: KEGG Id of selected pathway.
+    association:  is a dataFrame with 2 columns. Where each line 
+                            reprensents an associations with the first column                              as gene KEGG Ids and the sencond column as                                     metabolite KEGG Ids.
+    completeGeneDF: is a dataframe of 1 column with the KEGG Ids of
+                           all measured genes.
+    completeMetaboliteDF: is a dataframe of 1 column with the KEGG Ids of
+                           all measured metabolites.
+    permutation : number of permutation. 
+    output : 'medians', 'histogram', 'pvalue'.                           
+
+
+```{r, eval= F}
+p <- permutationTest(metabolismOverviewMapKEGGId, shinAndAlDF,
+                         completeGeneDF, completeMetaboDF, 1000, "medians")
+```
+
+![Histogram](https://github.com/sandraTL/PathQuant/blob/master/vignettes/permutations1000.png)
+
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 

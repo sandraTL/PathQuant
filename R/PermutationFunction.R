@@ -400,16 +400,17 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
             panel.grid.major = ggplot2::element_blank(),
             panel.grid.minor = ggplot2::element_blank(),
             text = ggplot2::element_text(size = 12),
-            axis.line = ggplot2::element_line(colour = "black")
+            axis.line = ggplot2::element_line(colour = "black"),
+            axis.line.y = ggplot2::element_line(colour = "black")
 
         )
         + ggplot2::geom_rect(data = frequencies,
                              ggplot2::aes(xmin = maxDistance+1 -7,
                                           xmax = maxDistance+1,
-                                          ymin = maxFrequencie -1,
-                                          ymax = maxFrequencie),
+                                          ymin = maxFrequencie,
+                                          ymax = maxFrequencie+0.5),
                              fill = "grey80")
-        + ggplot2::annotate("text", x = maxDistance +1 -3.5, y = maxFrequencie -0.5,
+        + ggplot2::annotate("text", x = maxDistance +1 -3.5, y = maxFrequencie -0.25,
                  label = legend_text,colour = "black",size=5)
         + ggplot2::xlab("Permutated Medians")
         + ggplot2::ylab("Frenquency (%)")
