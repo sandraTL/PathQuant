@@ -410,7 +410,7 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
                                           ymin = maxFrequencie,
                                           ymax = maxFrequencie+0.5),
                              fill = "grey80")
-        + ggplot2::annotate("text", x = maxDistance +1 -3.5, y = maxFrequencie -0.25,
+        + ggplot2::annotate("text", x = maxDistance +1 -3.5, y = maxFrequencie +0.25,
                  label = legend_text,colour = "black",size=5)
         + ggplot2::xlab("Permutated Medians")
         + ggplot2::ylab("Frenquency (%)")
