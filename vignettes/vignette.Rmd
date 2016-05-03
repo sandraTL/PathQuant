@@ -41,7 +41,6 @@ metabolites. Only use KEGG Ids.
     ordered : boolean, orders the dataframe by distance columns (ascendent).
 
 ```{r, size=12}
-
 df <- getDistanceAsso("hsa01100", shinAndAlDF, F)
 df[1:10,]
 
