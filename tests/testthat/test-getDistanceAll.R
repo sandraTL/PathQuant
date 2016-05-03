@@ -7,11 +7,6 @@ emptyDF = data.frame();
 oneColDF <- data.frame("gene" = c("aa","sdd","saaa"))
 twoColWrongDFGene <- data.frame("gene" = c("aa","hsa:1579","saaa"))
 twoColWrongDFMetabo <- data.frame("metabo" = c("a","C19615","a"))
-twoColWrongDF1Gene <- data.frame("gene" = c("hsa:3711","hsa:1579","hsa:34"))
-twoColWrongDF1Metabo <- data.frame("metabo" = c("a","C19615","a"))
-twoColWrongDF2Gene <- data.frame("gene" = c("aa","hsa:1579","saaa"))
-twoColWrongDF2Metabo <- data.frame("metabo" = c("C00001","C19615","C05271"))
-
 testWrigthInputDFGene <- data.frame("genes" = as.vector(c("hsa:1579","hsa:34")))
 testWrigthInputDFMetabo <- data.frame("metabolites"= as.vector(c("C19615","C05271")))
 
@@ -34,12 +29,6 @@ test_that("getDistanceAll", {
 
     #test associatedGeneMetabo values of inputs
     expect_error(getDistanceAll("hsa01100",twoColWrongDFGene,completeMetaboDF))
-
-    #test associatedGeneMetabo values of inputs
-    expect_error(getDistanceAll("hsa01100",twoColWrongDF1Gene,completeMetaboDF))
-
-    #test associatedGeneMetabo values of inputs
-    expect_error(getDistanceAll("hsa01100",twoColWrongDF2Gene,completeMetaboDF))
 
 
 })
