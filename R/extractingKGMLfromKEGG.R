@@ -10,8 +10,12 @@ getPathwayKGML <- function(pathwayId) {
      adressfile <- toStringAdressfile(pathwayId)
     destfile <- toStringDestfile(pathwayId)
 
-    URL <- "http://rest.kegg.jp/get/hsa01100/kgml"
-    xmlFile <- RCurl::getURL(URL)
+    URL_S <- "http://rest.kegg.jp/get/"
+    URL_E <- "/kgml"
+
+    URL_FINAL<- paste(URL_S,pathwayId, URL_E, sep="");
+
+    xmlFile <- RCurl::getURL(URL_FINAL);
 
     if (xmlFile == "") {
         stop("pathway do not exist in KEGG database", call. = FALSE)
