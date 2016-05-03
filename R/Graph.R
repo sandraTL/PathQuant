@@ -189,7 +189,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #'
 #' @param pathwayId KEGG Id of selected pathway.
 #' @param association Dataframe with 2 columns, where each line reprensents an
-#'        associations. First column are the genes and the sencond column as the
+#'        association. First column are the genes and the sencond column are the
 #'        metabolites. Only use KEGG Ids.
 #' @param ordered [option] ascendent ordering of distance
 #' @keywords graph, shortestDistance, KEGG
@@ -571,13 +571,12 @@ mergeVectorsLowerValues <- function(A,B) {
 
 
 
-#' Function calculating shortest distance between every gene in a
-#' gene-metabolite pairs and all metabolite.
+#' Function calculating shortest distance between every gene and every
+#' metabolite.
 #'
-#' Function calculating shortest distance between every gene in a
-#' gene-metabolite pairs of your association parameter and every metabolite
-#' (in a pair or not) on a graph model of KEGG map selected, where nodes are
-#' metabolites and reactions are edges.
+#' Function calculating shortest distance between every gene and every
+#' metabolites on a graph model of KEGG map selected, where nodes are
+#' metabolites and reactions (genes) are edges.
 #'
 #' If a gene or a metabolite is present on multiple edges or nodes, then
 #' shortest distance are calculated for every combinaison possible and the

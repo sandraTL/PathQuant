@@ -9,7 +9,7 @@
 #'
 #' @param pathwayId KEGG Id of selected pathway.
 #' @param association Dataframe with 2 columns, where each line reprensents an
-#'        associations. First column are genes and the sencond column are
+#'        association. First column are genes and the sencond column are
 #'        metabolites. Only use KEGG Ids.
 #' @param gene Dataframe of 1 column, representing all genes reported. Only use
 #'        KEGG Ids.
