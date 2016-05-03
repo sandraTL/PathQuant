@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 
 # PathQuant Vignette 
 ###author : Sandra Therrien-Laperrière
@@ -130,9 +133,7 @@ p <- permutationTest(metabolismOverviewMapKEGGId, shinAndAlDF,
                          completeGeneDF, completeMetaboDF, 1000, "histogram")
 ```
 
-![Histogram](https://github.com/sandraTL/PathQuant/blob/master/vignettes/permutations1000.png)
-
-
+![Permutations](https://github.com/sandraTL/PathQuant/blob/master/vignettes/permutations1000.png)
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
 Metabolites.” Nature genetics 46.6 (2014): 543–550. PMC.
