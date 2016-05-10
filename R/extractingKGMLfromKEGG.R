@@ -7,7 +7,7 @@
 
 getPathwayKGML <- function(pathwayId) {
 
-     adressfile <- toStringAdressfile(pathwayId)
+    adressfile <- toStringAdressfile(pathwayId)
     destfile <- toStringDestfile(pathwayId)
 
     URL_S <- "http://rest.kegg.jp/get/"
@@ -81,42 +81,6 @@ toCompoundAdressfile <- function(compoundKeggId){
 
     return <- adressfile;
 }
-
-# # get list of all kinds metabolite in KEGG.
-# getAllMetaboliteInKEGG <- function(){
-#
-#
-#     metaboliteList <- as.vector(names(KEGGREST::keggList("cpd")))
-#
-#     metaboliteList <- gsub("cpd:", "", metaboliteList)
-#    # adressfile <- "rest.kegg.jp/list/cpd";
-#     return <- metaboliteList;
-# }
-#
-# # get list of all human genes in KEGG
-# getAllHumanGeneInKEGG<- function(){
-#
-#     geneList <- as.vector(names(KEGGREST::keggList("hsa")))
-#     #adressfile <- "rest.kegg.jp/list/hsa";
-#     return <- geneList;
-# }
-#
-# # get a list of all metbolites on a specific map
-# getAllMetaboliteInMap <- function(mapId){
-#
-#     metaboliteList <- as.vector(KEGGREST::keggLink("cpd",mapId))
-#     metaboliteList <- gsub("cpd:", "", metaboliteList)
-#
-#     return <- metaboliteList;
-# }
-#
-# # get list of all genes in a specific map
-# getAllGeneInMap<- function(hsaId){
-#
-#     geneList <- as.vector(KEGGREST::keggLink("genes",hsaId))
-#
-#     return <- geneList;
-# }
 
 
 

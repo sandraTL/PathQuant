@@ -13,8 +13,11 @@ getListNodeFromKGML <- function(pathwayId) {
                                    function(x) (XML::xmlAttrs(x))['id']);
     nodeListCpd <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
                                    function(x) (XML::xmlAttrs(x))['name']);
-    nodeDF <- data.frame("kgmlId" = as.vector(nodeListId),
-                         "keggId" = as.vector(nodeListCpd));
+    nodeListColor <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']//graphics",
+                                    function(x) (XML::xmlAttrs(x))['fgcolor'])
+    nodeDF <- data.frame(kgmlId = as.vector(unlist(nodeListId)),
+                         keggId = as.vector(unlist(nodeListCpd)),
+                         color = as.vector(unlist(nodeListColor)));
 
     nodeDF <- correctKeggIdString(nodeDF);
 

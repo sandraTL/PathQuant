@@ -249,9 +249,6 @@ permutationTest <-
                         knownDistances[,2] <-
                             factor(knownDistances[,2],
                                    levels = levels(permutatedData[,2]))
-
-
-
                         # get id of known distance rows in permutation set to
                         # to delete from distance calculation process
                         idRowToDelete <- permutatedData[which(
@@ -405,12 +402,12 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
 
         )
         + ggplot2::geom_rect(data = frequencies,
-                             ggplot2::aes(xmin = maxDistance+1 -7,
-                                          xmax = maxDistance+1,
-                                          ymin = maxFrequencie,
-                                          ymax = maxFrequencie+0.5),
+                             ggplot2::aes(xmin = maxDistance -5.5,
+                                          xmax = maxDistance+2.5,
+                                          ymin = maxFrequencie -0.5,
+                                          ymax = maxFrequencie),
                              fill = "grey80")
-        + ggplot2::annotate("text", x = maxDistance +1 -3.5, y = maxFrequencie +0.25,
+        + ggplot2::annotate("text", x = maxDistance -1.5, y = maxFrequencie-0.25 ,
                  label = legend_text,colour = "black",size=5)
         + ggplot2::xlab("Permutated Medians")
         + ggplot2::ylab("Frenquency (%)")

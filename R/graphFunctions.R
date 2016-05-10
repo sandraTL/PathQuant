@@ -81,4 +81,20 @@ getCompoundNodeKgmlId <- function(g, compoundKeggId, nodeDF){
 
 }
 
+grep2DF <- function(df1, df2){
+   j <- 0 ;
+    for(i in 1:length(df1[,1])){
+
+    item <- paste("\\",df1[i,1],"\\b",sep="")
+
+    listId <-grep(item, df2)
+    if(length(listId) > 0 ){
+        j <- j+1;
+    match <- paste(j,df1[i,1], listId, sep = " ");
+
+    }
+
+    }
+
+}
 

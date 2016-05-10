@@ -13,8 +13,6 @@ getDataFrameOfDuplicateCompounds <- function(compoundDataFrame){
 
     # dataframe with only duplicated metabolites
 
-
-
     duplicatedCompoundDataFrame <- data.frame(compoundDataFrame[2]);
 
     return <- duplicatedCompoundDataFrame;
@@ -25,7 +23,6 @@ correctKeggIdString <- function(nodeDF){
 
     nodeDF <- lapply(nodeDF,
                      function (x) gsub("cpd:","",x))
-
     return <- nodeDF;
 
 }

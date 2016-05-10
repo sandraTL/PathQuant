@@ -69,8 +69,10 @@ setMethod("allShortestPaths","Graph", function(object, data,
         op <- options(warn=2)
         tt <- tryCatch(igraph::shortest.paths(object@graph , x[2],
                                               as.vector(unlist(metabolite[,1])))
+
                        ,error=function(e) e,
                        warning=function(w) w)
+
         #catch warnings when ther is not pat between 2 nodes
         if(is(tt,"warning")) {}
         else if(is(tt,"error")) {}
@@ -148,6 +150,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
                            x['geneGraphId'], x['metaboliteGraphId'])),
                            error=function(e) e,
                            warning=function(w) w)
+
             #catch warnings when ther is not pat between 2 nodes
             if(is(tt,"warning")) {}
             else if(is(tt,"error")) {}
