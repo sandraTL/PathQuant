@@ -103,6 +103,7 @@ Heatmap of distances calculated between associated genes-metabolites reported by
 ```{r, fig.width=7,fig.height=4}
 heatmapAsso("hsa01100", shinAndAlDF)
 ```
+![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
 
 
@@ -131,6 +132,7 @@ Metabolites are replaced by any of the measured metabolites: 'completeMetaboDF'.
 p <- permutationTest(metabolismOverviewMapKEGGId, shinAndAlDF,
                          completeGeneDF, completeMetaboDF, 1000, "histogram")
 ```
+![Histogram](https://github.com/sandraTL/PathQuant/blob/master/vignettes/permutations1000.png)
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
