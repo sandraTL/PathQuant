@@ -1,5 +1,4 @@
----
-output: html_document
+
 ---
 
 # PathQuant Vignette 
