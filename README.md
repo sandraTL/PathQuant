@@ -32,7 +32,8 @@ License: [GNU General Public License (v3)](http://www.gnu.org/licenses/gpl-3.0.e
 * [Userguide Manuel](https://github.com/sandraTL/PathQuant/blob/master/manual.pdf)
 * [Vignette](https://github.com/sandraTL/PathQuant/blob/master/vignettes/vignette.Rmd)
 
-
+### DOI
+[![DOI](https://zenodo.org/badge/21288/sandraTL/PathQuant.svg)](https://zenodo.org/badge/latestdoi/21288/sandraTL/PathQuant)
 
 ### TODO
 
