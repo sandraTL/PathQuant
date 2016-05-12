@@ -47,6 +47,7 @@ df <- getDistanceAsso("hsa01100", shinAndAlDF, F)
 df[1:10,]
 
 ```
+![getDistanceAsso](https://github.com/sandraTL/PathQuant/blob/master/vignettes/getDistanceAsso.png)
 
 ###getDistanceAll Function 
 This function calculates the distribution of distances between a gene and all
@@ -66,7 +67,7 @@ It enables the comparison of distances between de associated metabolite vs. non 
 df1 <- getDistanceAll("hsa01100", completeGeneDF, completeMetaboDF)
 df1[1:5,]
 ```
-
+![getDistanceAll](https://github.com/sandraTL/PathQuant/blob/master/vignettes/getDistanceAll.png)
 
 ###distributionGene Function
 Function calculating shortest distance between a selected gene and all measured metabolites.The plot is depicted as frequency bars, which represent the number of metabolites at a given distance for the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
@@ -86,9 +87,9 @@ Function calculating shortest distance between a selected gene and all measured 
 distributionGene("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:1373")
 distributionGene("hsa01100", shinAndAlDF, completeMetaboDF, "hsa:27165")
 ```
-
 ![CPS1](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
 ![GLS2](https://github.com/sandraTL/PathQuant/blob/master/vignettes/GLS2.png)
+
 ###heatmapAsso Function 
  Function that output a heatmap to visualize distance calculated between every gene-metabolite associations in input.
 Heatmap of distances calculated between associated genes-metabolites reported by Shin et al.. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). The distance calculated for the 30 gene-metabolite associations are reported in cells with a thick black border. Inf = infinite value, which mean that there is no known path between gene and metabolite.
