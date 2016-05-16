@@ -333,11 +333,10 @@ permutationTest <-
             permutatedMedians <-
                 data.frame("medians" =  permutatedMedians);
 
-<<<<<<< HEAD
-            histogramFunction(permutatedMedians, medianAssociated,permutation);
-=======
+
+
             histogramFunction(permutatedMedians, medianAssociated, permutation);
->>>>>>> permutation graph, + parse of ortholog genes start
+
 
         }
     }

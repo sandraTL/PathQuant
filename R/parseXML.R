@@ -166,11 +166,9 @@ getKGMLRootNode <- function(pathwayId){
         xmlfile <- XML::xmlParse(pathFile);
         xmltop <- XML::xmlRoot(xmlfile); # gives content of root
 
-<<<<<<< HEAD
-=======
+
     }
-    #
->>>>>>> analysis of submaps - beggining
+
     return <- xmltop;
 
 }

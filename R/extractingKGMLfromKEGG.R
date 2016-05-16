@@ -82,5 +82,41 @@ toCompoundAdressfile <- function(compoundKeggId){
     return <- adressfile;
 }
 
+AllHumanMapsFile <- function(){
+
+    url_Address <-  "http://rest.kegg.jp/list/pathway/hsa";
+    return <- url_Address;
+
+}
+
+getPathwayKGML <- function(pathwayId) {
+
+    adressfile <- toStringAdressfile(pathwayId)
+    destfile <- toStringDestfile(pathwayId)
+
+    URL_S <- "http://rest.kegg.jp/get/"
+    URL_E <- "/kgml"
+
+    URL_FINAL<- paste(URL_S,pathwayId, URL_E, sep="");
+
+    xmlFile <- RCurl::getURL(URL_FINAL);
+
+    if (xmlFile == "") {
+        stop("pathway do not exist in KEGG database", call. = FALSE)
+    } else{
+        xmlFile <- XML::xmlParse(xmlFile)
+
+        XML::saveXML(xmlFile, file = destfile)
+    }
+    return <- xmlFile
+
+}
+
+downloadFileByUrl <- function(url){
+
+    file <- RCurl::getURL(url);
 
 
+    return <- file;
+
+}
