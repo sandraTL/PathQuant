@@ -212,6 +212,7 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
     graphe <-  createGraphFromPathway(pathwayId);
     }
 
+    if(!is.null(graphe)){
     # modify function calculate distance directly for association
     finalDF <- getFinalAssoDfSd(graphe, association);
 
@@ -232,6 +233,8 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
     # Remove rows with distance between same gene and metbolites choosing
     # the smallest distance.
     finalDF <- removeRowsDistanceAsso(finalDF)
+    print(as.vector
+          (unlist(finalDF[,2])))
 
 
     # Adding common names for genes and emtabolites
@@ -248,6 +251,9 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
                             "metaboliteKEGGId" = finalDF[,5],
                             "isMetaboliteInMap" = finalDF[,6],
                             "distance" = finalDF[,7]);
+    }else{
+    finalDF1 <- paste("no distance possible in the map: ", pathwayId, sep = "")
+    }
 }
 
 
@@ -335,6 +341,9 @@ createGraphFromPathway <- function(pathwayId){
     # create df edges
     edgeDF <- finalReactionEdgeDF(pathwayId);
 
+
+    if(!(is.null(nodeDF)) && !(is.null(edgeDF))){
+
     # create graphEl objects
     graphEl <- new("GraphElements", nodeDF= nodeDF,
                    edgeDF= edgeDF, pathwayId = pathwayId);
@@ -345,6 +354,12 @@ createGraphFromPathway <- function(pathwayId){
 
     # create Graph object
     graphe <- new("Graph", graph = igraphe, graphEl);
+
+    }else{
+
+    graphe <- NULL;
+
+    }
 
     return <- graphe;
 }
