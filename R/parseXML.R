@@ -36,7 +36,6 @@ getListReactionFromKGML <- function(pathwayId) {
     #gives content of root
     xmltop <- getKGMLRootNode(pathwayId);
 
-
     reactionIdNodes <- XML::getNodeSet(xmltop, "//reaction");
 
     reactionId <- lapply(reactionIdNodes,
@@ -212,7 +211,9 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 getNames <- function(geneId){
 
     ### Vérifiez la connection internet
+    print(geneId)
      url <- getGeneInfoUrl(geneId)
+     print(url)
      foundName <- FALSE;
      allLines <- readLines(url);
      i <- 1;

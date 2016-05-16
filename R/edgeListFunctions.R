@@ -46,16 +46,23 @@ correctReactionString <- function(edgeDF){
 
 finalReactionEdgeDF <- function(pathwayId){
 
-  #  print("finalReactionEdgeDF")
-
     edgeDF <- getListEdgeFromGeneKGML(pathwayId);
+
     reactionDF <- getListReactionFromKGML(pathwayId);
+
+    if(!nrow(reactionDF) == 0 && !nrow(edgeDF) == 0){
     reactionDF <- as.data.frame(lapply(reactionDF,
                                        function(X) unname(unlist(X))));
+
 
     mergeDF <-  merge(reactionDF, edgeDF, by="reactionId");
     mergeDF <- mergeDF[ -c(8,9)];
     mergeDF <- mergeDF[ c(2,3,4,5,1,6,7,8)];
+
+    }else{
+      mergeDF <- NULL;
+
+    }
 
     return <- mergeDF;
 
