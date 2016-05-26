@@ -69,10 +69,8 @@ setMethod("allShortestPaths","Graph", function(object, data,
         op <- options(warn=2)
         tt <- tryCatch(igraph::shortest.paths(object@graph , x[2],
                                               as.vector(unlist(metabolite[,1])))
-
                        ,error=function(e) e,
                        warning=function(w) w)
-
         #catch warnings when ther is not pat between 2 nodes
         if(is(tt,"warning")) {}
         else if(is(tt,"error")) {}
@@ -87,17 +85,24 @@ setMethod("allShortestPaths","Graph", function(object, data,
     ##### choose smallest values for each metabolites ######
     # adding column with metaboliteKEGGId
     output <- cbind(output, KEGGId = c(metaboliteVector));
+
     output <- mergeRowsWithSmallestValueByKEGGId(output)
+
     finalColNames <- output$KEGGId;
+
     output <- output[-ncol(output)]
+
 
     # transposing output to do the same with genes
     output <- data.frame(t(output))
+
     rownames(output) <- c(1:nrow(output))
 
     ##### choose smallest values for each genes ######
     # adding column with geneKEGGId
-    output <- cbind(output, KEGGId = c(repeatedGeneVector));
+
+    output <- cbind(output, KEGGId = c(repeatedGeneVector[1:nrow(output)]));
+
     output <-mergeRowsWithSmallestValueByKEGGId(output)
 
 
@@ -233,23 +238,24 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
     # Remove rows with distance between same gene and metbolites choosing
     # the smallest distance.
     finalDF <- removeRowsDistanceAsso(finalDF)
-    print(as.vector
-          (unlist(finalDF[,2])))
 
     # Adding common names for genes and emtabolites
-    geneCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                        (unlist(finalDF[,2])))))
-    metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                        (unlist(finalDF[,5])))))
+    # geneCommonName <- as.vector(unlist(getCommonNames(as.vector
+    #                                     (unlist(finalDF[,2])),"gene")))
+    # metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
+    #                                     (unlist(finalDF[,5])), "metabolite")))
 
      # create final output
-    finalDF1 <- data.frame("geneCommonName" = geneCommonName,
+   # print(finalDF)
+    finalDF1 <- data.frame(
+                            #"geneCommonName" = geneCommonName,
                             "geneKEGGId" = finalDF[,2],
                             "isGeneInMap" = finalDF[,3],
-                            "metaboliteCommonName" = metaboliteCommonName,
+                            #"metaboliteCommonName" = metaboliteCommonName,
                             "metaboliteKEGGId" = finalDF[,5],
                             "isMetaboliteInMap" = finalDF[,6],
-                            "distance" = finalDF[,7]);
+                            "distance" = finalDF[,7],
+                            "pathwayId" = pathwayId);
     }else{
     finalDF1 <- paste("no distance possible in the map: ", pathwayId, sep = "")
     }

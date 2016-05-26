@@ -20,12 +20,13 @@
 #' @examples heatmapAsso("hsa01100", shinAndAlDF)
 
 heatmapAsso <- function(pathwayId, association){
+    title <- pathwayId;
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
 
     mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
              or the metabolite or both weren't mapped on the selected pathway.
              Thus, no distance was calculated"
-
+    fileName <- paste("heatmapAsso", pathwayId, ".png", sep = "")
     test_heatmap(pathwayId, association);
     graphe <-  createGraphFromPathway(pathwayId);
     rGeneList<-numberOfReactions(graphe@edgeDF,association[,1])
@@ -48,6 +49,7 @@ heatmapAsso <- function(pathwayId, association){
     AllSP <- getDistanceAll(pathwayId, gene, metabolite);
 
     geneCommonName <- getCommonNames(as.vector(unlist(rownames(AllSP))), "gene")
+
     geneCommonName <- as.vector(unlist(geneCommonName))
 
     metaboliteCommonName <- getCommonNames(as.vector(unlist(colnames(AllSP))),
@@ -59,43 +61,59 @@ heatmapAsso <- function(pathwayId, association){
 
 
 
+
     dat <- data.frame( Row = rep(geneCommonName, each= ncol(AllSP)),
                        Col = rep(metaboliteCommonName, times= nrow(AllSP)),
                        Distance = c(t(AllSP)),
                        Associations = isAsso
 
     );
+
     # create frame to color edges of associated genes and metabolites
     frames = dat[dat$Associations, c("Row","Col")]
     frames$Row = as.integer(frames$Row)
     frames$Col = as.integer(frames$Col)
 
     # from discrete to continuous values...
-    dat$Distance <- as.numeric(as.character(dat$Distance))
+     if(!is.infinite(min(dat$Distance))){
 
+     dat$Distance <- as.numeric(as.character(dat$Distance))
 
-    colors <- c("#800026","#BD0026","#E31A1C","#FC4E2A","#FD8D3C","#FEB24C",
+      }else{
+          dat$Distance <- as.character(dat$Distance)
+
+      }
+    colors <- c("#BD0026","#E31A1C","#FC4E2A","#FD8D3C","#FEB24C",
                 "#FED976", "#FFEDA0", "#FFFFCC")
     p2 = ggplot2::ggplot(data=dat) +
-        ggplot2::geom_raster(ggplot2::aes(x=Row, y=Col, fill=Distance)) +
+       # ggplot2::geom_raster(ggplot2::aes(x=Row, y=Col, fill=Distance)) +
+        ggplot2::stat_bin2d(ggplot2::aes(x=Row, y=Col, fill=Distance),binwidth = c(1,1))+
         ggplot2::theme(
             panel.border = ggplot2::element_rect(colour="black",fill=NA,size=2),
             panel.grid.major = ggplot2::element_blank(),
             panel.grid.minor = ggplot2::element_blank(),
+
             text = ggplot2::element_text(size=12),
             axis.text=ggplot2::element_text(colour="black"),
             axis.text.x = ggplot2::element_text(angle=315,vjust=1,hjust=0))+
-        ggplot2::scale_fill_gradientn(colours = colors)+
+
+
         ggplot2::xlab("Genes")+
         ggplot2::ylab("Metabolites")+
+        ggplot2::coord_fixed(ratio=0.5)+
         ggplot2::geom_rect(data=frames, size=1, fill=NA, colour="black",
         ggplot2::aes(xmin=Row-0.5, xmax=Row+0.5, ymin=Col-0.5, ymax=Col + 0.5))+
         ggplot2::geom_text(label = as.numeric(dat$Distance, 1),
-    size = 2,ggplot2::aes(x = Row, y = Col)) +
+                 size = 2,ggplot2::aes(x = Row, y = Col)) +
 
+        ggplot2::ggtitle(title)
 
+        ##Fill gradient only if all values aren't Inf
+        if(typeof(dat$Distance)=="double"){
+        p2 <-p2 + ggplot2::scale_fill_gradientn(colours = colors)}
+        else{ p2 <-p2 + ggplot2::scale_fill_grey(start = 0.5, end = 0.5) }
 
-    ggplot2::ggsave("heatmapAsso1.png", width = 9, height = 7, dpi=300)
+        p2 <- p2 + ggplot2::ggsave(fileName, dpi=300)
     print(p2);
 
 }

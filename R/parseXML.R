@@ -33,6 +33,8 @@ getListNodeFromKGML <- function(pathwayId) {
 
 getListReactionFromKGML <- function(pathwayId) {
 
+   # print(pathwayId)
+
     #gives content of root
     xmltop <- getKGMLRootNode(pathwayId);
 
@@ -55,6 +57,21 @@ getListReactionFromKGML <- function(pathwayId) {
     productName <- lapply(reactionIdNodes, XML::xpathApply,
                           path = './product',
                           function(x) XML::xmlAttrs(x)['name']);
+
+    if(length(reactionIdNodes) > 0){
+    max1 <- max(lengths(substrateId));
+    max2 <- max(lengths(productId));
+    max3 <- max(lengths(substrateName));
+    max4 <- max(lengths(productName));
+    max5 <- max(lengths(reactionId));
+    max6 <- max(lengths(reactionType));
+    max7 <- max(lengths(reactionName));
+
+
+
+    sum <- (max1 + max2 + max3 +max4 + max5 + max6 +max7);
+
+    if(sum > 7){
     reactionList <- do.call(rbind.data.frame,
                             mapply(cbind,
                                    "substrateId" = substrateId,
@@ -63,7 +80,20 @@ getListReactionFromKGML <- function(pathwayId) {
                                    "productName" = productName,
                                    "reactionId" = reactionId,
                                    "reactionType" = reactionType,
-                                   "reactionName" = reactionName));
+                                   "reactionName" = reactionName
+                                   ));
+   }else if(sum == 7){
+    reactionList <- data.frame(cbind(
+                           "substrateId" = as.numeric(unlist(substrateId)),
+                           "productId" = as.numeric(unlist(productId)),
+                           "substrateName" = as.character(unlist(substrateName)),
+                           "productName" = as.character(unlist(productName)),
+                           "reactionId" = as.numeric(reactionId),
+                           "reactionType" = reactionType,
+                           "reactionName" = reactionName
+                            ));
+   }
+}else reactionList <- data.frame();
 
     return <- reactionList;
 
@@ -110,15 +140,15 @@ getListOrthologGeneFromKGML <- function(pathwayId) {
     # our final graph they will have NA in data.frame.
     orthologListId <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
                                    function(x) (XML::xmlAttrs(x))['id']);
-    print(length(orthologListId))
+
     orthologListKo <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
                                    function(x) (XML::xmlAttrs(x))['name']);
-    print(length(orthologListKo))
+   # print(length(orthologListKo))
     orthologListReaction <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
                                          function(x) (XML::xmlAttrs(x))['reaction']);
-    print(length(orthologListReaction))
+#    print(length(orthologListReaction))
 
-    print(length(orthologListCoords))
+ #   print(length(orthologListCoords))
     orthologDF <- data.frame("reactionId" = as.vector(as.character(orthologListId)),
                              "reactions" = as.vector(as.character(orthologListReaction)),
                              "ko" = as.vector(as.character(orthologListKo)),
@@ -129,7 +159,7 @@ getListOrthologGeneFromKGML <- function(pathwayId) {
       id <- orthologDF[row,1]
       coords <- XML::xpathSApply(xmltop, "//entry[@id = id]//graphics",
                          function(x) (XML::xmlAttrs(x))['coords']);
-      print(length(coords))
+    #  print(length(coords))
      if(length(coords) == 1){
           orthologDF[row,4] <- coords;
      }
@@ -137,15 +167,15 @@ getListOrthologGeneFromKGML <- function(pathwayId) {
 
     orthologListNameCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
                                            function(x) (XML::xmlAttrs(x))['name']);
-    print(length(orthologListNameCoords))
+   # print(length(orthologListNameCoords))
     orthologListCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
                                          function(x) (XML::xmlAttrs(x))['coords']);
 
 
-    print(length(orthologDF[,1]))
+   # print(length(orthologDF[,1]))
     orthologCoords <- data.frame("nameCoords" =as.vector(as.character(orthologListNameCoords)),
                                  "coords" = as.vector(as.character(orthologListCoords)));
-    print(length(orthologCoords[,1]))
+   # print(length(orthologCoords[,1]))
     #return <- orthologDF;
 
 }
@@ -193,27 +223,32 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
     ### Vérifiez la connection internet
 
-    if(length(vectorOfKEGGIds) > 10 ){
-        count <- 0;
+    if(length(vectorOfKEGGIds) > 0 ){
+
     # analysis of submaps - beggining
         names <- character();
 
         while(count <= length(vectorOfKEGGIds)){
-            names1<- getNames(vectorOfKEGGIds[count])
+
+            names1<- getNames(vectorOfKEGGIds[count], type)
+
             names <- append(names,names1)
+
             count <- count + 1;
         }
-}
+    }
+
+
        return <- names;
 
 }
 
-getNames <- function(geneId){
+getNames <- function(geneId, type){
 
-    ### Vérifiez la connection internet
-    print(geneId)
+     ### Vérifiez la connection internet
+
      url <- getGeneInfoUrl(geneId)
-     print(url)
+
      foundName <- FALSE;
      allLines <- readLines(url);
      i <- 1;
@@ -222,6 +257,9 @@ getNames <- function(geneId){
      while(foundName == FALSE){
 
          allLines[i] <- stringr::str_trim(allLines[i], "both")
+
+         if(type == "gene"){
+
          tmp <- strsplit(allLines[i], "\\s+|,|;")
 
          if(!is.null(tmp[[1]][1])){
@@ -233,7 +271,24 @@ getNames <- function(geneId){
          }}
 
          i <- i+1;
+         }
+         else if(type == "metabolite"){
+
+             tmp <- strsplit(allLines[i], "\\s+|;")
+
+             if(!is.null(tmp[[1]][1])){
+                 if(tmp[[1]][1] =="NAME"){
+
+                     name <- tmp[[1]][2]
+                     foundName <- TRUE;
+
+                 }}
+
+             i <- i+1;
+
+         }
      }
+
      return <- name
 }
 
