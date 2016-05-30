@@ -91,7 +91,7 @@ heatmapAsso <- function(pathwayId, association){
         ggplot2::geom_rect(data=frames, size=1, fill=NA, colour="black",
         ggplot2::aes(xmin=Row-0.5, xmax=Row+0.5, ymin=Col-0.5, ymax=Col + 0.5))+
         ggplot2::geom_text(label = as.numeric(dat$Distance, 1),
-    size = 2,ggplot2::aes(x = Row, y = Col)) +
+    size = 3,ggplot2::aes(x = Row, y = Col)) +
 
 
 
