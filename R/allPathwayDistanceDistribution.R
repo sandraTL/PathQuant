@@ -21,7 +21,7 @@
 
 heatmapAssoAllMaps <- function(association, distanceDF){
 
-  #  distanceDF <- getDistanceAssoAllMaps(shinAndAlDF)[,c(1,3,5,6)]
+  #  distanceDF <- getDistanceAssoAllMaps(shinAndAlDF,1)[,c(1,3,5,6)]
 
     print(distanceDF)
     mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
@@ -105,7 +105,7 @@ heatmapAssoAllMaps <- function(association, distanceDF){
 
 exportDFAllMaps <- function(association, distanceDF){
 
-    # distanceDF <- getDistanceAssoAllMaps(shinAndAlDF)[,c(1,3,5,6)]
+    # distanceDF <- getDistanceAssoAllMaps(shinAndAlDF,1)[,c(1,3,5,6)]
 
 
 

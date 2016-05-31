@@ -243,11 +243,11 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
 }
 
-getNames <- function(geneId, type){
+getNames <- function(keggId, type){
 
      ### Vérifiez la connection internet
 
-     url <- getGeneInfoUrl(geneId)
+     url <- getKEGGInfoUrl(keggId)
 
      foundName <- FALSE;
      allLines <- readLines(url);
@@ -261,6 +261,8 @@ getNames <- function(geneId, type){
          if(type == "gene"){
 
          tmp <- strsplit(allLines[i], "\\s+|,|;")
+
+
 
          if(!is.null(tmp[[1]][1])){
             if(tmp[[1]][1] =="NAME"){
@@ -284,18 +286,81 @@ getNames <- function(geneId, type){
 
                  }}
 
+
+
              i <- i+1;
 
          }
+
+
      }
 
      return <- name
 }
 
-getGeneInfoUrl <- function(geneId){
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+
+getBrites <- function(Associations){
+    brite<- character();
+# Associations <- Associations[,c(2,5)]
+# Associations <- Associations[!duplicated(Associations),]
+    for(j in 1:nrow(Associations)){
+
+        url <- getKEGGInfoUrl(Associations[j,3])
+
+        foundName <- FALSE;
+        allLines <- readLines(url);
+        i <- 1;
+
+    for(i in 1:length(allLines)){
+        temp <- character();
+        tmp <- strsplit(allLines[i], "\\s+|;")
+        if(!is.null(tmp[[1]][1])){
+
+            if(tmp[[1]][1] =="BRITE"){
+                foundName <- TRUE;
+            if(tmp[[1]][2] == "Compounds"){
+                temp <- paste(trim(allLines[i+1]),
+                            "-", trim(allLines[i+2]),sep = " ");
+
+            }else if(tmp[[1]][2] == "Anatomical"){
+                temp <-paste(tmp[[1]][2],"-",trim(allLines[i+4]),sep = " ")
+            }else if(tmp[[1]][2] == "Pharmaceutical"){
+                temp <-paste(tmp[[1]][2],tmp[[1]][3],
+                           sep = " ")
+            }else if(tmp[[1]][2] == "Phytochemical"){
+                temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]),
+                           sep = " ")
+            }else if(tmp[[1]][2] == "Pesticides"){
+                temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]),
+                            sep = " ")
+            }else{
+                temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]), sep = " ")
+            }
+
+            }
+            brite <- append(brite,temp)
+       }
+
+    }
+
+        if(foundName==FALSE){
+         temp <- "not classified by KEGG yet"
+
+        brite <- append(brite,temp)
+        }
+
+    }
+
+    Associations <- cbind(Associations, "Chemical Class" = as.vector(brite))
+return <- Associations;
+}
+
+
+getKEGGInfoUrl <- function(keggId){
 
  url <- "http://rest.kegg.jp/get/"
- url <- paste(url, geneId, sep = "")
+ url <- paste(url, keggId, sep = "")
  return <- url;
 }
 

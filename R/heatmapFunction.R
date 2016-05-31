@@ -121,7 +121,9 @@ heatmapAsso <- function(pathwayId, association){
 getAssociationForHeatmap<- function(data, heatmapDf){
     boolIsAsso <- FALSE;
     f <- apply(heatmapDf, 1, function
-               (x){
+               (x)
+        {
+
                    isAssociation <-  length(data[data[1] == x[1] & data[2] == x[2]])
                    if(isAssociation >= 2){
                        boolIsAsso <- TRUE;
