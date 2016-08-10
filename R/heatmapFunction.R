@@ -21,13 +21,14 @@
 
 heatmapAsso <- function(pathwayId, association){
     title <- pathwayId;
+
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
 
     mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
              or the metabolite or both weren't mapped on the selected pathway.
              Thus, no distance was calculated"
     fileName <- paste("heatmapAsso", pathwayId, ".png", sep = "")
-    test_heatmap(pathwayId, association);
+ #test_heatmap(pathwayId, association);
     graphe <-  createGraphFromPathway(pathwayId);
     rGeneList<-numberOfReactions(graphe@edgeDF,association[,1])
     rMetaboliteList <- numberOfMetabolites(graphe@nodeDF, association[,2])
@@ -36,11 +37,13 @@ heatmapAsso <- function(pathwayId, association){
                                 m1 = as.vector(association[,2]),
                                 m2 = as.vector(as.numeric(rMetaboliteList))))
 
-    tempDf1 <- removeNotInGraph(tempDf1)
+     tempDf1 <- removeNotInGraph(tempDf1)
 
-    if(nrow(tempDf1) == 0 ){
-        stop(mError2, call. = FALSE)
-    }
+
+     if(nrow(tempDf1) == 0 ){
+         print("Allo")
+         stop(mError2, call. = FALSE)
+     }
     association <- subset(tempDf1[,c(1,3)])
     gene<- data.frame(c(association[1]))
     metabolite <- data.frame(c(association[2]))

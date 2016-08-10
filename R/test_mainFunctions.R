@@ -1,14 +1,10 @@
 
-mError <<- "error in association, KEGG ids of genes (ex : hsa:00001) in first column and associated KEGG ids metabolites (ex: C00001) in second column";
 
+
+mError <<- "error in association, KEGG ids of genes (ex : hsa:00001) in first column and associated KEGG ids metabolites (ex: C00001) in second column";
 mError1 <<- "error in metabolite, please input a dataframe of 1 column with a list of KEGG ids metabolites (ex: C00001)";
 mError2 <<- "error in gene, please input a dataframe of 1 column with a list of KEGG ids gene (ex: hsa:00001)";
-
 mError3 <<- "error in argument gene, the gene entered doesn't match any gene in association";
-
-
-
-
 
 test_getDistanceAsso <- function(pathwayId, association){
 
@@ -140,6 +136,7 @@ test_heatmap <- function(pathwayId, association){
             stop(mError, call. = FALSE);
         if(substr(association[row,2],0,1) != "C"
            && length(association[row,2]) != 5)
+            print(substr(association[row,2],0,1))
             stop(mError, call. = FALSE);
     }
 
