@@ -69,10 +69,8 @@ setMethod("allShortestPaths","Graph", function(object, data,
         op <- options(warn=2)
         tt <- tryCatch(igraph::shortest.paths(object@graph , x[2],
                                               as.vector(unlist(metabolite[,1])))
-
                        ,error=function(e) e,
                        warning=function(w) w)
-
         #catch warnings when ther is not pat between 2 nodes
         if(is(tt,"warning")) {}
         else if(is(tt,"error")) {}
@@ -87,19 +85,24 @@ setMethod("allShortestPaths","Graph", function(object, data,
     ##### choose smallest values for each metabolites ######
     # adding column with metaboliteKEGGId
     output <- cbind(output, KEGGId = c(metaboliteVector));
+
     output <- mergeRowsWithSmallestValueByKEGGId(output)
+
     finalColNames <- output$KEGGId;
+
     output <- output[-ncol(output)]
 
     # transposing output to do the same with genes
     output <- data.frame(t(output))
+
     rownames(output) <- c(1:nrow(output))
 
     ##### choose smallest values for each genes ######
     # adding column with geneKEGGId
-    output <- cbind(output, KEGGId = c(repeatedGeneVector));
-    output <-mergeRowsWithSmallestValueByKEGGId(output)
 
+    output <- cbind(output, KEGGId = c(repeatedGeneVector[1:nrow(output)]));
+
+    output <-mergeRowsWithSmallestValueByKEGGId(output)
 
     # adding final rows and columns names (genes, metbaolites)
     rownames(output) <- output$KEGGId;
@@ -133,8 +136,11 @@ setGeneric("associatedShortestPaths", function(object, data)
 
 setMethod("associatedShortestPaths","Graph", function(object, data){
 
+    outputFinal <- data.frame();
+    outputFinal1 <- data.frame();
     #calcul al distances
-
+    gene <- data[1,2]
+    metabolite <- data[1,4];
     pl <-  apply(data,1, function(x){
 
         dfTemp <- data.frame();
@@ -147,7 +153,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 
             op <- options(warn=2)
             tt <- tryCatch((igraph::shortest.paths(object@graph,
-                           x['geneGraphId'], x['metaboliteGraphId'])),
+                                                   x['geneGraphId'], x['metaboliteGraphId'])),
                            error=function(e) e,
                            warning=function(w) w)
 
@@ -163,15 +169,62 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
         return <- dfTemp;
     })
 
+    pl1 <-  apply(data,1, function(x){
+
+        dfTemp <- data.frame();
+
+        if(is.na(x['metaboliteGraphId']) || is.na(x['geneGraphId'])){
+            dfTemp <- NA;
+        }else{
+            op <- options(warn=2)
+            tt <- tryCatch((igraph::get.shortest.paths(object@graph,
+                                                       x['geneGraphId'], x['metaboliteGraphId'], output="epath")),
+                           error=function(e) e,
+                           warning=function(w) w)
+            #catch warnings when there is not pat between 2 nodes
+            if(is(tt,"warning")) {
+                dfTemp <- "Gene and metabolite on map, no existing path between them"
+            }else if(is(tt,"error")) {}
+            else{
+                li <- unlist(paste(tt$epath[[1]]))
+                for(i in 1:length(li)){
+                    li[i] <- paste("", substring(as.character(object@edgeDF$substrateName
+                                                              [as.numeric(li[i])]),5),"[",as.character(object@edgeDF$ko
+                                                                                                       [as.numeric(li[i])]),"]", collpase="");
+                }
+
+                dfTemp <-unlist(paste(li,collapse = "->"));
+            }
+
+            dfTemp <- paste(gene, dfTemp ,sep = " ->");
+            dfTemp <- paste(dfTemp, metabolite, sep = "-> ");
+        }
+
+        return <- dfTemp;
+    })
+
     # choosing smallest distance between the two metabolites of gene and
     # all metabolites
-    outputFinal <- data.frame();
-
-
 
     outputFinal <- rbind(outputFinal, pl)
     outputFinal <- t(outputFinal)
+
+    outputFinal1 <-  rbind(outputFinal1, pl1);
+    outputFinal1 <- t(outputFinal1)
+
+    # explicitly report why there is no path when both gene and metabolite are
+    # on the map
+    for(x in 1:nrow(outputFinal)){
+        if(!is.na(outputFinal[x,1])){
+            if(outputFinal[x,1]==0){
+                outputFinal1[x,] <-
+                    "Metabolite directly on reaction encoded by the gene enzyme"
+            }
+        }
+    }
     colnames(outputFinal) <- c("lengthShortestPath")
+    colnames(outputFinal1) <- c("path")
+    outputFinal <- cbind(outputFinal, outputFinal1);
 
     return <- outputFinal;
 })
@@ -195,67 +248,88 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
 #'        association. First column are the genes and the sencond column are the
 #'        metabolites. Only use KEGG Ids.
 #' @param ordered [option] ascendent ordering of distance
+#' @param commonNames get KEGG's Common Names of the KEGG Id in the
+#' results.
 #' @keywords graph, shortestDistance, KEGG
 #' @export
 #' @examples getDistanceAsso("hsa01100",shinAndAlDF)
 
-getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
+getDistanceAsso <- function(pathwayId, association, ordered = FALSE,
+                            commonNames = TRUE){
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId)
     finalDF <- data.frame();
 
     # test input parameters
-    test_getDistanceAsso(pathwayId,association)
+    test_getDistanceAsso(pathwayId, association)
 
     # graph creation
     if(!exists("graphe")){
-    graphe <-  createGraphFromPathway(pathwayId);
+        graphe <-  createGraphFromPathway(pathwayId);
     }
 
     if(!is.null(graphe)){
-    # modify function calculate distance directly for association
-    finalDF <- getFinalAssoDfSd(graphe, association);
+        # modify function calculate distance directly for association
+        finalDF <- getFinalAssoDfSd(graphe, association);
 
-    # Change Na in finalDF to Inf value
-    finalDF <- changeDFassoToRigthDistances(finalDF);
+        # Change Na in finalDF to Inf value
+        finalDF <- changeDFassoToRigthDistances(finalDF);
 
+        # order result by increasing distances
+        finalDF$distance[is.na(finalDF$distance)] <- NaN;
 
-    # order result by increasing distances
-    finalDF$distance[is.na(finalDF$distance)] <- NaN;
+        #****** Could had information on the nodes or the multiple
+        #****** path of shortest paths finalDF col 1 and 4
 
-    if(ordered == TRUE){
-        finalDF <- finalDF[ order(finalDF[,7]), ]
-    }
+        # order found distances from small to big
 
-    #****** Could had information on the nodes or the multiple
-    #****** path of shortest paths finalDF col 1 and 4
+        # shin_res <- transform(shin_res, distance = as.numeric(as.character(distance)))
+        if(ordered == TRUE){
+            finalDF <- finalDF[ order(as.numeric(as.character(finalDF[,7])), decreasing = FALSE, na.last = TRUE), ]
+        }
 
-    # Remove rows with distance between same gene and metbolites choosing
-    # the smallest distance.
-    finalDF <- removeRowsDistanceAsso(finalDF)
-    print(as.vector
-          (unlist(finalDF[,2])))
+        # Adding common names for genes and emtabolites
 
+        if(commonNames == TRUE){
+            geneCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                                              (unlist(finalDF[,2])),"gene")))
+            metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                                                    (unlist(finalDF[,5])), "metabolite")))
 
-    # Adding common names for genes and emtabolites
-    geneCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                        (unlist(finalDF[,2])), "gene")))
-    metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                        (unlist(finalDF[,5])),"metabolite")))
+            finalDF1 <- data.frame(
+                "geneCommonName" = geneCommonName,
+                "geneKEGGId" = finalDF[,2],
+                "isGeneInMap" = finalDF[,3],
+                "metaboliteCommonName" = metaboliteCommonName,
+                "metaboliteKEGGId" = finalDF[,5],
+                "isMetaboliteInMap" = finalDF[,6],
+                "distance" = finalDF[,7],
+                "pathwayId" = pathwayId,
+                "path" = finalDF[,8]);
+            rownames(finalDF1) <- c(1:nrow(finalDF1))
 
-     # create final output
-    finalDF1 <- data.frame("geneCommonName" = geneCommonName,
-                            "geneKEGGId" = finalDF[,2],
-                            "isGeneInMap" = finalDF[,3],
-                            "metaboliteCommonName" = metaboliteCommonName,
-                            "metaboliteKEGGId" = finalDF[,5],
-                            "isMetaboliteInMap" = finalDF[,6],
-                            "distance" = finalDF[,7]);
+        }else {
+            finalDF1 <- data.frame(
+                "geneKEGGId" = finalDF[,2],
+                "isGeneInMap" = finalDF[,3],
+                "metaboliteKEGGId" = finalDF[,5],
+                "isMetaboliteInMap" = finalDF[,6],
+                "distance" = finalDF[,7],
+                "pathwayId" = pathwayId,
+                "path" = finalDF[,8]);
+            rownames(finalDF1) <- c(1:nrow(finalDF1))
+        }
     }else{
-    finalDF1 <- paste("no distance possible in the map: ", pathwayId, sep = "")
+        finalDF1 <- paste("no distance possible in the map: ", pathwayId, sep = "")
     }
-}
 
+
+
+    # create final output
+
+    return <- finalDF1
+
+}
 
 
 # Function calculating shortest distance between each gene-metabolite pairs.
@@ -269,7 +343,6 @@ getDistanceAsso <- function(pathwayId, association, ordered = FALSE){
 # shortest distance is selected.
 
 getDistanceAssoPerm <- function(pathwayId, data, ordered = FALSE){
-
 
     # test input parameters
     test_getDistanceAssoPerm(pathwayId, data);
@@ -290,20 +363,24 @@ getDistanceAssoPerm <- function(pathwayId, data, ordered = FALSE){
     # order result by increasing distances
     finalDF$distance[is.na(finalDF$distance)] <- NaN;
 
-    if(ordered == TRUE){
-        finalDF <- finalDF[ order(finalDF[,7]), ]
-    }
+
 
     # Remove rows with distance between same gene and metbolites choosing
     # the smallest distance.
     finalDF <- removeRowsDistanceAsso(finalDF)
 
+
+    # order found distances from small to big
+    if(ordered == TRUE){
+        finalDF <- finalDF[ order(finalDF[,7]), ]
+    }
+
     # output for permutation use
     finalDF1 <- data.frame("geneKEGGId" = finalDF[,2],
-                               "isGeneInMap" = finalDF[,3],
-                               "metaboliteKEGGId" = finalDF[,5],
-                               "isMetaboliteInMap" = finalDF[,6],
-                               "distance" = finalDF[,7]);
+                           "isGeneInMap" = finalDF[,3],
+                           "metaboliteKEGGId" = finalDF[,5],
+                           "isMetaboliteInMap" = finalDF[,6],
+                           "distance" = finalDF[,7]);
 }
 
 
@@ -344,20 +421,20 @@ createGraphFromPathway <- function(pathwayId){
 
     if(!(is.null(nodeDF)) && !(is.null(edgeDF))){
 
-    # create graphEl objects
-    graphEl <- new("GraphElements", nodeDF= nodeDF,
-                   edgeDF= edgeDF, pathwayId = pathwayId);
+        # create graphEl objects
+        graphEl <- new("GraphElements", nodeDF= nodeDF,
+                       edgeDF= edgeDF, pathwayId = pathwayId);
 
 
-    # create igraph with graphEl object elements
-    igraphe <- createIGraph(graphEl);
+        # create igraph with graphEl object elements
+        igraphe <- createIGraph(graphEl);
 
-    # create Graph object
-    graphe <- new("Graph", graph = igraphe, graphEl);
+        # create Graph object
+        graphe <- new("Graph", graph = igraphe, graphEl);
 
     }else{
 
-    graphe <- NULL;
+        graphe <- NULL;
 
     }
 
@@ -424,7 +501,7 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
     #####  Add condition to insure indexMetabolite can only be 1 or 2   #####
     #########################################################################
 
-     testDataDF <- apply(data,1,function(x){
+    testDataDF <- apply(data,1,function(x){
         if(substr(x[1],0,4) != "hsa:"){
 
             stop("genes are not all valide KEGGId's",call. = FALSE )
@@ -463,7 +540,7 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
                         metaboliteKEGGId <- c(temp[2])
 
                         completeAssoDF <- data.frame(geneGraphId, geneKEGGId,
-                                         metaboliteGraphId, metaboliteKEGGId)
+                                                     metaboliteGraphId, metaboliteKEGGId)
 
                         return<- completeAssoDF;
                     })
@@ -477,7 +554,7 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
                     metaboliteKEGGId <- c(temp[2])
 
                     completeAssoDF <- data.frame(geneGraphId, geneKEGGId,
-                                         metaboliteGraphId, metaboliteKEGGId)
+                                                 metaboliteGraphId, metaboliteKEGGId)
 
                     return <-  completeAssoDF;
                 }
@@ -494,7 +571,7 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
                     metaboliteKEGGId <- c(temp[2])
 
                     completeAssoDF <- data.frame(geneGraphId, geneKEGGId,
-                                         metaboliteGraphId, metaboliteKEGGId)
+                                                 metaboliteGraphId, metaboliteKEGGId)
 
                     return<- completeAssoDF;
                 })
@@ -508,7 +585,7 @@ setMethod("fromAssosDFEntryToIGraphIdDF", "Graph", function(object, data,
                 metaboliteKEGGId <- c(temp[2])
 
                 completeAssoDF <- data.frame(geneGraphId, geneKEGGId,
-                                         metaboliteGraphId, metaboliteKEGGId)
+                                             metaboliteGraphId, metaboliteKEGGId)
 
                 f2 <- completeAssoDF;
                 return <- f2
@@ -535,6 +612,7 @@ setGeneric("getFinalAssoDfSd", function(object, data)
 
 setMethod("getFinalAssoDfSd", "Graph", function(object, data){
 
+
     finalDF <- data.frame();
 
     # indexMetabolite = 1 to get the first metabolite attached to gene
@@ -549,17 +627,21 @@ setMethod("getFinalAssoDfSd", "Graph", function(object, data){
 
     r3 <- associatedShortestPaths(object, m3g);
 
-    final <- cbind(m3g,"distance" = r3)
+    final <- cbind(m3g,r3)
 
+    # Remove rows with distance between same gene and metbolites choosing
+    # the smallest distance.
     final <- removeRowsDistanceAsso(final)
 
-    final[,6] <- !(is.na(final[,1]));
-    final[,7] <- !(is.na(final[,3]));
-    final <- final[,as.vector(c(1,2,6,3,4,7,5))]
+    final[,7] <- !(is.na(final[,1]));
+    final[,8] <- !(is.na(final[,3]));
+
+
+    final <- final[,as.vector(c(1,2,7,3,4,8,5,6))]
 
     colnames(final) <- c("geneGraphId", "geneKEGGId", "geneInGraph",
-                       "metaboliteGraphId", "metaboliteKEGGId",
-                       "metaboliteInGraph" ,"distance")
+                         "metaboliteGraphId", "metaboliteKEGGId",
+                         "metaboliteInGraph" ,"distance","path")
 
     return <- final;
 })
@@ -632,7 +714,7 @@ getDistanceAll <- function(pathwayId, gene,
     graphe <-  createGraphFromPathway(pathwayId);
 
     finalDF <- getFinalDFSHortestDistance(graphe, gene,
-                                                  metabolite);
+                                          metabolite);
     return <- finalDF;
 
 
@@ -646,7 +728,7 @@ setGeneric("getFinalDFSHortestDistance", function(object,  data,
 )
 
 setMethod("getFinalDFSHortestDistance", "Graph", function(object,
-                                data, metabolite){
+                                                          data, metabolite){
     # print("getFinalDFShortestDistance")
     finalDF <- data.frame();
 
@@ -667,20 +749,20 @@ setMethod("getFinalDFSHortestDistance", "Graph", function(object,
     if(length(idMg) == 0){
 
         stop("Sorry no gene of your entry data are on the selected map, thus
-              no distance was calculated", call. = FALSE)
+             no distance was calculated", call. = FALSE)
 
     }
     if(length(idM) == 0){
 
-        stop("Sorry no metabolites of your entry data are on the selected map, thus
-              no distance was calculated", call. = FALSE)
+        stop("Sorry no metabolites of your entry data are on the selected map,
+             thus no distance was calculated", call. = FALSE)
     }
 
     # get all shortest paths for both ends of gene to all metabolites
     r <- allShortestPaths(object, idMg  , idM);
 
     return <- r;
-})
+    })
 
 
 setGeneric("getIdGeneInGraph", function(object, data,
@@ -709,10 +791,10 @@ setMethod("getIdGeneInGraph", "Graph", function(object,
 
     if(!is.null(f)){
 
-    f <- f[, c(1,indexMetabolite+1)]
+        f <- f[, c(1,indexMetabolite+1)]
 
-    f <- f[rowSums(is.na(f)) != 1,] # delete rows with 2 NA or more
-    colnames(f) <- c("geneKEGGId","geneGraphId ") #set colnames
+        f <- f[rowSums(is.na(f)) != 1,] # delete rows with 2 NA or more
+        colnames(f) <- c("geneKEGGId","geneGraphId ") #set colnames
     }
     return <- f;
 
@@ -775,6 +857,63 @@ setMethod("getIdMetabolitesInGraph", "Graph", function(object,
 
     return <- f;
 })
+
+
+
+getAllShortestPath <- function(){
+    print("alllo")
+    ##get list of all nodes implacated in an 1 edge at least
+    graphe <- createGraphFromPathway("hsa01100");
+    print("allo2")
+    p<- list();
+    for(i in 1:1002){
+        nodesVector <- as.vector(igraph::get.edges(graphe@graph, igraph::E(graphe@graph)[i]))
+
+        p<-c(p,nodesVector)
+    }
+    print("allo3")
+    p<- as.vector(unique(unlist(p)))
+
+
+    print("allo4")
+    #     c <- list()
+    #     sandp <- mapply(c, substrate, product, SIMPLIFY=FALSE)
+    #     sandp <- as.data.frame(sandp)
+    #     sandp <- sandp[!duplicated(sandp),]
+    # print("allo3")
+    #exempel d'accès à un sommet
+
+    result <- list()
+    # print(length(sandp))
+    # for(i in 1:length(sandp)){
+    for(i in 200:899){
+        #  for(i in 900:950){
+        print(i)
+        print(igraph::V(graphe@graph)[i]$keggId);
+        for(j in 1:length(p)){
+
+            op <- options(warn=2)
+            tt <- tryCatch(igraph::shortest.paths(graphe@graph , as.character(igraph::V(graphe@graph)[i]$name),as.character(igraph::V(graphe@graph)[j]$name))
+
+                           ,error=function(e) e,
+                           warning=function(w) w)
+            # print(paste(igraph::V(graphe@graph)[i]$keggId, " ", igraph::V(graphe@graph)[j]$keggId, " ", tt))
+            #catch warnings when ther is not pat between 2 nodes
+            # print(tt)
+            if(is(tt,"warning")) {}
+            else if(is(tt,"error")) {}
+            else
+                result <- c(result, paste(as.character(igraph::V(graphe@graph)[i]$keggId), as.character(igraph::V(graphe@graph)[j]$keggId), tt))
+            # print(igraph::V(graphe@graph)[i]$keggId);
+        }
+        # print(result)
+    }
+
+    return <- result
+}
+
+
+
 
 
 
