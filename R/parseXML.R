@@ -12,9 +12,9 @@ getListNodeFromKGML <- function(pathwayId) {
     nodeListId <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
                                    function(x) (XML::xmlAttrs(x))['id']);
     nodeListCpd <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
-                                   function(x) (XML::xmlAttrs(x))['name']);
+                                    function(x) (XML::xmlAttrs(x))['name']);
     nodeListColor <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']//graphics",
-                                    function(x) (XML::xmlAttrs(x))['fgcolor'])
+                                      function(x) (XML::xmlAttrs(x))['fgcolor'])
     nodeDF <- data.frame(kgmlId = as.vector(unlist(nodeListId)),
                          keggId = as.vector(unlist(nodeListCpd)),
                          color = as.vector(unlist(nodeListColor)));
@@ -33,9 +33,10 @@ getListNodeFromKGML <- function(pathwayId) {
 
 getListReactionFromKGML <- function(pathwayId) {
 
+    # print(pathwayId)
+
     #gives content of root
     xmltop <- getKGMLRootNode(pathwayId);
-
 
     reactionIdNodes <- XML::getNodeSet(xmltop, "//reaction");
 
@@ -56,15 +57,43 @@ getListReactionFromKGML <- function(pathwayId) {
     productName <- lapply(reactionIdNodes, XML::xpathApply,
                           path = './product',
                           function(x) XML::xmlAttrs(x)['name']);
-    reactionList <- do.call(rbind.data.frame,
-                            mapply(cbind,
-                                   "substrateId" = substrateId,
-                                   "productId" = productId,
-                                   "substrateName" = substrateName,
-                                   "productName" = productName,
-                                   "reactionId" = reactionId,
-                                   "reactionType" = reactionType,
-                                   "reactionName" = reactionName));
+
+    if(length(reactionIdNodes) > 0){
+        max1 <- max(lengths(substrateId));
+        max2 <- max(lengths(productId));
+        max3 <- max(lengths(substrateName));
+        max4 <- max(lengths(productName));
+        max5 <- max(lengths(reactionId));
+        max6 <- max(lengths(reactionType));
+        max7 <- max(lengths(reactionName));
+
+
+
+        sum <- (max1 + max2 + max3 +max4 + max5 + max6 +max7);
+
+        if(sum > 7){
+            reactionList <- do.call(rbind.data.frame,
+                                    mapply(cbind,
+                                           "substrateId" = substrateId,
+                                           "productId" = productId,
+                                           "substrateName" = substrateName,
+                                           "productName" = productName,
+                                           "reactionId" = reactionId,
+                                           "reactionType" = reactionType,
+                                           "reactionName" = reactionName
+                                    ));
+        }else if(sum == 7){
+            reactionList <- data.frame(cbind(
+                "substrateId" = as.numeric(unlist(substrateId)),
+                "productId" = as.numeric(unlist(productId)),
+                "substrateName" = as.character(unlist(substrateName)),
+                "productName" = as.character(unlist(productName)),
+                "reactionId" = as.numeric(reactionId),
+                "reactionType" = reactionType,
+                "reactionName" = reactionName
+            ));
+        }
+    }else reactionList <- data.frame();
 
     return <- reactionList;
 
@@ -98,6 +127,58 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
 
 }
 
+# This function extract from KGML a list of reaction of entry-type "gene"
+# Returns a dataFrame object : id, entryId, reaction, ko
+
+getListOrthologGeneFromKGML <- function(pathwayId) {
+
+    # get the root of the KGML document
+    xmltop <- getKGMLRootNode(pathwayId);
+
+    # Get value of atributes (id, name(ko) and reaction) of entry of type
+    # ortholog, some don't have reaction argument thus won't have an edge in
+    # our final graph they will have NA in data.frame.
+    orthologListId <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                       function(x) (XML::xmlAttrs(x))['id']);
+
+    orthologListKo <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                       function(x) (XML::xmlAttrs(x))['name']);
+    # print(length(orthologListKo))
+    orthologListReaction <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
+                                             function(x) (XML::xmlAttrs(x))['reaction']);
+    #    print(length(orthologListReaction))
+
+    #   print(length(orthologListCoords))
+    orthologDF <- data.frame("reactionId" = as.vector(as.character(orthologListId)),
+                             "reactions" = as.vector(as.character(orthologListReaction)),
+                             "ko" = as.vector(as.character(orthologListKo)),
+                             "x" = as.vector(rep(-1, length(orthologListReaction))),
+                             "y" = as.vector(rep(-1, length(orthologListReaction))));
+
+    for(row in 1:length(orthologDF[,1])){
+        id <- orthologDF[row,1]
+        coords <- XML::xpathSApply(xmltop, "//entry[@id = id]//graphics",
+                                   function(x) (XML::xmlAttrs(x))['coords']);
+        #  print(length(coords))
+        if(length(coords) == 1){
+            orthologDF[row,4] <- coords;
+        }
+    }
+
+    orthologListNameCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
+                                               function(x) (XML::xmlAttrs(x))['name']);
+    # print(length(orthologListNameCoords))
+    orthologListCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
+                                           function(x) (XML::xmlAttrs(x))['coords']);
+
+
+    # print(length(orthologDF[,1]))
+    orthologCoords <- data.frame("nameCoords" =as.vector(as.character(orthologListNameCoords)),
+                                 "coords" = as.vector(as.character(orthologListCoords)));
+    # print(length(orthologCoords[,1]))
+    #return <- orthologDF;
+
+}
 
 
 
@@ -109,8 +190,13 @@ getKGMLRootNode <- function(pathwayId){
 
         xmlfile <- XML::xmlParse(pathFile);
         xmltop <- XML::xmlRoot(xmlfile); # gives content of root
-    }else
-        xmltop = NULL;
+    }else{
+        getPathwayKGML(pathwayId)
+        xmlfile <- XML::xmlParse(pathFile);
+        xmltop <- XML::xmlRoot(xmlfile); # gives content of root
+
+
+    }
 
     return <- xmltop;
 
@@ -130,51 +216,316 @@ toStringPathFile <- function(pathwayId){
     return <- pathFile;
 }
 
+getPathCommonNames <- function(path){
+
+    pathSplit <- strsplit(as.character(path[1,]), " ")
+
+    for(i in 1:length(pathSplit[[1]])){
+
+        if(substring(pathSplit[[1]][i],1,1) == "C" && nchar(pathSplit[[1]][i]) == 6){
+            pathSplit[[1]][i] <- getCommonNames(pathSplit[[1]][i], "metabolite")
+        }else if(substring(pathSplit[[1]][i],1,4) == "hsa:"){
+            pathSplit[[1]][i] <- getCommonNames(pathSplit[[1]][i], "gene")
+        }
+    }
+
+    pathSplit <- do.call(paste, c(as.list(pathSplit[[1]]), sep=" "));
+
+    return <- pathSplit;
+}
+
+
+
 getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
-        count <- 1;
+
+    count <- 1;
+
+    ### Vérifiez la connection internet
+
+    if(length(vectorOfKEGGIds) > 0 ){
+
+        # analysis of submaps - beggining
         names <- character();
 
         while(count <= length(vectorOfKEGGIds)){
-            names1<- getNames(vectorOfKEGGIds[count])
+
+            names1<- getNames(vectorOfKEGGIds[count], type)
+
             names <- append(names,names1)
+
             count <- count + 1;
         }
+    }
 
-       return <- names;
+
+    return <- names;
 
 }
 
-getNames <- function(geneId){
+getNames <- function(keggId, type){
 
     ### Vérifiez la connection internet
-     url <- getGeneInfoUrl(geneId)
-     foundName <- FALSE;
-     allLines <- readLines(url);
-     i <- 1;
-     name<- NULL;
 
-     while(foundName == FALSE){
+    url <- getKEGGInfoUrl(keggId)
 
-         allLines[i] <- stringr::str_trim(allLines[i], "both")
-         tmp <- strsplit(allLines[i], "\\s+|,|;")
+    foundName <- FALSE;
+    allLines <- readLines(url);
+    i <- 1;
+    name<- NULL;
 
-         if(!is.null(tmp[[1]][1])){
-            if(tmp[[1]][1] =="NAME"){
+    while(foundName == FALSE){
 
-             name <- tmp[[1]][2]
-             foundName <- TRUE;
+        allLines[i] <- stringr::str_trim(allLines[i], "both")
 
-         }}
+        if(type == "gene"){
 
-         i <- i+1;
-     }
-     return <- name
+            tmp <- strsplit(allLines[i], "\\s+|,|;")
+
+
+
+            if(!is.null(tmp[[1]][1])){
+                if(tmp[[1]][1] =="NAME"){
+
+                    name <- tmp[[1]][2]
+                    foundName <- TRUE;
+
+                }}
+
+            i <- i+1;
+        }
+        else if(type == "metabolite"){
+
+            tmp <- strsplit(allLines[i], "\\s+|;")
+
+            if(!is.null(tmp[[1]][1])){
+                if(tmp[[1]][1] =="NAME"){
+
+                    name <- tmp[[1]][2]
+                    foundName <- TRUE;
+
+                }}
+
+
+
+            i <- i+1;
+
+        }
+
+
+    }
+
+    return <- name
 }
 
-getGeneInfoUrl <- function(geneId){
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
- url <- "http://rest.kegg.jp/get/"
- url <- paste(url, geneId, sep = "")
- return <- url;
+getBrites <- function(Associations){
+    brite<- character();
+    # Associations <- Associations[,c(2,5)]
+    # Associations <- Associations[!duplicated(Associations),]
+    for(j in 1:nrow(Associations)){
+
+        url <- getKEGGInfoUrl(Associations[j,3])
+
+        foundName <- FALSE;
+        allLines <- readLines(url);
+        i <- 1;
+
+        for(i in 1:length(allLines)){
+            temp <- character();
+            tmp <- strsplit(allLines[i], "\\s+|;")
+            if(!is.null(tmp[[1]][1])){
+
+                if(tmp[[1]][1] =="BRITE"){
+                    foundName <- TRUE;
+                    if(tmp[[1]][2] == "Compounds"){
+                        temp <- paste(trim(allLines[i+1]),
+                                      "-", trim(allLines[i+2]),sep = " ");
+
+                    }else if(tmp[[1]][2] == "Anatomical"){
+                        temp <-paste(tmp[[1]][2],"-",trim(allLines[i+4]),sep = " ")
+                    }else if(tmp[[1]][2] == "Pharmaceutical"){
+                        temp <-paste(tmp[[1]][2],tmp[[1]][3],
+                                     sep = " ")
+                    }else if(tmp[[1]][2] == "Phytochemical"){
+                        temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]),
+                                     sep = " ")
+                    }else if(tmp[[1]][2] == "Pesticides"){
+                        temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]),
+                                     sep = " ")
+                    }else{
+                        temp <-paste(tmp[[1]][2],"-",trim(allLines[i+1]), sep = " ")
+                    }
+
+                }
+                brite <- append(brite,temp)
+            }
+
+        }
+
+        if(foundName==FALSE){
+            temp <- "not classified by KEGG yet"
+
+            brite <- append(brite,temp)
+        }
+
+    }
+
+    Associations <- cbind(Associations, "Chemical Class" = as.vector(brite))
+    return <- Associations;
 }
+
+
+getKEGGInfoUrl <- function(keggId){
+
+    url <- "http://rest.kegg.jp/get/"
+    url <- paste(url, keggId, sep = "")
+    return <- url;
+}
+
+
+getFirstLevelSubMaps <- function(pathwayId) {
+
+    xmltop <- getKGMLRootNode(pathwayId);
+
+
+    mapId <- XML::xpathSApply(xmltop, "//entry[@type = 'map']",
+                              function(x) (XML::xmlAttrs(x))['name']);
+
+    return <- mapId
+}
+
+
+
+
+
+
+isAllGeneOfSubGraphsInKEGGOverview <- function(subGraphId){
+
+    overviewGeneList <- KEGGREST::keggLink("genes", "hsa01100")
+
+
+    subGraphGeneList <- KEGGREST::keggLink("genes", subGraphId)
+
+    notInOverview <- c();
+    for(i in 1:length(subGraphGeneList)){
+
+        subGraphGene_Grep<- paste("\\",subGraphGeneList[[i]],"\\b",sep="")
+
+        r <- grep(subGraphGene_Grep, overviewGeneList);
+
+        if(length(r) == 0){
+            notInOverview <- c(notInOverview,subGraphGeneList[[i]])
+        }
+
+    }
+
+    return(notInOverview)
+
+}
+
+allSubMapsMetaboliteAnalysis <- function(){
+
+    allSubMaps <- getFirstLevelSubMaps("hsa01100")
+    analysisResults<- NULL;
+
+    for(i in 1:length(allSubMaps)){
+        allSubMaps[[i]] <- gsub("path:", "", allSubMaps[[i]])
+
+        if(substr(allSubMaps[[i]],1,3) == "hsa"){
+            mapSubMapId <- gsub("hsa", "map", allSubMaps[[i]])
+            numberGeneOfSubMap <- length(KEGGREST::keggLink("cpd",mapSubMapId))
+
+            notInOverview  <- isAllMetaboliteOfSubGraphsInKEGGOverview(mapSubMapId)
+            subMapName <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$NAME
+            subMapClass <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$CLASS
+
+            if(length(notInOverview) == 0){
+                notInOverview <- NA;
+                numberGeneNotInOverview <- 0;
+            }else{
+                numberGeneNotInOverview <- length(notInOverview)
+                notInOverview <- paste(notInOverview, collapse = ',')
+            }
+            analysisResults <-rbind(analysisResults,
+                                    c(subMapKEGGId = as.vector(allSubMaps[[i]]),
+                                      subMapName = as.vector(subMapName),
+                                      subMapClass = as.vector(subMapClass),
+                                      numberMetaboliteOfSubMap = as.vector(numberGeneOfSubMap),
+                                      numberMetaboliteNotInOverview = as.vector(numberGeneNotInOverview),
+                                      metaboliteNotInOverviewKEGGId = as.vector(notInOverview)))
+
+
+        }
+    }
+
+    return <- analysisResults;
+
+}
+
+isAllMetaboliteOfSubGraphsInKEGGOverview <- function(subGraphId){
+
+    overviewMetaboliteList <- KEGGREST::keggLink("cpd", "map01100")
+
+
+    subGraphMetaboliteList <- KEGGREST::keggLink("cpd", subGraphId)
+
+    notInOverview <- c();
+
+    if(length(subGraphMetaboliteList)>0){
+        for(i in 1:length(subGraphMetaboliteList)){
+
+            subGraphMetabolite_Grep<-
+                paste("\\",subGraphMetaboliteList[[i]],"\\b",sep="")
+
+            r <- grep(subGraphMetabolite_Grep, overviewMetaboliteList);
+
+            if(length(r) == 0){
+                notInOverview <- c(notInOverview,subGraphMetaboliteList[[i]])
+            }
+
+        }
+    }
+    return(notInOverview)
+
+}
+
+allSubMapsGeneAnalysis <- function(){
+
+    allSubMaps <- getFirstLevelSubMaps("hsa01100")
+    analysisResults<- NULL;
+    for(i in 1:length(allSubMaps)){
+        allSubMaps[[i]] <- gsub("path:", "", allSubMaps[[i]])
+        if(substr(allSubMaps[[i]],1,3) == "hsa"){
+            numberGeneOfSubMap <- length(KEGGREST::keggLink("genes",allSubMaps[[i]]))
+
+            notInOverview  <- isAllGeneOfSubGraphsInKEGGOverview(allSubMaps[[i]])
+            subMapName <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$NAME
+            subMapClass <- KEGGREST::keggGet(allSubMaps[[i]])[[1]]$CLASS
+
+            if(length(notInOverview) == 0){
+                notInOverview <- NA;
+                numberGeneNotInOverview <- 0;
+            }else{
+                numberGeneNotInOverview <- length(notInOverview)
+                notInOverview <- paste(notInOverview, collapse = ',')
+            }
+            analysisResults <-rbind(analysisResults,
+                                    c(subMapKEGGId = as.vector(allSubMaps[[i]]),
+                                      subMapName = as.vector(subMapName),
+                                      subMapClass = as.vector(subMapClass),
+                                      numberGeneOfSubMap = as.vector(numberGeneOfSubMap),
+                                      numberGeneNotInOverview = as.vector(numberGeneNotInOverview),
+                                      geneNotInOverviewKEGGId = as.vector(notInOverview)))
+
+
+
+        }
+    }
+
+    return <- analysisResults;
+
+}
+
+
