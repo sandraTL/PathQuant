@@ -30,7 +30,7 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
 
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId);
-    test_distributionGene(pathwayId, association, metabolite, gene);
+    #  test_distributionGene(pathwayId, association, metabolite, gene);
 
 
 
@@ -42,7 +42,7 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
 
 
     associatedMetabo <- data.frame(
-                        getAssociatedMetaboByGene(association,gene))
+        getAssociatedMetaboByGene(association,gene))
 
     # adjust gene parameter
     gene1 <- gsub(":", ".", gene);
@@ -57,7 +57,7 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
 
     # get frequency of every value until the maxVal found + Inf val
     frequenceDF <- data.frame(table(factor(shortestsPathsDF[,1],
-                                            levels=c(0:maxVal,Inf))))
+                                           levels=c(0:maxVal,Inf))))
     # set column names of frequenceDF
     colnames(frequenceDF) <- c("Distance", "Freq")
 
@@ -75,7 +75,7 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
 
     # Add a column for the coloring of the bar associated with gene to subgraph
     frequenceDF<-cbind(frequenceDF,
-                           Associations = associationsfrequencyDF);
+                       Associations = associationsfrequencyDF);
 
     # create barplot
     barplotFunctionGeneToAllMetabo(frequenceDF,gene)
@@ -106,12 +106,12 @@ barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
                                       size=0.5, position="identity",width=1)
              + ggplot2::theme_bw()
              + ggplot2::theme(panel.border = ggplot2::element_blank(),
-                 panel.grid.major = ggplot2::element_blank(),
-                 panel.grid.minor = ggplot2::element_blank(),
-                 text = ggplot2::element_text(size=12),
-                 axis.line.x = ggplot2::element_line(color="black"),
-                 axis.line.y = ggplot2::element_line(color="black")
-                              )
+                              panel.grid.major = ggplot2::element_blank(),
+                              panel.grid.minor = ggplot2::element_blank(),
+                              text = ggplot2::element_text(size=12),
+                              axis.line.x = ggplot2::element_line(color="black"),
+                              axis.line.y = ggplot2::element_line(color="black")
+             )
              + ggplot2::xlab("Distance from Gene")
              + ggplot2::ylab("Metabolite count")
              + ggplot2::ggtitle(geneCommonName)
@@ -182,8 +182,9 @@ getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
         test = FALSE;
         for(row2 in 1:nrow(associatedMetaboDF)){
 
-            if(assoDistanceDF[row1,"metabolites"] == associatedMetaboDF[row2,]){
-                test<- TRUE;
+
+            if(assoDistanceDF[row1,2] == associatedMetaboDF[row2,]){
+                test <- TRUE;
 
                 break;
             }else test<- FALSE;
@@ -198,7 +199,8 @@ getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
 
 getAssociatedMetaboByGene <- function(data, gene){
 
-    selectedRows <- data[data$gene == gene,];
+    selectedRows <- data[data[,1] == gene,];
+
     associatedMetabo <- selectedRows[,2];
 
     return <- associatedMetabo;
@@ -211,18 +213,18 @@ getAssociatedMetaboByGene <- function(data, gene){
 
 barplot_adjustMaximalDistance <- function(maximumDistance, frequenciesDF,
                                           maxDistFrequenciesDF){
-        levels(frequenciesDF$Distance) <- c(levels(frequenciesDF$Distance),
-                                            c(1:25))
-        if(maxDistFrequenciesDF < maximumDistance){
-            for(i in (maxDistFrequenciesDF+1):25){
+    levels(frequenciesDF$Distance) <- c(levels(frequenciesDF$Distance),
+                                        c(1:25))
+    if(maxDistFrequenciesDF < maximumDistance){
+        for(i in (maxDistFrequenciesDF+1):25){
 
-                newRow <- (data.frame("Distance" = i,
-                                       "Freq" = 0,
-                                       "Associations" = FALSE))
-                frequenciesDF <- rbind(frequenciesDF, newRow)
+            newRow <- (data.frame("Distance" = i,
+                                  "Freq" = 0,
+                                  "Associations" = FALSE))
+            frequenciesDF <- rbind(frequenciesDF, newRow)
 
-            }
         }
+    }
     return <- frequenciesDF
 
 }
