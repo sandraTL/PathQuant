@@ -5,7 +5,7 @@
 \title{Function that output a heatmap to visualize distance calculated between every
 gene-metabolite associations in input.}
 \usage{
-heatmapAsso(pathwayId, association, commonNames = FALSE)
+heatmapAsso(pathwayId, association)
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
@@ -13,26 +13,20 @@ heatmapAsso(pathwayId, association, commonNames = FALSE)
 \item{association}{Dataframe with 2 columns, where each line reprensents an
 association. First column are genes and the sencond column are
 metabolites. Only use KEGG Ids.}
-
-\item{display}{common names of KEGG ids input or display KEGG Ids for axis
-description.}
 }
 \description{
 Function calculting shortest distance between every genes and metabolites in
-a gene-metabolite pairs of your association parameter on a graph model of
-KEGG map selected, where nodes are metabolites and reactions are edges.
+a gene-metabolite pairs of your association parameter on a graph model of KEGG map
+selected, where nodes are metabolites and reactions are edges.
 }
 \details{
-If a gene or a metabolite is present on multiple edges or nodes, then the
-shortest distance is selected.
+If a gene or a metabolite is present on multiple edges or nodes, then the shortest distance is selected.
 
-Output: Heatmap of distances calculated between associated genes-metabolites.
-Columns represent genes and rows represent metabolites. The calculated
-distance is shown in each cell with the corresponding color code
-(from red - closest; to yellow - farthest).
+Output : Heatmap of distances calculated between associated genes-metabolites.
+Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest).
 }
 \examples{
-heatmapAsso("hsa01100", shinAndAlDF, TRUE)
+heatmapAsso("hsa01100", shinAndAlDF)
 }
 \keyword{KEGG}
 \keyword{graph,}

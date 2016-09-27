@@ -10,13 +10,13 @@ distributionGene(pathwayId, association, metabolite, gene)
 \item{pathwayId}{KEGG Id of selected pathway.}
 
 \item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
+association. First column are the genes and the sencond column are the
 metabolites. Only use KEGG Ids.}
 
 \item{metabolite}{Dataframe of 1 column, representing all the measured
 metabolites. Only use KEGG Ids.}
 
-\item{gene.}{Gene selected Only use KEGG.}
+\item{gene.}{Gene selected. Only use KEGG Ids.}
 }
 \description{
 Function ploting the distribution of distances between a gene and all

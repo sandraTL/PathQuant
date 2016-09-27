@@ -10,7 +10,7 @@ getDistanceAsso(pathwayId, association, ordered = FALSE)
 \item{pathwayId}{KEGG Id of selected pathway.}
 
 \item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
+association. First column are the genes and the sencond column are the
 metabolites. Only use KEGG Ids.}
 
 \item{ordered}{[option] ascendent ordering of distance}
