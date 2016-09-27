@@ -53,10 +53,14 @@ finalReactionEdgeDF <- function(pathwayId){
     reactionDF <- as.data.frame(lapply(reactionDF,
                                        function(X) unname(unlist(X))));
 
+    if(nrow(edgeDF) ==0 || nrow(reactionDF) == 0){
+        mergeDF<- data.frame();
+    }else{
+
     mergeDF <-  merge(reactionDF, edgeDF, by="reactionId");
     mergeDF <- mergeDF[ -c(8,9)];
     mergeDF <- mergeDF[ c(2,3,4,5,1,6,7,8)];
-
+}
     return <- mergeDF;
 
 }

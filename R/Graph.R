@@ -419,7 +419,7 @@ createGraphFromPathway <- function(pathwayId){
     edgeDF <- finalReactionEdgeDF(pathwayId);
 
 
-    if(!(is.null(nodeDF)) && !(is.null(edgeDF))){
+    if(length(nodeDF)!=0 && length(edgeDF)!=0){
 
         # create graphEl objects
         graphEl <- new("GraphElements", nodeDF= nodeDF,

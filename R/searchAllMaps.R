@@ -21,6 +21,7 @@ getDistanceAssoAllMaps <- function(association, ordered =FALSE,
 
     #bug with map hsa00250....
     l[22] <- "hsa00250";
+
     finalDF <- data.frame();
     for(i in 1:length(l)){
 
