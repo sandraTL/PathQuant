@@ -16,14 +16,13 @@
 #'        association. First column are genes and the sencond column are
 #'        metabolites. Only use KEGG Ids.
 #' @keywords graph, heatmap, shortestDistance, KEGG
-#' @export
 #' @examples heatmapAsso("hsa01100", shinAndAlDF)
 
 heatmapAssoAllMaps <- function(association, distanceDF){
 
-  #  distanceDF <- getDistanceAssoAllMaps(shinAndAlDF,1)[,c(1,3,5,6)]
+    distanceDF <- getDistanceAssoAllMaps(shinAndAlDF,1)[,c(1,3,5,6)]
 
-    print(distanceDF)
+
     mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
     or the metabolite or both weren't mapped on the selected pathway.
     Thus, no distance was calculated"
@@ -77,6 +76,8 @@ heatmapAssoAllMaps <- function(association, distanceDF){
     frames$Col = as.integer(frames$Col)
 
     dat$distance <- as.numeric(as.character(dat$distance))
+
+
 
     colors <- c("#BD0026","#E31A1C","#FC4E2A","#FD8D3C","#FEB24C",
                 "#FED976", "#FFEDA0", "#FFFFCC")

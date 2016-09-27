@@ -218,14 +218,16 @@ permutationTest <-
             }
 
             if (k == 1) {
+
                 distPermutated <-
                     getDistanceAssoPerm(pathwayId,
                                     permutatedData,F)[,c(1,3,5)]
-                count <- c(rep(1, length(distPermutated[,1])))
-                distPermutated <- cbind(distPermutated, "count" = count)
 
+                count <- c(rep(1, length(distPermutated[,1])))
+
+                distPermutated <- cbind(distPermutated, "count" = count)
                 permutatedMedians[k] <-
-                    ceiling(median(distPermutated$distance))
+              ceiling(median(as.numeric(as.character(distPermutated$distance))))
 
             }else if (k > 1) {
                 colnames(permutatedData) <- c("geneKEGGId","metaboliteKEGGId")
@@ -237,8 +239,8 @@ permutationTest <-
                                                              "metaboliteKEGGId")
                     )))
 
-                permutatedMedians[k] <-
-                    ceiling(median(distPermutated$distance))
+              permutatedMedians[k] <-
+            ceiling(median(as.numeric(as.character(distPermutated$distance))))
 
                 if (nrow(knownDistances) > 0) {
 
@@ -249,6 +251,7 @@ permutationTest <-
                         knownDistances[,2] <-
                             factor(knownDistances[,2],
                                    levels = levels(permutatedData[,2]))
+
                         # get id of known distance rows in permutation set to
                         # to delete from distance calculation process
                         idRowToDelete <- permutatedData[which(
@@ -302,10 +305,10 @@ permutationTest <-
                     distkPermutated <-
                         rbind(distkPermutated,knownDistances)
                     permutatedMedians[k] <-
-                        ceiling(median(distkPermutated$distance))
+                        ceiling(median(as.numeric(as.character(distkPermutated$distance))))
                 }else if (nrow(permutatedData) == 0) {
                     permutatedMedians[k] <-
-                        ceiling(median(knownDistances$distance))
+                        ceiling(median(as.numeric(as.character(knownDistances$distance))))
                 }
 
             }
@@ -315,7 +318,7 @@ permutationTest <-
         distAssociated <-
             getDistanceAssoPerm(pathwayId,association,F)
 
-        medianAssociated <- median(distAssociated$distance)
+        medianAssociated <- median(as.numeric(as.character(distAssociated$distance)))
         print(medianAssociated)
         # output functions
         if (output == "medians") {
@@ -404,13 +407,14 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
             axis.line.y = ggplot2::element_line(colour = "black")
 
         )
+
         + ggplot2::geom_rect(data = frequencies,
-                             ggplot2::aes(xmin = maxDistance -5.5,
-                                          xmax = maxDistance+2.5,
-                                          ymin = maxFrequencie -0.5,
+                             ggplot2::aes(xmin = maxDistance -5.0,
+                                          xmax = maxDistance+2.0,
+                                        ymin = maxFrequencie -0.25,
                                           ymax = maxFrequencie),
-                             fill = "grey80")
-        + ggplot2::annotate("text", x = maxDistance -1.5, y = maxFrequencie-0.25 ,
+                             color = "black", fill= "grey80")
+        + ggplot2::annotate("text", x = maxDistance -1.5, y = maxFrequencie-0.125 ,
                  label = legend_text,colour = "black",size=5)
 
         + ggplot2::xlab("Permutated Medians")

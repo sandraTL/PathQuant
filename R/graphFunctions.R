@@ -56,6 +56,7 @@ getHeadTailKgmlIdOfEdge <- function(g, hsaGene,  reactionDF){
 getCompoundNodeKgmlId <- function(g, compoundKeggId, nodeDF){
 
     compoundKeggId1 <- paste("\\",compoundKeggId,"\\b",sep="")
+
     listId <-grep(compoundKeggId1, nodeDF$keggId)
 
 

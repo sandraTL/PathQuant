@@ -4,16 +4,19 @@
 \alias{getDistanceAsso}
 \title{Function calculating shortest distance between each gene-metabolite pairs.}
 \usage{
-getDistanceAsso(pathwayId, association, ordered = FALSE)
+getDistanceAsso(pathwayId, association, ordered = FALSE, commonNames = TRUE)
 }
 \arguments{
 \item{pathwayId}{KEGG Id of selected pathway.}
 
 \item{association}{Dataframe with 2 columns, where each line reprensents an
-associations. First column are the genes and the sencond column as the
+association. First column are the genes and the sencond column are the
 metabolites. Only use KEGG Ids.}
 
 \item{ordered}{[option] ascendent ordering of distance}
+
+\item{commonNames}{get KEGG's Common Names of the KEGG Id in the
+results.}
 }
 \description{
 Function calculating shortest distance between each gene-metabolite

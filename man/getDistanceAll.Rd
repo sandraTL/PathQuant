@@ -2,8 +2,8 @@
 % Please edit documentation in R/Graph.R
 \name{getDistanceAll}
 \alias{getDistanceAll}
-\title{Function calculating shortest distance between every gene in a
-gene-metabolite pairs and all metabolite.}
+\title{Function calculating shortest distance between every gene and every
+metabolite.}
 \usage{
 getDistanceAll(pathwayId, gene, metabolite)
 }
@@ -17,10 +17,9 @@ KEGG Ids.}
 metabolites. Only use KEGG Ids.}
 }
 \description{
-Function calculating shortest distance between every gene in a
-gene-metabolite pairs of your association parameter and every metabolite
-(in a pair or not) on a graph model of KEGG map selected, where nodes are
-metabolites and reactions are edges.
+Function calculating shortest distance between every gene and every
+metabolites on a graph model of KEGG map selected, where nodes are
+metabolites and reactions (genes) are edges.
 }
 \details{
 If a gene or a metabolite is present on multiple edges or nodes, then

@@ -216,6 +216,26 @@ toStringPathFile <- function(pathwayId){
     return <- pathFile;
 }
 
+getPathCommonNames <- function(path){
+
+  pathSplit <- strsplit(as.character(path[1,]), " ")
+
+  for(i in 1:length(pathSplit[[1]])){
+
+    if(substring(pathSplit[[1]][i],1,1) == "C" && nchar(pathSplit[[1]][i]) == 6){
+        pathSplit[[1]][i] <- getCommonNames(pathSplit[[1]][i], "metabolite")
+    }else if(substring(pathSplit[[1]][i],1,4) == "hsa:"){
+        pathSplit[[1]][i] <- getCommonNames(pathSplit[[1]][i], "gene")
+    }
+  }
+
+  pathSplit <- do.call(paste, c(as.list(pathSplit[[1]]), sep=" "));
+
+  return <- pathSplit;
+}
+
+
+
 getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
 

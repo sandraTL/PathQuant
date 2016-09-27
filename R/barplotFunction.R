@@ -30,7 +30,7 @@ distributionGene <- function(pathwayId, association, metabolite, gene){
 
 
     pathwayId <- gsub("hsa:", "hsa", pathwayId);
-    test_distributionGene(pathwayId, association, metabolite, gene);
+  #  test_distributionGene(pathwayId, association, metabolite, gene);
 
 
 
@@ -182,8 +182,9 @@ getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
         test = FALSE;
         for(row2 in 1:nrow(associatedMetaboDF)){
 
-            if(assoDistanceDF[row1,"metabolites"] == associatedMetaboDF[row2,]){
-                test<- TRUE;
+
+            if(assoDistanceDF[row1,2] == associatedMetaboDF[row2,]){
+                test <- TRUE;
 
                 break;
             }else test<- FALSE;
@@ -198,7 +199,8 @@ getAssociationsDF <- function(assoDistanceDF, associatedMetaboDF){
 
 getAssociatedMetaboByGene <- function(data, gene){
 
-    selectedRows <- data[data$gene == gene,];
+    selectedRows <- data[data[,1] == gene,];
+
     associatedMetabo <- selectedRows[,2];
 
     return <- associatedMetabo;
