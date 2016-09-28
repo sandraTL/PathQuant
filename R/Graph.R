@@ -139,8 +139,7 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
     outputFinal <- data.frame();
     outputFinal1 <- data.frame();
     #calcul al distances
-    gene <- data[1,2]
-    metabolite <- data[1,4];
+
     pl <-  apply(data,1, function(x){
 
         dfTemp <- data.frame();
@@ -170,7 +169,8 @@ setMethod("associatedShortestPaths","Graph", function(object, data){
     })
 
     pl1 <-  apply(data,1, function(x){
-
+        gene <- x['geneKEGGId']
+        metabolite <- x['metaboliteKEGGId'];
         dfTemp <- data.frame();
 
         if(is.na(x['metaboliteGraphId']) || is.na(x['geneGraphId'])){
