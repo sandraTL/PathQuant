@@ -221,13 +221,16 @@ permutationTest <-
 
                 distPermutated <-
                     getDistanceAssoPerm(pathwayId,
-                                        permutatedData,F)[,c(1,3,5)]
+                                    permutatedData,F)[,c(1,3,5)]
+
 
                 count <- c(rep(1, length(distPermutated[,1])))
 
                 distPermutated <- cbind(distPermutated, "count" = count)
                 permutatedMedians[k] <-
-                    ceiling(median(as.numeric(as.character(distPermutated$distance))))
+
+              ceiling(median(as.numeric(as.character(distPermutated$distance))))
+
 
             }else if (k > 1) {
                 colnames(permutatedData) <- c("geneKEGGId","metaboliteKEGGId")
@@ -239,8 +242,8 @@ permutationTest <-
                                                              "metaboliteKEGGId")
                     )))
 
-                permutatedMedians[k] <-
-                    ceiling(median(as.numeric(as.character(distPermutated$distance))))
+              permutatedMedians[k] <-
+            ceiling(median(as.numeric(as.character(distPermutated$distance))))
 
                 if (nrow(knownDistances) > 0) {
 
@@ -411,12 +414,12 @@ histogramFunction <- function(permutatedMedians, medianAssociated, permutation) 
         + ggplot2::geom_rect(data = frequencies,
                              ggplot2::aes(xmin = maxDistance -5.0,
                                           xmax = maxDistance+2.0,
-                                          ymin = maxFrequencie -0.25,
+
+                                        ymin = maxFrequencie -0.25,
                                           ymax = maxFrequencie),
                              color = "black", fill= "grey80")
         + ggplot2::annotate("text", x = maxDistance -1.5, y = maxFrequencie-0.125 ,
-                            label = legend_text,colour = "black",size=5)
-
+                 label = legend_text,colour = "black",size=5)
         + ggplot2::xlab("Permutated Medians")
         + ggplot2::ylab("Frenquency (%)")
         + ggplot2::scale_y_continuous(expand = c(0,0))

@@ -1,21 +1,42 @@
-
-#' Inporting data from an XSLX file, in the context of this package, one of the
+#' Importing data from an XSLX file, in the context of this package, one of the
 #' data to import is the association file.
 #'
-#' @param path to XSLX file with 2 columns where each line reprensents an
-#'        association. First column are genes and the sencond column are
-#'        metabolites. Only use KEGG Ids.
-#' @keywords data, input, XSLX, data frame, associations.
+#' @param path to XSLX file.
+#' @keywords data, import, XSLX, data frame, associations.
 #' @export
 #' @examples inputXLSXtoDF("file_path/fileName.xlsx")
 
-inputXLSXtoDF <- function(association){
+importXLSXtoDF <- function(file, sheet.num = 1){
 
-    input_data = gdata::read.xls(association);
+    # print("importXLSXtoDF")
+
+    input_data = gdata::read.xls(file, sheet = sheet.num)
 
     return <- input_data;
 
 }
+
+
+
+#' Importing data from an txt file (with table separators),
+#' in the context of this package, one of the
+#' data to import is the association file.
+#'
+#' @param path to txt file.
+#' @keywords data, import, txt, data frame, associations.
+#' @export
+#' @examples inputXLSXtoDF("file_path/fileName.xlsx")
+
+importTXTtoDF <- function(file){
+
+    # print("importTXTtoDF")
+
+    input_data = read.table(file)
+
+    return <- input_data;
+
+}
+
 
 #' Export results data of a data frame into a text files, for which each lines
 #' separates the data from every data frame colum by tabulation. This text file
@@ -28,6 +49,7 @@ inputXLSXtoDF <- function(association){
 
 exportDFtoTxt <- function(export_data, exportNameFile){
 
+    # print("exportDFtoTxt")
 
 
     exportNameFile = paste(exportNameFile, ".txt", sep = "");
@@ -49,25 +71,26 @@ exportDFtoTxt <- function(export_data, exportNameFile){
 #' @export
 #' @examples getPath("hsa:01100","hsa:1373", "C00300", T)
 
-getPath <- function(pathwayId, gene, metabolite, commonNames = F){
-
-    asso <- data.frame(gene = as.vector(gene),
-                       metabolite = as.vector(metabolite));
-
-    res <- getDistanceAsso(pathwayId, asso,F,F);
-    path <- res["path"]
-
-    if(commonNames == T){
-
-        path <-getPathCommonNames(path);
-    }
-
-    return <- path;
-
-}
-
-
-
+#
+# getPath <- function(pathwayId, gene, metabolite, commonNames = F){
+#
+#     print("getPath")
+#
+#     asso <- data.frame(gene = as.vector(gene),
+#                        metabolite = as.vector(metabolite));
+#
+#       res <- getDistanceAsso(pathwayId, asso,F,F);
+#       path <- res["path"]
+#
+#       if(commonNames == T){
+#
+#           path <-getPathCommonNames(path);
+#       }
+#
+#      return <- path;
+#
+# }
+#
 
 
 

@@ -1,5 +1,3 @@
-
-
 #' isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
 #' isMetaboliteInMap, distance
 #'
@@ -17,27 +15,28 @@
 getDistanceAssoAllMaps <- function(association, ordered =FALSE,
                                    commonNames = TRUE){
 
-    l <- getListAllHumanMaps();
+
+     l <- getListAllHumanMaps();
 
     #bug with map hsa00250....
     l[22] <- "hsa00250";
-
     finalDF <- data.frame();
     for(i in 1:length(l)){
 
-        r <-getDistanceAsso(l[i], association, F, commonNames=FALSE);
+      r <-getDistanceAsso(l[i], association, F, commonNames=FALSE);
 
 
-        if(is.data.frame(r)){
+      if(is.data.frame(r)){
 
-            if(nrow(r) >0){
-                finalDF <- rbind(finalDF,r )
-            }
-        }
+         if(nrow(r) >0){
+             finalDF <- rbind(finalDF,r )
+         }
+      }
 
     }
 
     finalDF <- removeRowsDistanceAsso(finalDF)
+
     # Keeps associations only when the gene and the metabolite are present in
     # the same map.
     #     if(mapped == 1){
@@ -48,6 +47,8 @@ getDistanceAssoAllMaps <- function(association, ordered =FALSE,
     #         finalDF <- subset(finalDF , finalDF[3] == FALSE | finalDF[6] == FALSE)
     #         finalDF <- finalDF[!duplicated(finalDF),]
     # }
+
+
 
     # finalDF <- subset(finalDF , finalDF[2] == TRUE & finalDF[4] == TRUE)
     # finalDF <- finalDF[!duplicated(finalDF),]
@@ -63,26 +64,27 @@ getDistanceAssoAllMaps <- function(association, ordered =FALSE,
     }
 
     if(commonNames == TRUE){
-        geneCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                                          (unlist(finalDF[,1])),"gene")))
-        metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                                                (unlist(finalDF[,3])), "metabolite")))
+
+         geneCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                    (unlist(finalDF[,1])),"gene")))
+         metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
+                                    (unlist(finalDF[,3])), "metabolite")))
 
 
-        finalDF1 <- data.frame(
-            "geneCommonName" = geneCommonName,
-            "geneKEGGId" = finalDF[,1],
-            "isGeneInMap" = finalDF[,2],
-            "metaboliteCommonName" = metaboliteCommonName,
-            "metaboliteKEGGId" = finalDF[,3],
-            "isMetaboliteInMap" = finalDF[,4],
-            "distance" = finalDF[,5],
-            "pathwayId" = finalDF[,6],
-            "path" = finalDF[,7]);
-        rownames(finalDF1) <- c(1:nrow(finalDF1))
+         finalDF1 <- data.frame(
+             "geneCommonName" = geneCommonName,
+             "geneKEGGId" = finalDF[,1],
+             "isGeneInMap" = finalDF[,2],
+             "metaboliteCommonName" = metaboliteCommonName,
+             "metaboliteKEGGId" = finalDF[,3],
+             "isMetaboliteInMap" = finalDF[,4],
+             "distance" = finalDF[,5],
+             "pathwayId" = finalDF[,6],
+             "path" = finalDF[,7]);
+         rownames(finalDF1) <- c(1:nrow(finalDF1))
     }else{
-        finalDF1 <- finalDF
-    }
+         finalDF1 <- finalDF
+     }
 
     return <- finalDF1;
 }
@@ -91,12 +93,15 @@ getDistanceAssoAllMaps <- function(association, ordered =FALSE,
 
 getUnmappedAsso <- function(aM){
 
-    #  aM <- getDistanceAssoAllMaps(shinAndAlDF,2)
+
+  #  aM <- getDistanceAssoAllMaps(shinAndAlDF,2)
 
     aMAsso <- aM[,c(1,2,3,4)]
     aMAsso <- aMAsso[!duplicated(aMAsso),]
     print(aMAsso)
-    # v <- getAssociationForHeatmap(aMAsso,shinAndAlDF)
+
+   # v <- getAssociationForHeatmap(aMAsso,shinAndAlDF)
+
     newAsso <- aMAsso
     geneCommonName <- getCommonNames(as.vector(unlist(newAsso[,1])), "gene")
 
@@ -111,7 +116,7 @@ getUnmappedAsso <- function(aM){
     newAsso <- getBrites(newAsso)
 
     ## Ouput in xlsx file
-    print(newAsso)
+
     WriteXLS::WriteXLS(newAsso, "AssoNotInKEGG.xlsx")
 
     return <- newAsso;

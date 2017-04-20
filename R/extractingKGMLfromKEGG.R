@@ -7,6 +7,8 @@
 
 getPathwayKGML <- function(pathwayId) {
 
+  #  print("getPathwayKGML")
+
     adressfile <- toStringAdressfile(pathwayId)
     destfile <- toStringDestfile(pathwayId)
 
@@ -24,6 +26,7 @@ getPathwayKGML <- function(pathwayId) {
 
         XML::saveXML(xmlFile, file = destfile)
     }
+
     return <- xmlFile
 
 }
@@ -31,6 +34,8 @@ getPathwayKGML <- function(pathwayId) {
 #set path to store downloaded file
 toStringDestfile <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
+
+  #  print("toStringDestfile")
 
     s2 <-  toString(pathwayId);
     s3 <- ".txt"
@@ -42,6 +47,8 @@ toStringDestfile <- function(pathwayId){
 
 #set path for download
 toStringAdressfile <- function(pathwayId){
+
+   # print("toStringAdressfile")
 
     s1 <- "rest.kegg.jp/get/";
     s2 <-  toString(pathwayId);
@@ -55,6 +62,8 @@ toStringAdressfile <- function(pathwayId){
 # see if file was already dowloaded
 isFileInDirectory <- function(pathwayId){
     #concatenation of pathwayId to set swdir for the xml
+
+   # print("isFileInDirectory")
 
     pathFile <- toStringDestfile(pathwayId)
     bool <- FALSE;
@@ -73,6 +82,8 @@ isFileInDirectory <- function(pathwayId){
 
 # set adress to download compound kgml file
 toCompoundAdressfile <- function(compoundKeggId){
+
+   # print("toCompoundAdressfile")
 
     s1 <- "rest.kegg.jp/list/";
     s2 <-  toString(compoundKeggId);
