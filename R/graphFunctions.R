@@ -4,9 +4,13 @@
 
 getHeadTailKgmlIdOfEdge <- function(g, hsaGene,  reactionDF){
 
+    # print("getHeadTailKgmlIdOfEdge")
+
     # return lines of DF that contains hsa gene
     hsaGene_Grep<- paste("\\",hsaGene,"\\b",sep="")
     listId <-grep(hsaGene_Grep, reactionDF$ko)
+
+    #print(listId)
 
 
     nodesVector1 <- data.frame();
@@ -18,6 +22,18 @@ getHeadTailKgmlIdOfEdge <- function(g, hsaGene,  reactionDF){
         gene <- c(as.character(hsaGene))
         sub <- c(as.character(igraph::V(g)[nodesVector[1]]$name));
         prod <- c(as.character(igraph::V(g)[nodesVector[2]]$name));
+
+        # print(gene)
+        # print(sub)
+        # print(prod)
+
+        # gene1 <- g@edgeDF$ko[x]
+        # sub1 <- g@edgeDF$substrateId[x]
+        # prod1 <- g@edgeDF$productId[x]
+        #
+        # print(gene1)
+        # print(sub1)
+        # print(prod1)
 
         nodesVector1 <- data.frame(gene, sub, prod);
 
@@ -55,6 +71,8 @@ getHeadTailKgmlIdOfEdge <- function(g, hsaGene,  reactionDF){
 
 getCompoundNodeKgmlId <- function(g, compoundKeggId, nodeDF){
 
+    #print("getCompoundNodeKgmlId")
+
     compoundKeggId1 <- paste("\\",compoundKeggId,"\\b",sep="")
 
     listId <-grep(compoundKeggId1, nodeDF$keggId)
@@ -83,6 +101,9 @@ getCompoundNodeKgmlId <- function(g, compoundKeggId, nodeDF){
 }
 
 grep2DF <- function(df1, df2){
+
+    #print("grep2DF")
+
    j <- 0 ;
     for(i in 1:length(df1[,1])){
 

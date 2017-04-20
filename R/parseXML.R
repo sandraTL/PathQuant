@@ -6,15 +6,20 @@
 
 getListNodeFromKGML <- function(pathwayId) {
 
+   # print("getListNodeFromKGML")
+
     xmltop <- getKGMLRootNode(pathwayId);
 
-
-    nodeListId <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
+    nodeListId <- XML::xpathSApply(xmltop,
+                                   "//entry[@type = 'compound']",
                                    function(x) (XML::xmlAttrs(x))['id']);
-    nodeListCpd <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']",
+    nodeListCpd <- XML::xpathSApply(xmltop,
+                                    "//entry[@type = 'compound']",
                                    function(x) (XML::xmlAttrs(x))['name']);
-    nodeListColor <- XML::xpathSApply(xmltop, "//entry[@type = 'compound']//graphics",
+    nodeListColor <- XML::xpathSApply(xmltop,
+                                    "//entry[@type = 'compound']//graphics",
                                     function(x) (XML::xmlAttrs(x))['fgcolor'])
+
     nodeDF <- data.frame(kgmlId = as.vector(unlist(nodeListId)),
                          keggId = as.vector(unlist(nodeListCpd)),
                          color = as.vector(unlist(nodeListColor)));
@@ -33,8 +38,7 @@ getListNodeFromKGML <- function(pathwayId) {
 
 getListReactionFromKGML <- function(pathwayId) {
 
-   # print(pathwayId)
-
+   # print("getListReactionFromKGML")
     #gives content of root
     xmltop <- getKGMLRootNode(pathwayId);
 
@@ -58,7 +62,7 @@ getListReactionFromKGML <- function(pathwayId) {
                           path = './product',
                           function(x) XML::xmlAttrs(x)['name']);
 
-    if(length(reactionIdNodes) > 0){
+    if(length(reactionIdNodes) > 0) {
     max1 <- max(lengths(substrateId));
     max2 <- max(lengths(productId));
     max3 <- max(lengths(substrateName));
@@ -69,33 +73,92 @@ getListReactionFromKGML <- function(pathwayId) {
 
 
 
-    sum <- (max1 + max2 + max3 +max4 + max5 + max6 +max7);
+      sum <- (max1 + max2 + max3 +max4 + max5 + max6 +max7);
 
-    if(sum > 7){
-    reactionList <- do.call(rbind.data.frame,
+      # print(substrateId)
+      # print(productId)
+      # print(substrateName)
+      # print(productName)
+      # print(reactionId)
+      # print(reactionType)
+      # print(reactionName)
+
+      # print(length(substrateId));
+      # print(length(productId));
+      # print(length(substrateName));
+      # print(length(productName));
+      # print(length(reactionId));
+      # print(length(reactionType));
+      # print(length(reactionName));
+
+      # print(pathwayId)
+
+      if(sum > 7) {
+        reactionList <- do.call(rbind.data.frame,
                             mapply(cbind,
                                    "substrateId" = substrateId,
-                                   "productId" = productId,
+                                   "productId" =  productId,
                                    "substrateName" = substrateName,
                                    "productName" = productName,
-                                   "reactionId" = reactionId,
+                                   "reactionId" =  reactionId,
                                    "reactionType" = reactionType,
                                    "reactionName" = reactionName
                                    ));
-   }else if(sum == 7){
-    reactionList <- data.frame(cbind(
-                           "substrateId" = as.numeric(unlist(substrateId)),
-                           "productId" = as.numeric(unlist(productId)),
-                           "substrateName" = as.character(unlist(substrateName)),
-                           "productName" = as.character(unlist(productName)),
-                           "reactionId" = as.numeric(reactionId),
-                           "reactionType" = reactionType,
-                           "reactionName" = reactionName
-                            ));
+     } else if(sum == 7) {
+        reactionList <- data.frame(cbind(
+                          "substrateId" = as.numeric(unlist(substrateId)),
+                          "productId" = as.numeric(unlist(productId)),
+                          "substrateName" = as.character(unlist(substrateName)),
+                          "productName" = as.character(unlist(productName)),
+                          "reactionId" = as.numeric(reactionId),
+                          "reactionType" = reactionType,
+                          "reactionName" = reactionName
+                           ));
+     }
+   } else {
+       reactionList <- data.frame();
    }
-}else reactionList <- data.frame();
 
     return <- reactionList;
+
+}
+
+
+getListOfUniqueHSAGeneId <- function(pathwayId){
+
+
+    gene.list <- getListEdgeFromGeneKGML("hsa01100")$ko
+    gene.list <- paste(gene.list, collapse = " ")
+    gene.list <- strsplit(gene.list, " ")
+    gene.list <- gene.list[[1]][!duplicated(gene.list[[1]])]
+
+    return <- gene.list
+}
+
+getListOfUniqueMetabolite <- function(pathwayId){
+
+
+    metabo.list <- getListNodeFromKGML("hsa01100")$keggId
+    metabo.list <- paste(metabo.list, collapse = " ")
+    metabo.list <- strsplit(metabo.list, " ")
+    metabo.list <- metabo.list[[1]][!duplicated(metabo.list[[1]])]
+
+    return <- metabo.list
+}
+
+getListUniqueMetaboliteInReactions <- function(pathwayId){
+
+    reac.sub.list <- getListReactionFromKGML("hsa01100")$substrateName
+    reac.prod.list <- getListReactionFromKGML("hsa01100")$productName
+    reac.sub.list <- paste(reac.sub.list, collapse = " ")
+    reac.prod.list <- paste(reac.prod.list, collapse = " ")
+
+    reac.me.list <- paste(reac.sub.list, reac.prod.list, collapse = " ")
+
+    reac.me.list <- strsplit(reac.me.list, " ")
+    reac.me.list <- reac.me.list[[1]][!duplicated(reac.me.list[[1]])]
+
+    return <- reac.me.list
 
 }
 
@@ -105,6 +168,8 @@ getListReactionFromKGML <- function(pathwayId) {
 
 getListEdgeFromGeneKGML <- function(pathwayId) {
 
+
+   # print("getListEdgeFromGeneKGML")
     # get the root of the KGML document
     xmltop <- getKGMLRootNode(pathwayId);
 
@@ -132,51 +197,53 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
 
 getListOrthologGeneFromKGML <- function(pathwayId) {
 
+   # print("getListOrthologGeneFromKGML")
     # get the root of the KGML document
     xmltop <- getKGMLRootNode(pathwayId);
 
     # Get value of atributes (id, name(ko) and reaction) of entry of type
     # ortholog, some don't have reaction argument thus won't have an edge in
     # our final graph they will have NA in data.frame.
-    orthologListId <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
-                                   function(x) (XML::xmlAttrs(x))['id']);
+    orthologListId <- XML::xpathSApply(xmltop,
+                                 "//entry[@type = 'ortholog']",
+                                 function(x) (XML::xmlAttrs(x))['id']);
 
-    orthologListKo <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
-                                   function(x) (XML::xmlAttrs(x))['name']);
-   # print(length(orthologListKo))
-    orthologListReaction <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']",
-                                         function(x) (XML::xmlAttrs(x))['reaction']);
-#    print(length(orthologListReaction))
+    orthologListKo <- XML::xpathSApply(xmltop,
+                                "//entry[@type = 'ortholog']",
+                                 function(x) (XML::xmlAttrs(x))['name']);
 
- #   print(length(orthologListCoords))
-    orthologDF <- data.frame("reactionId" = as.vector(as.character(orthologListId)),
-                             "reactions" = as.vector(as.character(orthologListReaction)),
-                             "ko" = as.vector(as.character(orthologListKo)),
-                             "x" = as.vector(rep(-1, length(orthologListReaction))),
-                             "y" = as.vector(rep(-1, length(orthologListReaction))));
+    orthologListReaction <- XML::xpathSApply(xmltop,
+                                "//entry[@type = 'ortholog']",
+                                function(x) (XML::xmlAttrs(x))['reaction']);
+
+    orthologDF <- data.frame(
+        "reactionId" = as.vector(as.character(orthologListId)),
+        "reactions" = as.vector(as.character(orthologListReaction)),
+        "ko" = as.vector(as.character(orthologListKo)),
+        "x" = as.vector(rep(-1, length(orthologListReaction))),
+        "y" = as.vector(rep(-1, length(orthologListReaction)))
+    );
 
     for(row in 1:length(orthologDF[,1])){
       id <- orthologDF[row,1]
-      coords <- XML::xpathSApply(xmltop, "//entry[@id = id]//graphics",
+
+      coords <- XML::xpathSApply(xmltop,
+                         "//entry[@id = id]//graphics",
                          function(x) (XML::xmlAttrs(x))['coords']);
-    #  print(length(coords))
-     if(length(coords) == 1){
+
+      if(length(coords) == 1){
           orthologDF[row,4] <- coords;
-     }
+      }
     }
 
     orthologListNameCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
                                            function(x) (XML::xmlAttrs(x))['name']);
-   # print(length(orthologListNameCoords))
+
     orthologListCoords <- XML::xpathSApply(xmltop, "//entry[@type = 'ortholog']//graphics",
                                          function(x) (XML::xmlAttrs(x))['coords']);
 
-
-   # print(length(orthologDF[,1]))
     orthologCoords <- data.frame("nameCoords" =as.vector(as.character(orthologListNameCoords)),
                                  "coords" = as.vector(as.character(orthologListCoords)));
-   # print(length(orthologCoords[,1]))
-    #return <- orthologDF;
 
 }
 
@@ -184,6 +251,8 @@ getListOrthologGeneFromKGML <- function(pathwayId) {
 
 getKGMLRootNode <- function(pathwayId){
     # get the root of the KGML document
+    #print("getKGMLRootNode")
+
     pathFile <- toStringPathFile(pathwayId);
 
     if(is.na(file.info(pathFile)$size)== FALSE){
@@ -206,6 +275,7 @@ getKGMLRootNode <- function(pathwayId){
 
 toStringPathFile <- function(pathwayId){
 
+    # print("toStringPathFile")
     # concatenation of pathwayId to set swdir for the xml
 
     s2 <-  toString(pathwayId);
@@ -217,6 +287,8 @@ toStringPathFile <- function(pathwayId){
 }
 
 getPathCommonNames <- function(path){
+
+    # print("getPathCommonNames")
 
   pathSplit <- strsplit(as.character(path[1,]), " ")
 
@@ -238,8 +310,8 @@ getPathCommonNames <- function(path){
 
 getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
-
-        count <- 1;
+    # print("getCommonNames")
+    count <- 1;
 
     ### Vérifiez la connection internet
 
@@ -265,14 +337,25 @@ getCommonNames <- function(vectorOfKEGGIds, type = c("gene","metabolite")){
 
 getNames <- function(keggId, type){
 
+   # print("getNames")
+   # print(keggId)
      ### Vérifiez la connection internet
 
-     url <- getKEGGInfoUrl(keggId)
+    name <- NULL;
 
-     foundName <- FALSE;
-     allLines <- readLines(url);
-     i <- 1;
-     name<- NULL;
+    if (is.na(keggId)) {
+
+        name <- NA;
+
+
+
+     } else {
+
+      url <- getKEGGInfoUrl(keggId)
+
+      foundName <- FALSE;
+      allLines <- readLines(url);
+      i <- 1;
 
      while(foundName == FALSE){
 
@@ -306,24 +389,23 @@ getNames <- function(keggId, type){
 
                  }}
 
-
-
              i <- i+1;
 
          }
 
-
      }
-
+}
      return <- name
 }
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
 getBrites <- function(Associations){
+    # print("getBrites")
+
     brite<- character();
-# Associations <- Associations[,c(2,5)]
-# Associations <- Associations[!duplicated(Associations),]
+    # Associations <- Associations[,c(2,5)]
+    # Associations <- Associations[!duplicated(Associations),]
     for(j in 1:nrow(Associations)){
 
         url <- getKEGGInfoUrl(Associations[j,3])
@@ -379,6 +461,8 @@ return <- Associations;
 
 getKEGGInfoUrl <- function(keggId){
 
+  # print("getKEGGInfoUrl")
+
  url <- "http://rest.kegg.jp/get/"
  url <- paste(url, keggId, sep = "")
  return <- url;
@@ -386,6 +470,8 @@ getKEGGInfoUrl <- function(keggId){
 
 
 getFirstLevelSubMaps <- function(pathwayId) {
+
+   #  print("getFirstLevelSubMaps")
 
     xmltop <- getKGMLRootNode(pathwayId);
 
@@ -402,6 +488,8 @@ return <- mapId
 
 
 isAllGeneOfSubGraphsInKEGGOverview <- function(subGraphId){
+
+    # print("isAllGeneOfSubGraphsInKEGGOverview")
 
     overviewGeneList <- KEGGREST::keggLink("genes", "hsa01100")
 
@@ -426,6 +514,8 @@ isAllGeneOfSubGraphsInKEGGOverview <- function(subGraphId){
 }
 
 allSubMapsMetaboliteAnalysis <- function(){
+
+    # print("allSubMapsMetaboliteAnalysis")
 
     allSubMaps <- getFirstLevelSubMaps("hsa01100")
     analysisResults<- NULL;
@@ -466,6 +556,8 @@ allSubMapsMetaboliteAnalysis <- function(){
 
 isAllMetaboliteOfSubGraphsInKEGGOverview <- function(subGraphId){
 
+    # print("isAllMetaboliteOfSubGraphsInKEGGOverview")
+
     overviewMetaboliteList <- KEGGREST::keggLink("cpd", "map01100")
 
 
@@ -492,6 +584,8 @@ isAllMetaboliteOfSubGraphsInKEGGOverview <- function(subGraphId){
 }
 
 allSubMapsGeneAnalysis <- function(){
+
+    # print("allSubMapsGeneAnalysis")
 
     allSubMaps <- getFirstLevelSubMaps("hsa01100")
     analysisResults<- NULL;
@@ -525,6 +619,232 @@ allSubMapsGeneAnalysis <- function(){
     }
 
     return <- analysisResults;
+
+}
+
+getHMDBByKEGGId <-function(keggId) {
+
+    # print("getHMDBByKEGGId")
+
+    files <- list.files("./hmdb_metabolites")
+    files <- files[-1]
+
+    res <-  lapply(keggId, function(i)
+
+        lapply(files, function(j)
+           compareWihtNodeKeggId(j,i)))
+
+
+  return <- res;
+
+}
+
+getHMDBInfo <- function(){
+
+    # print("getHMDBInfo")
+
+    files <- list.files("/Users/sandra/Documents/workspaceMetabolomics/hmbdParser/hmdb_metabolites")
+    files <- files[-1]
+
+    hmdb <- getHMDBIds(files)
+
+    kegg_ids <- lapply(files, function(j) getKeggIdByHMDB(j))
+    super_class <- lapply(files, function(j) getSuperClassByHMDB(j))
+    class <- lapply(files, function(j) getClassByHMDB(j))
+    hmdb_infoDF <-data.frame(cbind("hmdb_Id" = as.vector(hmdb),
+                                  "kegg_Id" = as.vector(kegg_ids),
+                                  "super_class" = as.vector(super_class),
+                                  "class" = as.vector(class)))
+    exportHMDBInfo(hmdb_infoDF)
+    return <- hmdb_infoDF
+}
+
+
+getKeggIdByHMDB <- function(fileName){
+
+    # print("getKeggIdByHMDB")
+
+    fileName <- paste("/Users/sandra/Documents/workspaceMetabolomics/hmbdParser/hmdb_metabolites/", fileName, sep="")
+    doc1 <- XML::xmlParse(fileName);
+    node_kegg_id <- XML::xpathApply(doc1, "//kegg_id")
+
+    kegg_id <- XML::xmlSApply(node_kegg_id, XML::xmlValue)
+
+    if(nchar(kegg_id) == 0) kegg_id <- NA;
+
+    return <- kegg_id;
+}
+
+getSuperClassByHMDB <- function(fileName){
+
+    # print("getSuperClassByHMDB")
+
+    fileName <- paste("/Users/sandra/Documents/workspaceMetabolomics/hmbdParser/hmdb_metabolites/", fileName, sep="")
+    doc1 <- XML::xmlParse(fileName);
+
+    node_super_class <- XML::xpathApply(doc1, "//super_class")
+
+    super_class <- XML::xmlSApply(node_super_class, XML::xmlValue)
+
+    if(nchar(super_class) == 0) super_class <- NA
+
+    return <- super_class
+}
+
+getClassByHMDB <- function(fileName){
+
+    # print("getClassByHMDB")
+
+    fileName <- paste("/Users/sandra/Documents/workspaceMetabolomics/hmbdParser/hmdb_metabolites/", fileName, sep="")
+    doc1 <- XML::xmlParse(fileName);
+
+    node_class <- XML::xpathApply(doc1, "//class")
+
+    class <- XML::xmlSApply(node_class, XML::xmlValue)
+
+    if(nchar(class) == 0) class <- NA;
+
+    return <- class;
+}
+
+
+
+#Data <- ldply(files,parse_xml)
+
+getHMDBIds <- function(fileList){
+
+    # print("getHMDBIds")
+    finalList <- lapply(fileList, function(x) gsub( ".xml", "",x))
+    return <- finalList;
+
+}
+
+exportHMDBInfo <- function(hmdb_infoDF){
+
+    # print("exportHMDBInfo")
+    hmdb_infoDF <- data.frame(lapply(hmdb_infoDF, as.character), stringsAsFactors=FALSE)
+    exportDFtoTxt(hmdb_infoDF, "hmdb_info")
+}
+
+
+getHMDBIdByKEggId <- function(keggIdList){
+
+    # print("getHMDBIdByKEggId")
+
+    res <- importTXTtoDF("hmdb_info.txt")
+
+    r <-lapply(keggIdList, function(x) subset(res, res[2] == x));
+
+    r <- do.call(rbind, r)
+
+    r <- prepOutputHMDBIdByKEggId(r);
+
+    return <- r[,c(2,1)];
+}
+
+getSuperClassByKEggId <- function(kegg.id.list){
+
+    # print("getSuperClassByKEggId")
+
+    # retrieve data from HMDB xml files
+    hmdb.data <- data.frame(importTXTtoDF("hmdb_info.txt"))
+
+    # unlist the data to for lapply
+    kegg.id.list <- unlist(kegg.id.list)
+    # print(kegg.id.list)
+    r <- lapply(kegg.id.list, function(x) {
+
+        x.1 <- paste("\\b", x,"\\b",sep="")
+
+        if (nrow(hmdb.data[grep(x.1, hmdb.data$kegg_Id),]) == 0) {
+
+                   data.frame("hmdb_Id" = NA,
+                              "kegg_Id" = x,
+                              "super_class" = NA,
+                              "class" = NA)
+
+        # carefull I only took the first line
+        # but multiple line mean multiple classes that should be
+        # bind together
+        } else {
+            hmdb.data[grep(x.1, hmdb.data$kegg_Id),][1,]
+        }
+    });
+
+    #bind the results for each compound
+    r <- do.call(rbind, r)
+
+    return <- r[,3];
+}
+
+getClassByKEggId <- function(keggIdList){
+
+    # print("getClassByKEggId")
+
+    res <- importTXTtoDF("hmdb_info.txt")
+
+    r <-lapply(keggIdList, function(x) subset(res, res[2] == x));
+
+    r <- do.call(rbind, r)
+
+  #  r <- prepOutputHMDBIdByKEggId(r);
+
+    return <- r[,c(2,4)];
+}
+
+getAllHMDBbyKeggId <- function(keggIdList){
+
+    # print("getAllHMDBbyKeggId")
+
+    res <- importTXTtoDF("hmdb_info.txt")
+
+    r <-lapply(keggIdList, function(x) subset(res, res[2] == x));
+
+    r <- do.call(rbind, r)
+
+    #  r <- prepOutputHMDBIdByKEggId(r);
+
+    return <- r;
+}
+
+## put this in a general data frame help function
+prepOutputHMDBIdByKEggId <- function(metabolitesNamesDF){
+
+    # print("prepOutputHMDBIdByKEggId")
+
+     metabo <- ""
+     hmdb_ids <- ""
+     df <- data.frame();
+
+     for(x in 1:nrow(metabolitesNamesDF)){
+         # conditino to get first row
+         if(metabo == ""){
+             metabo <- metabolitesNamesDF[x,2];
+             hmdb_ids <- paste(hmdb_ids, metabolitesNamesDF[x,1])
+
+         # conditino get inside rows and combine first colinfo info based on
+         # duplicated 2 col
+         }else if(!(metabo == as.character(metabolitesNamesDF[x,2]))){
+
+               df <- rbind(df, data.frame("keggId" = as.vector(as.character(metabo)),
+                          "hmdbIds" = as.vector(hmdb_ids)))
+              hmdb_ids <- "";
+              metabo <- metabolitesNamesDF[x,2]
+              hmdb_ids <- paste(hmdb_ids, metabolitesNamesDF[x,1])
+
+         }else{
+         hmdb_ids <- paste(hmdb_ids, metabolitesNamesDF[x,1])
+        }
+
+         # ctach last row
+         if(x == nrow(metabolitesNamesDF)){
+             df <- rbind(df, data.frame("keggId" = as.vector(as.character(metabo)),
+                                        "hmdbIds" = as.vector(hmdb_ids)))
+         }
+     }
+
+
+      return <- df;
 
 }
 

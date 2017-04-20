@@ -4,6 +4,9 @@
 
 mergeRowsWithSmallestValueByKEGGId <- function(df){
 
+
+    # print("mergeRowsWithSmallestValueByKEGGId")
+
     metaboName <- as.vector(df$KEGGId)
 
     replicat <- unique(metaboName[duplicated(metaboName)])
@@ -67,15 +70,19 @@ mergeRowsWithSmallestValueByKEGGId <- function(df){
 
 merge2DFWithSmallestValue <- function(df1, df2){
 
- for (row in 1:nrow(df)) {
-    r <- mergeVectorsLowerValues(df1[row,], df2[row,]);
-    rf <- t(data.frame(r));
-    finalDF <- rbind(finalDF,rf);
-    return <- finalDF;
- }
+   #  print("merge2DFWithSmallestValue")
+
+     for (row in 1:nrow(df)) {
+        r <- mergeVectorsLowerValues(df1[row,], df2[row,]);
+        rf <- t(data.frame(r));
+        finalDF <- rbind(finalDF,rf);
+        return <- finalDF;
+     }
 }
 
 removeDuplicatedColumnDF <- function(df){
+
+    # print("removeDuplicatedColumnDF")
 
     df[is.na(df)] <- Inf;
 
@@ -84,6 +91,7 @@ removeDuplicatedColumnDF <- function(df){
     df<- aggregate(df,list(row.names(df)),function(x) x[which.min(abs(x))]);
 
     row.names(df) <- df[,1]
+
     df <- data.frame(t(df))
 
     df <- df[-c(1), ]
@@ -94,28 +102,53 @@ removeDuplicatedColumnDF <- function(df){
 
 removeRowsDistanceAsso <- function(df){
 
-    df$geneKEGGId <- I(df$geneKEGGId)
-    df$metaboliteKEGGId <- I(df$metaboliteKEGGId)
+   #  print("removeRowsDistanceAsso")
 
-    aa <- split(df, list(df$metaboliteKEGGId,df$geneKEGGId),drop = TRUE)
+   # print(df)
+    row.names(df) <- c(1:nrow(df))
 
-    f <- lapply(aa ,function(x){
+    if(is.data.frame(df) && nrow(df) > 0){
+    df$distance <- as.numeric(as.character(df$distance))
+    df$geneKEGGId <- as.character(df$geneKEGGId)
+    df$metaboliteKEGGId <- as.character(df$metaboliteKEGGId)
 
-        tempDF <- data.frame(x)
+    df <- df[order(df$geneKEGGId, df$metaboliteKEGGId),]
 
-        tempDF <- tempDF[order(tempDF[,5]),]
-        return <-tempDF[1,]
-    })
+    # Get the smallest value for each pair of gene-metabolite. from
+    # the multiplepossibilities of graph nodes
 
-    finalDF <- do.call(rbind.data.frame, f)
-    row.names(finalDF) <- row.names(1:length(finalDF[,1]))
-    return <- finalDF;
+    # Aggregates as problem with NA values, so i will give all NA distance value
+    # a value of 100 000 which can't be reach within the biological graph and
+    # give back a value of NA Afterwards. It is not very nice fix but works
+    # for now
+
+    df$distance[is.na(df$distance)] <- 10000
+
+    dft <- aggregate(df$distance,
+             by = list(df$geneKEGGId, df$metaboliteKEGGId),FUN = min)
+        #     na.action=na.pass, na.rm=TRUE)
+
+    colnames(dft) <- c("geneKEGGId", "metaboliteKEGGId", "distance")
+
+    dft$distance[dft$distance == 10000] <- NA
+     dft1 <- merge(dft, df)
+
+     dft1 <- dft1[!duplicated(dft1[c(1,2,3)]),]
+     end.time <- Sys.time()
+
+    } else {
+        dft1 <- df;
+    }
+
+     return <- dft1;
 
 }
 
 # This function also sorts the data by metabolite or gene ids... we don't want
 # that
 removeRowsDistanceAll <- function(df){
+
+    # print("removeRowsDistanceAll")
 
     df$geneKEGGId <- I(df$geneKEGGId)
     aa <- split(df, list(df$geneKEGGId),drop = TRUE)
@@ -140,11 +173,87 @@ removeRowsDistanceAll <- function(df){
 
 getMaxValIgnoreInfVal <- function(df){
 
-    infVal <- which(df[,1] == Inf)
+    # print("getMaxValIgnoreInfVal")
+
+    infVal <- which(df$distance == Inf)
+
     temp <- df
-    temp[infVal,] <- -1
-    maxVal <- max(temp[,1])
+
+    temp[infVal,3] <- -1
+
+    maxVal <- max(temp$distance)
 
     return <- maxVal;
 
 }
+
+
+## function to remove duplicated rows of one col and concat data from another
+##  col
+## exemple
+#    df : a   b
+#         1   1
+#         1   2
+#         1   3
+#         2   4
+#         2   1
+#         3   1
+#
+# df <- concatDfColInfoFromDuplicate(df, a, b)
+# output
+#    df : a   b
+#         1   1 2 3
+#         2   4 1
+#         3   1
+
+concatDfColInfoFromDuplicate <- function(df, duplicatedCol, concatCol){
+
+    # print("concatDfColInfoFromDuplicate")
+    # for this algorithm to work well, sort the dataframe by duplicate col
+    df <- df[order(df[,duplicatedCol]),]
+
+    # first remove duplicated rows from df
+    df <- df[!duplicated(df),]
+
+    concat <- ""
+    duplicat <- ""
+    concatColName <- colnames(df)[concatCol]
+    duplicatColName <- colnames(df)[duplicatedCol]
+
+
+    df_new <- data.frame();
+
+    for(x in 1:nrow(df)){
+
+       # condition to get first row
+        if(duplicat == ""){
+            duplicat <- df[x,duplicatedCol];
+            concat <- paste(concat, df[x,concatCol])
+
+       # conditino get inside rows and combine first colinfo info based on
+       # duplicated 2 col
+        }else if(!(duplicat == as.character(df[x,duplicatedCol]))){
+
+            df_new <- rbind(df_new,
+                data.frame(duplicatColName = as.vector(as.character(duplicat)),
+                           concatColName = as.vector(concat)))
+            concat <- "";
+            duplicat <- df[x,duplicatedCol]
+            concat <- paste(concat, df[x,concatCol])
+
+        }else{
+         concat <- paste(concat, df[x,concatCol])
+        }
+
+        # catch last row
+        if(x == nrow(df)){
+            df_new <- rbind(df_new,
+                data.frame(duplicatColName = as.vector(as.character(duplicat)),
+                          concatColName = as.vector(concat)))
+        }
+    }
+
+    return <- df_new;
+
+}
+

@@ -7,6 +7,7 @@
 
 getDataFrameOfDuplicateCompounds <- function(compoundDataFrame){
 
+  #  print("getDataFrameOfDuplicateCompounds")
     # Order and remove duplicates in dataFrame
     compoundDataFrame <- compoundDataFrame[order(compoundDataFrame[,2]), ];
     compoundDataFrame <- compoundDataFrame[duplicated(compoundDataFrame[,2]), ];
@@ -20,6 +21,8 @@ getDataFrameOfDuplicateCompounds <- function(compoundDataFrame){
 
 
 correctKeggIdString <- function(nodeDF){
+
+   # print("correctKeggIdString")
 
     nodeDF <- lapply(nodeDF,
                      function (x) gsub("cpd:","",x))

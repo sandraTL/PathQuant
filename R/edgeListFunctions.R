@@ -13,6 +13,8 @@
 
 unlistEdgeReactionCol <- function(edgeDataFrame){
 
+
+    #print("unlistEdgeReactionCol ")
     s <- strsplit(as.vector(edgeDataFrame$reactions), " ");
     edgeDataFrame <- data.frame(
                        kgmlId = rep(edgeDataFrame$kgmlId, sapply(s, length)),
@@ -27,6 +29,8 @@ unlistEdgeReactionCol <- function(edgeDataFrame){
 
 
 correctReactionString <- function(edgeDF){
+
+  #  print("correctReactionString")
 
     edgeDF <- lapply(edgeDF,
                            function (x) gsub("rn:","",x))
@@ -45,6 +49,8 @@ correctReactionString <- function(edgeDF){
 
 
 finalReactionEdgeDF <- function(pathwayId){
+
+    #print("finalReactionEdgeDF")
 
     edgeDF <- getListEdgeFromGeneKGML(pathwayId);
 
