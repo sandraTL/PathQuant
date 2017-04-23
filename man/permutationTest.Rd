@@ -45,4 +45,3 @@ permutationFunction("hsa01100", shinAndAlDF,
 \keyword{shrotestDistance,}
 \keyword{statistic}
 \keyword{test,}
-

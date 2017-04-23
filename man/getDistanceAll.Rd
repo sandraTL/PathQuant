@@ -36,4 +36,3 @@ getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
 \keyword{KEGG}
 \keyword{graph,}
 \keyword{shortestDistance,}
-

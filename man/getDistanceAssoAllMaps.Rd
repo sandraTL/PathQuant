@@ -27,4 +27,3 @@ getDistanceAssoAllMaps(shin,ordered = T, commonNames = F)
 \keyword{KEGG}
 \keyword{graph,}
 \keyword{shortestDistance,}
-

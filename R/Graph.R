@@ -1009,7 +1009,7 @@ mergeVectorsLowerValues <- function(A,B) {
 #' @param metabolite Dataframe of 1 column, representing all the measured
 #'        metabolites. Only use KEGG Ids.
 #' @keywords graph, shortestDistance, KEGG
-#' @export
+
 #' @examples getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
 #'           completeMetaboDF)
 

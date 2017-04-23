@@ -23,4 +23,3 @@ exportDFtoTxt(dataFrame, exportFileName)
 \keyword{dataframe.}
 \keyword{export,}
 \keyword{txt,}
-

@@ -17,10 +17,10 @@ unlistEdgeReactionCol <- function(edgeDataFrame){
     #print("unlistEdgeReactionCol ")
     s <- strsplit(as.vector(edgeDataFrame$reactions), " ");
     edgeDataFrame <- data.frame(
-                       kgmlId = rep(edgeDataFrame$kgmlId, sapply(s, length)),
-                       reactions = unlist(s),
-                       type = rep(edgeDataFrame$type, sapply(s, length)),
-                       ko = rep(edgeDataFrame$ko, sapply(s, length)))
+        kgmlId = rep(edgeDataFrame$kgmlId, sapply(s, length)),
+        reactions = unlist(s),
+        type = rep(edgeDataFrame$type, sapply(s, length)),
+        ko = rep(edgeDataFrame$ko, sapply(s, length)))
 
     return <- edgeDataFrame;
 
@@ -30,10 +30,10 @@ unlistEdgeReactionCol <- function(edgeDataFrame){
 
 correctReactionString <- function(edgeDF){
 
-  #  print("correctReactionString")
+    #  print("correctReactionString")
 
     edgeDF <- lapply(edgeDF,
-                           function (x) gsub("rn:","",x))
+                     function (x) gsub("rn:","",x))
 
     return <- edgeDF;
 
@@ -57,24 +57,18 @@ finalReactionEdgeDF <- function(pathwayId){
     reactionDF <- getListReactionFromKGML(pathwayId);
 
     if(!nrow(reactionDF) == 0 && !nrow(edgeDF) == 0){
-    reactionDF <- as.data.frame(lapply(reactionDF,
-                                       function(X) unname(unlist(X))));
+        reactionDF <- as.data.frame(lapply(reactionDF,
+                                           function(X) unname(unlist(X))));
 
-    if(nrow(edgeDF) ==0 || nrow(reactionDF) == 0){
-        mergeDF<- data.frame();
-    }else{
-
-    mergeDF <-  merge(reactionDF, edgeDF, by="reactionId");
-    mergeDF <- mergeDF[ -c(8,9)];
-    mergeDF <- mergeDF[ c(2,3,4,5,1,6,7,8)];
-
+        mergeDF <-  merge(reactionDF, edgeDF, by="reactionId");
+        mergeDF <- mergeDF[ -c(8,9)];
+        mergeDF <- mergeDF[ c(2,3,4,5,1,6,7,8)];
 
     }else{
-      mergeDF <- NULL;
+        mergeDF <- NULL;
 
     }
 
-}
     return <- mergeDF;
 
 }
