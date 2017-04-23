@@ -8,7 +8,7 @@
 #' @param commonNames get KEGG's Common Names of the KEGG Id in the
 #'        results.
 #' @keywords graph, shortestDistance, KEGG
-#' @export
+
 #' @examples getDistanceAssoAllMaps(shin,ordered = T, commonNames = F)
 
 
