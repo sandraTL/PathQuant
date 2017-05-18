@@ -7,13 +7,13 @@ Date: 2015-07-22
 Author: Sarah Cherkaoui <cherkaos@gmail.com>
     Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
 Maintainer: Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
-Description: Modeling of KEGG metabolism pathway maps to calculate shortest
-    distance between gene-metabolite pairs to asses their biological relevance
-    with tables, statistical and graphical outputs.
+Description: Modeling of KEGG metabolism pathway maps to compute shortest
+    reactional distance between gene-metabolite pairs to asses their biological
+    relevance with tables and graphical outputs.
 License: GNU-3
 Imports:
-    igraph, XML, RUnit, ggplot2, data.table, knitr, rmarkdown,scales,stringr,
-    RCurl, reshape2, stringr, dplyr, plyr, plot3D, doParallel, parallel, foreach
+    igraph, XML, ggplot2, data.table, knitr, rmarkdown,scales,stringr, gdata,
+    RCurl, reshape2, stringr, dplyr, plyr, doParallel, parallel, foreach
 VignetteBuilder: knitr
 Suggests:
     testthat, knitr, rmarkdown

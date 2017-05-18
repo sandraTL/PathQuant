@@ -18,15 +18,15 @@ AssoDataGoodDF <- data.frame("gene" = as.vector(c("hsa:1579","hsa:34")),
 MetaboGoodDF <- data.frame("metbaolite" = c("C19615","C05271"))
 
 
-test_that("heatmapFunction", {
+test_that("heatmap", {
 
         # test associatedGeneMetaDF values of input
-        expect_error(heatmapFunction(existingKeggPathway, emptyDF))
-        expect_error(heatmapFunction(existingKeggPathway, oneColDF))
-        expect_error(heatmapFunction(existingKeggPathway, twoColWrongDF))
-        expect_error(heatmapFunction(existingKeggPathway, twoColWrongDF1))
-        expect_error(heatmapFunction(existingKeggPathway, twoColWrongDF2))
+        expect_error(heatmap(existingKeggPathway, emptyDF))
+        expect_error(heatmap(existingKeggPathway, oneColDF))
+        expect_error(heatmap(existingKeggPathway, twoColWrongDF))
+        expect_error(heatmap(existingKeggPathway, twoColWrongDF1))
+        expect_error(heatmap(existingKeggPathway, twoColWrongDF2))
 
         #test pathway
-        expect_error(heatmapFunction(notExistingKeggPathway, AssoDataGoodDF))
+        expect_error(heatmap(notExistingKeggPathway, AssoDataGoodDF))
 })

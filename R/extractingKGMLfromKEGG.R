@@ -93,9 +93,11 @@ toCompoundAdressfile <- function(compoundKeggId){
     return <- adressfile;
 }
 
-AllHumanMapsFile <- function(){
+get.url.list.pathway.by.organism <- function(organism_code){
+
 
     url_Address <-  "http://rest.kegg.jp/list/pathway/hsa";
+    adressfile <- paste(url_Address,organism_code, sep= "");
     return <- url_Address;
 
 }

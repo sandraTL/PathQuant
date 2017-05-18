@@ -540,7 +540,7 @@ setMethod("getDistanceAsso", "data_annotated", function(object,
     # print("GetDistanceAsso")
 
     # Arrange pathway name to get the KGML file
-    pathwayId <- gsub("hsa:", "hsa", pathwayId)
+    pathwayId <- gsub(":", "", pathwayId)
     finalResult <- data.frame()
     # test input parameters
     # test_getDistanceAsso(pathwayId, association)
@@ -605,12 +605,13 @@ setMethod("getDistanceAsso", "data_annotated", function(object,
 
 
 get.srd <- function(pairs,
+                    organism_code,
                     pathway = "All",
                     ordered = FALSE,
                     commonNames = FALSE,
                     path = FALSE){
 
-    data.result.ob <- create.data.restul.ob(pairs, pathway,
+    data.result.ob <- create.data.restul.ob(pairs, organism_code, pathway,
                                             ordered, commonNames, path)
     # object to df
     data.result.df <- df.sub.data.result.numeric(data.result.ob, F)
@@ -618,19 +619,20 @@ get.srd <- function(pairs,
     if(commonNames == TRUE){
         # Get Common names could be tested with cluster
         geneCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                                          (unlist(data.result.df[,2])),"gene")))
+                                (unlist(data.result.df[,2])),"gene")))
         metaboliteCommonName <- as.vector(unlist(getCommonNames(as.vector
-                                                                (unlist(data.result.df[,3])), "metabolite")))
+                                (unlist(data.result.df[,3])), "metabolite")))
 
         data.result.df <- cbind(data.result.df,
-                                "geneName" = as.vector(geneCommonName),
-                                "metaboliteName" = as.vector(metaboliteCommonName))
+                          "geneName" = as.vector(geneCommonName),
+                          "metaboliteName" = as.vector(metaboliteCommonName))
     }
 
     return <- data.result.df
 }
 
 create.data.restul.ob <- function(pairs,
+                                  organism_code,
                                   pathway = "All",
                                   ordered = FALSE,
                                   commonNames = FALSE,
@@ -652,7 +654,7 @@ create.data.restul.ob <- function(pairs,
 
     # Get List of all pathway maps in KEGG
     if (length(pathway) == 1 && pathway == "All") {
-        pathway.list <- getListAllHumanMaps()
+        pathway.list <- get.complete.list.pathways(organism_code)
         pathway.list <- pathway.list[-22] # problem with the encoding of this
     } else {
         pathway.list <- pathway;

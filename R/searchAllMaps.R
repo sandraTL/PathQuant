@@ -94,13 +94,13 @@ getDistanceAssoAllMaps <- function(association, ordered =FALSE,
 getUnmappedAsso <- function(aM){
 
 
-  #  aM <- getDistanceAssoAllMaps(shinAndAlDF,2)
+    # aM <- getDistanceAssoAllMaps(shinAndAlDF,2)
 
     aMAsso <- aM[,c(1,2,3,4)]
     aMAsso <- aMAsso[!duplicated(aMAsso),]
     print(aMAsso)
 
-   # v <- getAssociationForHeatmap(aMAsso,shinAndAlDF)
+    # v <- getAssociationForHeatmap(aMAsso,shinAndAlDF)
 
     newAsso <- aMAsso
     geneCommonName <- getCommonNames(as.vector(unlist(newAsso[,1])), "gene")

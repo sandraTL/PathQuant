@@ -29,9 +29,9 @@ heatmap <- function(association, commonNames = FALSE){
 
     # print("heatmapAsso")
 
-    # mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
-    #          or the metabolite or both weren't mapped on the selected pathway.
-    #          Thus, no distance was calculated"
+     # mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
+     #          or the metabolite or both weren't mapped on the selected pathway.
+     #          Thus, no distance was calculated"
     fileName <- paste("heatmap", "hsa01100", ".png", sep = "")
 
 

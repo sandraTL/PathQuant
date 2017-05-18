@@ -1,9 +1,9 @@
 
-getListAllHumanMaps <- function(){
+get.complete.list.pathways <- function(organism_code){
 
    # print("getListAllHumanMaps")
 
-    url <- AllHumanMapsFile();
+    url  <- get.url.list.pathway.by.organism(organism_code);
     file <- downloadFileByUrl(url);
     file <- gsub("path:","",file);
     file <- gsub(":","",file);
@@ -11,8 +11,8 @@ getListAllHumanMaps <- function(){
     file <- strsplit(file,"[\\\\]|[^[:print:]]",fixed=FALSE);
 
     file <- as.vector(unlist(file));
-    allMapsIds <- file[grep("hsa", file)];
-    #print(allMapsIds)
+    allMapsIds <- file[grep(organism_code, file)];
+
     return <- allMapsIds;
 
 }

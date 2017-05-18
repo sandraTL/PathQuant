@@ -1,19 +1,17 @@
+---
+output: html_document
+---
 
 
- <center> <h1>**Package 'PathQuant'**</h1>  </center>
- <center>`r Sys.Date()`</center><br><br>
+ <center> <h1>Package 'PathQuant'</h1>  </center>
 
-####### **Version** 1.0
-####### **Title** PathQuant: A bioinformatic tool to quantitatively annotate gene-metabolite pairs using KEGG pathway database.
-####### **Author** Sandra Therrien-Laperrière
-####### **Maintainer** Sandra Therrien-Laperrière
-####### **Description** 
-####### **License** GPL (>= 2)
-####### **NeedsCompilation** yes <br><br>
+
+<center> <h6> **Version** 1.0 </h6>  </center>
+<center> <h6> **PathQuant**: A bioinformatic tool to quantitatively annotate gene-metabolite pairs using KEGG pathway database.</h6>  </center>
+<center> <h6> **Author** Sandra Therrien-Laperrière </h6>  </center>
 
 
 ## **Description**  
-
 
 PathQuant aims to systematically and quantitatively annotate gene-metabolite
 pairs throught metabolic pathway mapping using the KEGG  to reveal biological insight.
@@ -29,58 +27,16 @@ The example data used is from the Shin & al Study [1].
 The 'shinAndAlDF' is the gene-metabolite associations reported in this study and 'completeMetaboliteDF' are all the measured metabolite of this study.
 
 
-
-```{r, eval=FALSE}
-library("PathQuant")
-```
-<<<<<<< HEAD
-###getDistanceAsso Function 
-This function enables the user to select the KEGG pathway on which the associations
-will be mapped to calculate the shortest distance.
-The output of the function is a dataframe with the calculated distances. An infinited distance (Inf) means that both gene and metabolite are on the map but no path exist between them.
-If a distance is NaN, it means neither the gene or the metabolite (or both) are on the selected pathway.
-
-####Arguments : 
-    pathwayId: KEGG Id of selected pathway.
-    association : Dataframe with 2 columns, where each line reprensents an
-    associations. First column are genes and the sencond column are
-    metabolites. Only use KEGG Ids.
-    Options :
-    ordered : boolean, orders the dataframe by distance columns (ascendent).
-=======
->>>>>>> sandra
-
 ### **Fonctions**
 
-##### **get.srd Function** 
+##### **get.srd** 
 
 ###### **Description**
 This function enables the user to input their list of gene-metabolite pairs and compute srd values using all metabolic pathways of KEGG by default or using a selected list of metabolic pathways in KEGG. Srd values are computed when both the gene and the metabolite of a given pair is mapped within a same metabolic pathway. 
 
-<<<<<<< HEAD
-###getDistanceAll Function 
-This function calculates the distribution of distances between a gene and all
-measured metabolite, highlithing the distance of its associated metabolites.
-It enables the comparison of distances between associated metabolites vs. non associated metabolites.
-=======
-The output of the function is a dataframe with annotation of gene product, 
-metabolite class, enzyme EC number, the computed srd as well as the reacional path used for srd copmutation. Note that an infinite distance (Inf) means that both gene and metabolite of a given pair are on the same map but no path exist between them.
-If a srd has a Not Computed value, it means neither the gene or the metabolite (or both) are on any of the selected pathway.
->>>>>>> sandra
+The output of the function is a dataframe with annotation of gene product, metabolite class, enzyme EC number, the computed srd as well as the reacional path used for srd copmutation. Note that an infinite distance (Inf) means that both gene and metabolite of a given pair are on the same map but no path exist between them.
+If a srd has a 'Not Computed' value, it means neither the gene or the metabolite (or both) are on any of the selected pathway.
 
-
-###### **Arguments** 
-<ol>
-    pairs         Dataframe with 2 columns, each line reprensent a unique                       pair. First column are genes and the
-                  sencond column are metabolites. Only use KEGG Ids.
-    pathway       List of selected pathway(s). Default = All. Only use KEGG Id(s). 
-    organism      Id of KEGG organism (ex: hsa)  
-    
-    Options :
-    ordered       Boolean, orders the dataframe by srd columns (ascendent). Default = "False".
-    commonNames   Boolean, to retrieve gene and metabolite common names. Default = "False".
-    path          Boolean, to retrieve the reactional path used for srd computation. Default = "False". 
-</ol>
 
 ```{r, size=12, eval=FALSE}
 df <- get.srd(shinAndAlDF, "All", F, F, F)
@@ -89,35 +45,16 @@ df[1:10,]
 ```
 ![get.srd](https://github.com/sandraTL/PathQuant/blob/master/vignettes/getDistanceAsso.png)
 
-###distributionGene Function
-Function calculating shortest distance between a selected gene and all measured metabolites.The plot is depicted as frequency bars, which represent the number of metabolites at a given distance of the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
+##### **distribution.gene**
 
-###### **distribution.gene**
-
-
-Function computing srd between a selected gene and a specific list of metabolites within a given metabolic pathway. The plot is depicted as frequency bars, which represent the number of metabolites at a given srd of the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
-
-
-###### **Arguments** : 
-    pathway : Selected pathway. Only use KEGG Id.
-    gene : Selected gene used to compute srd from. Only use KEGG Id.
-    pairs : Dataframe with 2 columns, where each line reprensents a unique
-           pair. First column are genes and the sencond column are metabolites.            Only use KEGG Ids.
-    metabolites   Dataframe of 1 column containing specific metabolite(s). Default "All" is all metabolites in the selected pathway. 
-                  Only use KEGG Ids.
-    
+Function computes srd between a selected gene and a specific list of metabolites within a given metabolic pathway. The plot is depicted as frequency bars, which represent the number of metabolites at a given srd of the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
 
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
 distribution.gene("hsa01100", "hsa:1373", shinAndAlDF, completeMetaboDF)
 distribution.gene("hsa01100", "hsa:27165", shinAndAlDF, completeMetaboDF)
 ```
-![CPS1](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
+![CPS1.](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
 ![GLS2](https://github.com/sandraTL/PathQuant/blob/master/vignettes/GLS2.png)
-
-
-###heatmapAsso Function 
- Function that output a heatmap to visualize distance calculated between every gene-metabolite associations.
-Heatmap of distances calculated between associated genes-metabolites reported by Shin et al.. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). The distance calculated for the 30 gene-metabolite associations are reported in cells with a thick black border. Inf = infinite value, which mean that there is no known path between gene and metabolite.
 
 ##### **heatmap**
 
@@ -127,22 +64,12 @@ gene-metabolite associations are reported in cells with a thick black border.
 Inf = infinite value, which mean that there is no known path between gene 
 and metabolite.
 
-
-##### **Arguments** 
-    pathwayId      KEGG Id of selected pathway.
-    association    A dataFrame with 2 columns. Each line 
-                   reprensents an associations with the first column as
-                   gene KEGG Ids and the sencond column as metabolite
-                   KEGG Ids.
-
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
 heatmap("hsa01100", shinAndAlDF)
 ```
 ![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
-
-
-###permutationTest Function
+##### **permutationTest**
 Statistical permutation test function to assess the relevance of associated
 gene-metabolite pairs vs. randomly selected pairs.
 This function produces permutation sets (size of real associated data) by creating random gene-metabolite associations and calcuates the median distance of every permutation to output : 1) 'medians' 2) 'histogram' 3) 'pvalue'. 
@@ -150,23 +77,14 @@ Replacing gene : random genes are chosen within the set of measured genes cataly
 calatysing 1 reaction from set of measured genes 'completeGeneDF'.
 Metabolites are replaced by any of the measured metabolites: 'completeMetaboDF'.
  
-####Arguments : 
-    pathwayId: KEGG Id of selected pathway.
-    association:  is a dataFrame with 2 columns. Where each line 
-                  reprensents an associations with the first column as gene KEGG Ids and the sencond column as metabolite KEGG Ids.
-    completeGeneDF: is a dataframe of 1 column with the KEGG Ids of
-                           all measured genes.
-    completeMetaboliteDF: is a dataframe of 1 column with the KEGG Ids of
-                           all measured metabolites.
-    permutation : number of permutation. 
-    output : 'medians', 'histogram', 'pvalue'.                           
 
-
-```{r, fig.width=7,fig.height=4}
+```{r, fig.width=7,fig.height=4,eval=FALSE}
 p <- permutationTest(metabolismOverviewMapKEGGId, shinAndAlDF,
                          completeGeneDF, completeMetaboDF, 1000, "histogram")
 ```
+
 ![Histogram](https://github.com/sandraTL/PathQuant/blob/master/vignettes/permutations1000.png)
+
 
 
 1. Shin, So-Youn et al. “An Atlas of Genetic Influences on Human Blood 
