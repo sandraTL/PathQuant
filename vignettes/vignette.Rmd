@@ -3,18 +3,16 @@ output: html_document
 ---
 
 
- <center> <h1>Package 'PathQuant'</h1>  </center>
+<center> <h1>Package 'PathQuant'</h1>  </center>
 
-
-<center> <h6> **Version** 1.0 </h6>  </center>
-<center> <h6> **PathQuant**: A bioinformatic tool to quantitatively annotate gene-metabolite pairs using KEGG pathway database.</h6>  </center>
-<center> <h6> **Author** Sandra Therrien-Laperrière </h6>  </center>
+<center> <h6> Version 1.0 </h6>  </center>
+<center> <h6> PathQuant: A bioinformatic tool to quantitatively annotate gene-metabolite pairs using the KEGG pathway database.</h6>  </center>
+<center> <h6> Author Sandra Therrien-Laperrière </h6>  </center>
 
 
 ## **Description**  
 
-PathQuant aims to systematically and quantitatively annotate gene-metabolite
-pairs throught metabolic pathway mapping using the KEGG  to reveal biological insight.
+PathQuant aims to systematically and quantitatively annotate gene-metabolite pairs throught mapping onto KEGG metabolic pathway maps to reveal biological insight using their topology.
 
 To do so, PathQuant computes shortest reactional distance (srd), which is
 define as the number of reaction separating a gene (represented as the edge of the pathway) and a metabolite (represented as the node of the pathway).
@@ -24,43 +22,55 @@ We developped a tool to able the computation of srd for gene-metabolite pairs.
 ### **Info** 
 
 The example data used is from the Shin & al Study [1]. 
-The 'shinAndAlDF' is the gene-metabolite associations reported in this study and 'completeMetaboliteDF' are all the measured metabolite of this study.
+Their gene-metabolite associations are available in the 'shin' data.frame included in the package as well as 'completeGeneDF' the complete list of reported genes  and 'completeMetaboliteDF' the complete list of measured metabolites in the study.
 
 
 ### **Fonctions**
 
 ##### **get.srd** 
 
-###### **Description**
-This function enables the user to input their list of gene-metabolite pairs and compute srd values using all metabolic pathways of KEGG by default or using a selected list of metabolic pathways in KEGG. Srd values are computed when both the gene and the metabolite of a given pair is mapped within a same metabolic pathway. 
+##### **Description**
+
+This function enables the user to input their list of gene-metabolite pairs and compute srd values using all metabolic pathways of KEGG by default or using a selected list of metabolic pathways in KEGG. Srd values are computed when both the gene and the metabolite of a given pair is mapped within a same metabolic pathway. Note the topology of the used pathways is kept.
 
 The output of the function is a dataframe with annotation of gene product, metabolite class, enzyme EC number, the computed srd as well as the reacional path used for srd copmutation. Note that an infinite distance (Inf) means that both gene and metabolite of a given pair are on the same map but no path exist between them.
 If a srd has a 'Not Computed' value, it means neither the gene or the metabolite (or both) are on any of the selected pathway.
 
 
 ```{r, size=12, eval=FALSE}
-df <- get.srd(shinAndAlDF, "All", F, F, F)
+df <- get.srd(shin, "All", F, F, F)
 df[1:10,]
 
 ```
 ![get.srd](https://github.com/sandraTL/PathQuant/blob/master/vignettes/getDistanceAsso.png)
 
-##### **distribution.gene**
+
+##### **gene.distribution**
+
+Function plotting the srd values computed by the get.srd function. The plot depicted as frequency bars, which represent the number of pairs with a given srd. Frequency bars are in heatmap colors to reflect the size of the srd values.
+
+```{r, fig.width=7,fig.height=4, eval=FALSE}
+srd.distribution(df[,8])
+```
+![srd.distribution.](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
+
+
+##### **gene.distribution**
 
 Function computes srd between a selected gene and a specific list of metabolites within a given metabolic pathway. The plot is depicted as frequency bars, which represent the number of metabolites at a given srd of the selected gene. Frequency bars are shown in grey for metabolites that are not associated with the selected gene and in red if there is at least one metabolite associated with this gene.
 
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
-distribution.gene("hsa01100", "hsa:1373", shinAndAlDF, completeMetaboDF)
-distribution.gene("hsa01100", "hsa:27165", shinAndAlDF, completeMetaboDF)
+gene.distribution("hsa01100", "hsa:1373", shin, completeMetaboDF)
+gene.distribution("hsa01100", "hsa:27165", shin, completeMetaboDF)
 ```
 ![CPS1.](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
 ![GLS2](https://github.com/sandraTL/PathQuant/blob/master/vignettes/GLS2.png)
 
 ##### **heatmap**
 
-Function that output a heatmap to visualize srd computed between every gene-metabolite pairs in input.
-Heatmap of srd computed between every gene and metabolite in pairs mapped on the genome-scale metabolism reconstruction of KEGG. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). Th srd computed for the  
-gene-metabolite associations are reported in cells with a thick black border. 
+Function that output a heatmap to visualize srd values computed between every gene-metabolite pairs in input using a specified pathway map.
+Heatmap of srd computed between every gene and metabolite in pairs mapped on the genome-scale metabolism reconstruction of KEGG. Columns represent genes and rows represent metabolites. The calculated distance is shown in each cell with the corresponding color code (from red - closest; to yellow - farthest). 
+Th srd computed for the gene-metabolite associations are reported in cells with a thick black border. 
 Inf = infinite value, which mean that there is no known path between gene 
 and metabolite.
 

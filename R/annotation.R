@@ -37,7 +37,7 @@ annotateAssociationData <- function(associations){
      ecDF <- data.frame("ec" = as.vector(getEcListWithNa(df)));
 
      # get classification for each gene
-     classDF <- getGeneClassification(df)
+     classDF <- get.gene.product(df)
 
      # form final data frame
      df <- data.frame( "gene" = as.vector(associations[,1]),
@@ -53,7 +53,7 @@ annotateAssociationData <- function(associations){
 
 geneClassificationForMappingMetabolicGenes <- function(associations){
 
-  # print("geneClassificationForMappingMetabolicGenes")
+   print("geneClassificationForMappingMetabolicGenes")
   #first step Get Brite KEGG Ids associated with the genes in the associations
   briteDF <- data.frame("brite" =
                             as.vector(getBriteListWithNa(associations)));

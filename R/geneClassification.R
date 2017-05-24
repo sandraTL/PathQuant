@@ -1,5 +1,5 @@
 
-getGeneClassification <- function(associations_annotated){
+get.gene.product <- function(associations_annotated){
 
    # print("getGeneClassification")
 

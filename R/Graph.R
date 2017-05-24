@@ -56,7 +56,7 @@ setGeneric("getPath", function(object, path.id.vec){
 
 setMethod("getPath", "Graph", function(object, path.id.vec) {
 
-    # print("getPath")
+     print("getPath")
 
     path <- NULL
 
@@ -394,8 +394,16 @@ setMethod("associatedShortestPaths","Graph",
 
               if (path == T) {
                   distances.df  <- get.distances(object, data)
-                  paths.df <- get.paths(object, data)
-                  final.df <- cbind("distance" = distances.df , "path" = paths.df)
+                  tempDf <- as.data.frame(distances.df)
+
+                  if(all(is.na(distances.df[,1])) == F){
+                     paths.df <- get.paths(object, data)
+                     final.df <- cbind("distance" = distances.df , "path" = paths.df)
+                  } else {
+                      distances.df  <- get.distances(object, data)
+                      paths.df <- c(rep("not computed", length(distances.df)))
+                      final.df <- cbind("distance" = distances.df, "path" = paths.df)
+                  }
               } else {
                   distances.df  <- get.distances(object, data)
                   paths.df <- c(rep("not computed", length(distances.df)))
@@ -463,6 +471,7 @@ setGeneric("get.paths", function(object, data)
 
 setMethod("get.paths","Graph", function(object, data){
 
+    print("get.paths")
     paths.df <- data.frame()
 
     paths <- apply(data, 1, function(x) {
@@ -487,8 +496,10 @@ setMethod("get.paths","Graph", function(object, data){
             } else if (is(tt,"error")) { df.temp <- NA
             } else {
                 df.temp <- tt$vpath[[1]];
+                print(df.temp)
                 # getPath <- keggIds of each node reported un vpath
                 df.temp <- getPath(object, tt$vpath[[1]])
+                print(df.temp)
             }
         }
 
@@ -670,7 +681,7 @@ create.data.restul.ob <- function(pairs,
         }
         if (is.data.frame(r)) {
 
-            # Combine the idstanc eof each pathway
+            # Combine the computed distance of each pathway
             if (nrow(r) >0) {
                 finalDF <- rbind(finalDF, r)
             }

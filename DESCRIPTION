@@ -1,18 +1,19 @@
 Package: PathQuant
 Type: Package
-Title: Pathway Analysis with distance between genes and metablites using KEGG
-       maps.
+Title: Annotation of gene-metabolite pairs using topology of KEGG
+        metabolic pathway maps
 Version: 0.1.1
 Date: 2015-07-22
-Author: Sarah Cherkaoui <cherkaos@gmail.com>
-    Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
+Author: Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
+        Sarah Cherkaoui <cherkaos@gmail.com>
 Maintainer: Sandra Therrien-Laperriere <sandra.therrien.laperriere@gmail.com>
-Description: Modeling of KEGG metabolism pathway maps to compute shortest
-    reactional distance between gene-metabolite pairs to asses their biological
-    relevance with tables and graphical outputs.
+Description: Modeling of KEGG metabolism pathway maps into compound graph format
+    to compute shortest reactional distance (srd) for gene-metabolite pairs to
+    assess their biological relevance and output results in data.frame and
+    graphical outputs.
 License: GNU-3
 Imports:
-    igraph, XML, ggplot2, data.table, knitr, rmarkdown,scales,stringr, gdata,
+    igraph, XML, ggplot2, data.table, knitr, rmarkdown, scales, stringr, gdata,
     RCurl, reshape2, stringr, dplyr, plyr, doParallel, parallel, foreach
 VignetteBuilder: knitr
 Suggests:

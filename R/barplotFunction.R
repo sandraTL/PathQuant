@@ -22,20 +22,13 @@
 #'        map. Only use KEGG Ids.
 #' @keywords graph, shortest path, KEGG.
 #' @export
-#' @examples distribution.gene(hsa01100, "hsa:1373" , pairs.df, metabolite.df)
+#' @examples gene.distribution(hsa01100, "hsa:1373" , pairs.df, metabolite.df)
 
 
-distribution.gene <- function(pathway, gene, pairs, metabolites){
+gene.distribution <- function(pathway, gene, pairs, metabolites){
 
-   # print("distribution.gene")
-
-   # pathwayId <- gsub("hsa:", "hsa", pathwa);
-   # test_distributionGene(pathwayId, association, metabolite, gene);
-
-
-    pathwayId <- gsub("hsa:", "hsa", pathwayId);
-    #  test_distributionGene(pathwayId, association, metabolite, gene);
-
+   pathway <- gsub(":", "", pathway);
+   #  test_distributionGene(pathwayId, association, metabolite, gene);
 
    # get list of uniq metabolites in association
    # metabolite.uniq <-
@@ -77,7 +70,6 @@ distribution.gene <- function(pathway, gene, pairs, metabolites){
     maxVal <- getMaxValIgnoreInfVal(shortestsPathsDF)
 
     # get frequency of every value until the maxVal found + Inf val
-
     frequenceDF <- data.frame(table(factor(shortestsPathsDF$distance,
                                             levels=c(0:maxVal,Inf))))
 
@@ -110,7 +102,7 @@ distribution.gene <- function(pathway, gene, pairs, metabolites){
 
 barplotFunctionGeneToAllMetabo <- function(frequenceDF,gene){
 
-   # print("barplotFunctionGeneToAllMetabo")
+    # print("barplotFunctionGeneToAllMetabo")
 
     # initiating variable for barplotGraph
     geneCommonName <- getCommonNames(c(gene), "gene")
@@ -327,12 +319,22 @@ groupedBarPlot <- function(data){
 
 }
 
-#### Distance distribution ### Works weel
-##See if it is possible to control the larger of the bars in the plot
+#' srd.distribution
+#'
+#' Function ploting the distribution of srds computed by get.srd function.
+#'
+#' The plot is depicted as frequency bars, which represent
+#' the number of pairs at a given srd value.
+#' Frequency bars are shown in heatmap colors to depict the small from larger
+#' srd values.
+#'
+#'
+#' @param col of srd values of the data.frame obtained by get.srd function
+#' @keywords graph, srd, KEGG, barplot.
+#' @export
+#' @examples srd.distribution(res[,7])
 
-distanceDistributionBarPlot <- function(distance){
-
-    #print("distanceDistributionBarPlot")
+srd.distribution <- function(distance){
 
     statsData.m <- getDistanceDistribution(distance)
 
@@ -352,15 +354,33 @@ distanceDistributionBarPlot <- function(distance){
             text = ggplot2::element_text(size=14),
             axis.text=ggplot2::element_text(colour="black", size = 14))+
        ggplot2::scale_fill_manual(values=fitColors)+
-       ggplot2::ggtitle("Shortest reactional distance distribution")+
+       ggplot2::ggtitle("srd distribution")+
        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
        ggplot2::theme(legend.position="none")+
        ggplot2::scale_x_discrete(limits=distance))
 
 
 
- #print(p);
+ print(p);
 
+
+}
+
+
+getDistanceDistribution <- function(distance){
+
+    #print("getDistanceDistribution")
+    # test <- apply(data, 1,function(x) as.numeric(distance))
+
+    distTable <-table(distance)
+
+
+    distNames <- as.vector(names(distTable))
+    distCount <- as.vector(distTable)
+    distDF <- data.frame("distance" = distNames,
+                         "count" = distCount)
+
+    return <- distDF;
 
 }
 
