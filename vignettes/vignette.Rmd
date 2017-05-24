@@ -75,7 +75,7 @@ Inf = infinite value, which mean that there is no known path between gene
 and metabolite.
 
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
-heatmap("hsa01100", shinAndAlDF)
+heatmap("hsa01100", shin)
 ```
 ![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
@@ -89,7 +89,7 @@ Metabolites are replaced by any of the measured metabolites: 'completeMetaboDF'.
  
 
 ```{r, fig.width=7,fig.height=4,eval=FALSE}
-p <- permutationTest(metabolismOverviewMapKEGGId, shinAndAlDF,
+p <- permutationTest("hsa01100", shin,
                          completeGeneDF, completeMetaboDF, 1000, "histogram")
 ```
 
