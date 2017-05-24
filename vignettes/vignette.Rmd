@@ -52,7 +52,7 @@ Function plotting the srd values computed by the get.srd function. The plot depi
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
 srd.distribution(df[,8])
 ```
-![srd.distribution.](https://github.com/sandraTL/PathQuant/blob/master/vignettes/CPS1.png)
+![srd.distribution.](https://github.com/sandraTL/PathQuant/blob/master/vignettes/srd.distribution.pdf)
 
 
 ##### **gene.distribution**
