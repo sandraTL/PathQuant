@@ -39,10 +39,8 @@ If a srd has a 'Not Computed' value, it means neither the gene or the metabolite
 
 ```{r, size=12, eval=FALSE}
 df <- get.srd(shin, "All", F, F, F)
-df[1:10,]
 
 ```
-![get.srd](https://github.com/sandraTL/PathQuant/blob/master/vignettes/getDistanceAsso.png)
 
 
 ##### **gene.distribution**
