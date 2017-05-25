@@ -18,6 +18,7 @@
 #' @param association dataframe with 2 columns, where each line reprensents a
 #'        uniq association. First column are genes and sencond column are
 #'        metabolites. Only use KEGG Ids.
+#' @param pathway KEGG Id.
 #' @param display common names of KEGG ids input (TRUE) or
 #'        display KEGG Ids for axis description.
 #'
@@ -25,14 +26,14 @@
 #' @export
 #' @examples heatmap(shinAndAlDF, TRUE)
 
-heatmap <- function(association, commonNames = FALSE){
+heatmap <- function(association, pathway, commonNames = FALSE){
 
     # print("heatmapAsso")
 
      # mError2 <-"Sorry, for each pairs of gene/metabolite entered, either the gene
      #          or the metabolite or both weren't mapped on the selected pathway.
      #          Thus, no distance was calculated"
-    fileName <- paste("heatmap", "hsa01100", ".png", sep = "")
+    fileName <- paste("heatmap", pathway, ".png", sep = "")
 
 
     # test_heatmap(pathwayId, association);
@@ -40,7 +41,7 @@ heatmap <- function(association, commonNames = FALSE){
 
     # Get the distance for the associated set
     data.result.ob <- create.data.restul.ob(association,
-                                            pathway = c("hsa01100"),
+                                            pathway = c(pathway),
                                             F,
                                             F,
                                             F)

@@ -38,7 +38,7 @@ If a srd has a 'Not Computed' value, it means neither the gene or the metabolite
 
 
 ```{r, size=12, eval=FALSE}
-df <- get.srd(shin, "All", F, F, F)
+df <- get.srd(shin, "hsa" ,"All", F, F, F)
 
 ```
 
@@ -73,7 +73,7 @@ Inf = infinite value, which mean that there is no known path between gene
 and metabolite.
 
 ```{r, fig.width=7,fig.height=4, eval=FALSE}
-heatmap("hsa01100", shin)
+heatmap(shin, "hsa01100", F)
 ```
 ![Heatmap](https://github.com/sandraTL/PathQuant/blob/master/vignettes/heatmapAsso1.png)
 
