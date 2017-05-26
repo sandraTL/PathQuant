@@ -753,7 +753,7 @@ getSuperClassByKEggId <- function(kegg.id.list){
     # print("getSuperClassByKEggId")
 
     # retrieve data from HMDB xml files
-    hmdb.data <- data.frame(importTXTtoDF("inst/hmdb_info.txt"))
+    hmdb.data <- data.frame(importTXTtoDF("hmdb_info.txt"))
    # hmdb.data <- load("")
    # print(typeof(hmdb.data))
    # print(hmdb.data)
