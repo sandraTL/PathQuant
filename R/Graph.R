@@ -56,7 +56,7 @@ setGeneric("getPath", function(object, path.id.vec){
 
 setMethod("getPath", "Graph", function(object, path.id.vec) {
 
-     print("getPath")
+     #print("getPath")
 
     path <- NULL
 
@@ -497,10 +497,10 @@ setMethod("get.paths","Graph", function(object, data){
             } else if (is(tt,"error")) { df.temp <- NA
             } else {
                 df.temp <- tt$vpath[[1]];
-                print(df.temp)
+              #  print(df.temp)
                 # getPath <- keggIds of each node reported un vpath
                 df.temp <- getPath(object, tt$vpath[[1]])
-                print(df.temp)
+              #  print(df.temp)
             }
         }
 
@@ -677,6 +677,7 @@ create.data.restul.ob <- function(pairs,
 
         if (path == FALSE) {
             r <-getDistanceAsso(data.annotated.ob, pathway.list[i], FALSE);
+
         } else {
             r <-getDistanceAsso(data.annotated.ob, pathway.list[i], TRUE);
         }
@@ -695,8 +696,17 @@ create.data.restul.ob <- function(pairs,
     finalDF <- finalDF[!duplicated(finalDF),]
 
     # Choose the smallest distance for association between all pathways
-    finalDF <- removeRowsDistanceAsso(finalDF)
 
+    if(nrow(finalDF) == 0){
+
+       finalDF = data.frame("geneKEGGId" = c(NA),
+                   "metaboliteKEGGId" = c(NA),
+                   "distance" = c(NA),
+                   "pathway" = c(NA),
+                   "path" = c(NA))
+    }else {
+       finalDF <- removeRowsDistanceAsso(finalDF)
+    }
     # Create final object data.results with annotation + distance and path
     data.result.ob <- create.data.result(data.annotated.ob, finalDF)
 

@@ -201,7 +201,7 @@ getListEdgeFromGeneKGML <- function(pathwayId) {
 
 getListOrthologGeneFromKGML <- function(pathwayId) {
 
-     print("getListOrthologGeneFromKGML")
+    # print("getListOrthologGeneFromKGML")
     # get the root of the KGML document
     xmltop <- getKGMLRootNode(pathwayId);
 
