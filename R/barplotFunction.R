@@ -340,7 +340,7 @@ srd.distribution <- function(distance){
 
     distance <- as.character(as.vector(statsData.m$distance))
 
-    distanceData <- data.frame("distance" = as.character(distance),
+    distanceData <- data.frame("srd" = as.character(distance),
                               "count" = statsData.m$count)
 
     fitColors <-  heat.colors(nrow(distanceData), 1)
