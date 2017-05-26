@@ -1,15 +1,15 @@
-#' isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
-#' isMetaboliteInMap, distance
-#'
-#' @param association Dataframe with 2 columns, where each line reprensents an
-#'        association. First column are the genes and the sencond column are the
-#'        metabolites. Only use KEGG Ids.
-#' @param ordered [option] ascendent ordering of distance
-#' @param commonNames get KEGG's Common Names of the KEGG Id in the
-#'        results.
-#' @keywords graph, shortestDistance, KEGG
+# isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
+# isMetaboliteInMap, distance
+#
+#  association Dataframe with 2 columns, where each line reprensents an
+#        association. First column are the genes and the sencond column are the
+#        metabolites. Only use KEGG Ids.
+# ordered [option] ascendent ordering of distance
+# commonNames get KEGG's Common Names of the KEGG Id in the
+#        results.
+# graph, shortestDistance, KEGG
 
-#' @examples getDistanceAssoAllMaps(shin,ordered = T, commonNames = F)
+# getDistanceAssoAllMaps(shin,ordered = T, commonNames = F)
 
 
 getDistanceAssoAllMaps <- function(association, ordered =FALSE,

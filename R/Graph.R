@@ -523,27 +523,27 @@ setGeneric("getDistanceAsso", function(object, pathwayId, path)
 }
 )
 
-#' Function calculating shortest distance between each gene-metabolite pairs.
-#'
-#' Function calculating shortest distance between each gene-metabolite
-#' associations on your selected KEGG pathway.
-#'
-#'
-#' If a gene or a metabolite is present on multiple edges or nodes, then the
-#' shortest distance is selected.
-#' Output : dataframe with the following columns : geneCommonName, geneKEGGId,
-#' isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
-#' isMetaboliteInMap, distance
-#'
-#' @param pathwayId KEGG Id of selected pathway.
-#' @param association Dataframe with 2 columns, where each line reprensents an
-#'        association. First column are the genes and the sencond column are the
-#'        metabolites. Only use KEGG Ids.
-#' @param ordered [option] ascendent ordering of distance
-#' @param commonNames get KEGG's Common Names of the KEGG Id in the results.
-#' @keywords graph, shortestDistance, KEGG
-#' @export
-#' @examples getDistanceAsso("hsa01100",shinAndAlDF)
+# Function calculating shortest distance between each gene-metabolite pairs.
+#
+# Function calculating shortest distance between each gene-metabolite
+# associations on your selected KEGG pathway.
+#
+#
+# If a gene or a metabolite is present on multiple edges or nodes, then the
+# shortest distance is selected.
+# Output : dataframe with the following columns : geneCommonName, geneKEGGId,
+# isGeneInMap, metaboliteCommonName, metaboliteKEGGId,
+# isMetaboliteInMap, distance
+#
+# pathwayId KEGG Id of selected pathway.
+# association Dataframe with 2 columns, where each line reprensents an
+#        association. First column are the genes and the sencond column are the
+#        metabolites. Only use KEGG Ids.
+#  ordered [option] ascendent ordering of distance
+# commonNames get KEGG's Common Names of the KEGG Id in the results.
+# graph, shortestDistance, KEGG
+#
+# getDistanceAsso("hsa01100",shinAndAlDF)
 
 setMethod("getDistanceAsso", "data_annotated", function(object,
                                                         pathwayId,
@@ -1013,29 +1013,29 @@ mergeVectorsLowerValues <- function(A,B) {
 
 
 
-#' Function calculating shortest distance between every gene and every
-#' metabolite.
-#'
-#' Function calculating shortest distance between every gene and every
-#' metabolites on a graph model of KEGG map selected, where nodes are
-#' metabolites and reactions (genes) are edges.
-#'
-#' If a gene or a metabolite is present on multiple edges or nodes, then
-#' shortest distance are calculated for every combinaison possible and the
-#' shortest distance is selected.
-#'
-#' Output : dataframe with metabolite in columns and gene in rows with
-#'          shortest distance values.
-#'
-#' @param pathwayId KEGG Id of selected pathway.
-#' @param gene Dataframe of 1 column, representing all genes reported. Only use
-#'        KEGG Ids.
-#' @param metabolite Dataframe of 1 column, representing all the measured
-#'        metabolites. Only use KEGG Ids.
-#' @keywords graph, shortestDistance, KEGG
+# Function calculating shortest distance between every gene and every
+# metabolite.
+#
+# Function calculating shortest distance between every gene and every
+# metabolites on a graph model of KEGG map selected, where nodes are
+# metabolites and reactions (genes) are edges.
+#
+# If a gene or a metabolite is present on multiple edges or nodes, then
+# shortest distance are calculated for every combinaison possible and the
+# shortest distance is selected.
+#
+# Output : dataframe with metabolite in columns and gene in rows with
+#          shortest distance values.
+#
+# pathwayId KEGG Id of selected pathway.
+# gene Dataframe of 1 column, representing all genes reported. Only use
+#        KEGG Ids.
+# metabolite Dataframe of 1 column, representing all the measured
+#        metabolites. Only use KEGG Ids.
+# graph, shortestDistance, KEGG
 
-#' @examples getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
-#'           completeMetaboDF)
+# getDistanceAll(metabolismOverviewMapKEGGId,completeGeneDF,
+#           completeMetaboDF)
 
 getDistanceAll <- function(pathwayId, gene,
                            metabolite){
