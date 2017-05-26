@@ -340,7 +340,7 @@ srd.distribution <- function(distance){
 
     distance <- as.character(as.vector(statsData.m$distance))
 
-    distanceData <- data.frame("srd" = as.character(distance),
+    distanceData <- data.frame("distance" = as.character(distance),
                               "count" = statsData.m$count)
 
     fitColors <-  heat.colors(nrow(distanceData), 1)
@@ -354,6 +354,7 @@ srd.distribution <- function(distance){
             text = ggplot2::element_text(size=14),
             axis.text=ggplot2::element_text(colour="black", size = 14))+
        ggplot2::scale_fill_manual(values=fitColors)+
+       ggplot2::labs(x="srd",y="count")+
        ggplot2::ggtitle("srd distribution")+
        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5))+
        ggplot2::theme(legend.position="none")+
