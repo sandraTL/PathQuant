@@ -191,8 +191,9 @@ setMethod("annotate_data", "data" ,function(object){
 
     gene.annotation <- annotateAssociationData(data.df)
 
-    metabolite.annotation <-
-        getSuperClassByKEggId(as.vector(object@metabolite))
+    metabolite.annotation <- rep("NA", nrow(data.df))
+    # metabolite.annotation <-
+    #     getSuperClassByKEggId(as.vector(object@metabolite))
     # print(metabolite.annotation)
     data.annotated <- new("data_annotated",
                           data = object,
