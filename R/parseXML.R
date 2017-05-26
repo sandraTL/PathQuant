@@ -750,10 +750,10 @@ getKEGGInfoUrl <- function(keggId){
 ## could also annotate from HMDB database
 getSuperClassByKEggId <- function(kegg.id.list){
 
-    # print("getSuperClassByKEggId")
+     print("getSuperClassByKEggId")
 
     # retrieve data from HMDB xml files
-    hmdb.data <- data.frame(importTXTtoDF("hmdb_info.txt"))
+    hmdb.data <- data.frame(importTXTtoDF("./hmdb_info.txt"))
 
     # unlist the data to for lapply
     kegg.id.list <- unlist(kegg.id.list)
