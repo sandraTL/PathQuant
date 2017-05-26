@@ -329,7 +329,7 @@ groupedBarPlot <- function(data){
 #' srd values.
 #'
 #'
-#' @param col of srd values of the data.frame obtained by get.srd function
+#' @param distance list of computed srd values of the data.frame obtained by get.srd function
 #' @keywords graph, srd, KEGG, barplot.
 #' @export
 #' @examples srd.distribution(res[,7])
